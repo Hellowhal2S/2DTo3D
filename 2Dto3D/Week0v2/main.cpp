@@ -20,6 +20,7 @@
 #define PI 3.14
 
 #include "Sphere.h"
+#include "EngineLoop.h"
 
 #pragma region 사전과제 관련 코드 주석 처리
 //const FVector gravity(0.f, 0.000005f, 0.f);
@@ -316,7 +317,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ID3D11Buffer* vertexBufferSphere = renderer.CreateVertexBuffer(sphere_vertices, sizeof(sphere_vertices));
 
 
-	bool bIsExit = false;
 
 #pragma region 사전과제 관련 코드 주석 처리
 	//각종 생성 코드
@@ -327,6 +327,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//BlackHole->RotationAngle = 0;
 	//static int numBalls = 1;  // 공의 개수 초기값
 #pragma endregion
+	EngineLoop::InitEngineLoop();
 	const int targetFPS = 60;
 	const double targetFrameTime = 1000.0 / targetFPS; // 한 프레임의 목표 시간 (밀리초 단위)
 	LARGE_INTEGER frequency;
@@ -334,174 +335,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	LARGE_INTEGER startTime, endTime;
 	double elapsedTime = 1.0;
-	while (bIsExit == false)
+	while (EngineLoop::bIsExit == false)
 	{
 		QueryPerformanceCounter(&startTime);
 
-		MSG msg;
-		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-		{
-			TranslateMessage(&msg); // 키보드 입력 메시지를 문자메시지로 변경
-			DispatchMessage(&msg); // 메시지를 WndProc에 전달
-
-			if (msg.message == WM_QUIT)
-			{
-				bIsExit = true;
-				break;
-			}
-#pragma region 사전과제 관련 코드 주석 처리
-		//	if (bBlackHole) {
-		//		if (msg.wParam == VK_LEFT)
-		//		{
-		//			locBlackHole.x -= 0.05f;
-		//		}
-		//		if (msg.wParam == VK_RIGHT)
-		//		{
-		//			locBlackHole.x += 0.05f;
-		//		}
-		//		if (msg.wParam == VK_UP)
-		//		{
-		//			locBlackHole.y += 0.05f;
-		//		}
-		//		if (msg.wParam == VK_DOWN)
-		//		{
-		//			locBlackHole.y -= 0.05f;
-		//		}
-		//		if (locBlackHole.x < leftBorder)
-		//		{
-		//			locBlackHole.x = leftBorder;
-		//		}
-		//		if (locBlackHole.x > rightBorder)
-		//		{
-		//			locBlackHole.x = rightBorder;
-		//		}
-		//		if (locBlackHole.y < topBorder)
-		//		{
-		//			locBlackHole.y = topBorder;
-		//		}
-		//		if (locBlackHole.y > bottomBorder)
-		//		{
-		//			locBlackHole.y = bottomBorder;
-		//		}
-		//	}
-		//}
-		//while (numBalls > UBall::ballCount)
-		//{
-		//	if (!HeadBall->CreateBall())
-		//	{
-		//		numBalls--;
-		//	}
-		//}
-		//while (numBalls < UBall::ballCount)
-		//{
-		//	if (numBalls <= 0) {
-		//		numBalls = 1;
-		//		break;
-		//	}
-		//	HeadBall->DeleteRandomBall();
-		//}
-		//UBall* Iter = HeadBall->NextBall;
-		//while (Iter)
-		//{
-		//	Iter->Update(elapsedTime);
-		//	Iter = Iter->NextBall;
-		//}
-
-		////블랙홀 존재시 위치 조정 
-		//if (bBlackHole) {
-		//	BlackHole->Location = locBlackHole;
-		//	if (bEating && UBall::ballCount > 1)
-		//	{
-		//		UBall* ptmp = HeadBall->NextBall;
-		//		while (ptmp)
-		//		{
-		//			float distance = (BlackHole->Location - ptmp->Location).Magnitude();
-		//			float radiusSum = BlackHole->Radius + ptmp->Radius;
-		//			if (distance <= radiusSum)
-		//			{
-		//				if(BlackHole->Radius< 0.9f)
-		//				BlackHole->Radius += ptmp->Mass * 0.0005;
-		//				ptmp->DeleteBall();
-		//				ptmp = HeadBall->NextBall;
-		//				if(!bAutoSpawn)
-		//					numBalls--;
-		//			}
-		//			ptmp = ptmp->NextBall;
-		//		}
-		//	}
-#pragma endregion
-		}
-		// 준비 작업
-		renderer.Prepare();
-		renderer.PrepareShader();
-#pragma region 사전과제 관련 코드 주석 처리
-		//Iter = HeadBall->NextBall;
-		//while (Iter)
-		//{
-		//	renderer.UpdateConstant(Iter->Location , Iter->Radius, Iter->RotationAngle);
-		//	// 생성한 버텍스 버퍼를 넘겨 실질적인 렌더링 요청
-		//	renderer.RenderPrimitive(vertexBufferSphere, numVerticesSphere);
-		//	Iter = Iter->NextBall;
-		//}
-		//if (bBlackHole) 
-		//{
-		//	renderer.UpdateConstant(BlackHole->Location, BlackHole->Radius, BlackHole->RotationAngle);
-		//	renderer.RenderPrimitive(vertexBufferSphere, numVerticesSphere);
-		//}
-#pragma endregion
-		// NewImGUIFrame()
-		ImGuiManager::NewImGuiFrame();
-
-		// 이후 ImGui UI 컨트롤 추가는 ImGui::NewFrame()과 ImGui::Render() 사이인 여기에 위치합니다.
-		ImGui::Begin("Jungle Property Window");
-
-		ImGui::Text("Hello Jungle World!");
-
-#pragma region 사전과제 관련 코드 주석 처리
-		////ImGui::Text("%f", HeadBall->NextBall->Mass);
-		//ImGui::Checkbox("Gravity", &bGravity);
-		//ImGui::Checkbox("Rotate", &bRotate);
-		//ImGui::Checkbox("BlackHole", &bBlackHole);
-		//if (bBlackHole)
-		//{
-		//	ImGui::Indent(20.0f);
-		//	if (BlackHole->Radius >= 0.9f) {
-		//		ImGui::Text("Clear!!!!!!");
-		//	}
-		//	else 
-		//		ImGui::Text("Score : %f", (BlackHole->Radius-0.02f)*10000);
-		//	ImGui::Checkbox("Eating", &bEating);
-		//	if (bEating)
-		//	{
-		//		ImGui::Indent(20.0f);
-		//		ImGui::Checkbox("AutoSpawn", &bAutoSpawn);
-		//		ImGui::Unindent(20.0f);
-		//	}
-		//	ImGui::PushItemWidth(160);
-		//	ImGui::SliderFloat("BlackHole Power", &blackHolePower, .0f, 10.0f);
-		//	ImGui::PopItemWidth();
-		//	if (ImGui::Button("Restart"))
-		//	{
-		//		BlackHole->Radius = 0.02f;
-		//	}
-		//	ImGui::Unindent(20.0f);  
-		//}
-
-
-		//ImGui::PushItemWidth(80);
-		//ImGui::InputInt("##balls", &numBalls);
-		//ImGui::PopItemWidth();
-
-		//ImGui::SameLine();
-		//ImGui::Text("Number of Balls");
-#pragma endregion
-
-		ImGui::End();
-		/////////////////////////////////////////////////////////////////////////
-		ImGuiManager::RenderImGui();
-
-		//버퍼 교체
-		renderer.SwapBuffer();
+		EngineLoop::InitEngineLoop();
+		EngineLoop::Run(renderer);
 		do
 		{
 			Sleep(0);

@@ -51,6 +51,9 @@
     <ClCompile Include="ImGuiManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="EngineLoop.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ShaderW0.hlsl">
@@ -95,6 +98,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ImGuiManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineLoop.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

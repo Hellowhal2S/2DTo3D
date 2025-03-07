@@ -4,7 +4,7 @@
 #include "ImGUI/imgui_impl_dx11.h"
 #include "ImGUI/imgui_impl_win32.h"
 
-void ImGuiManager::InitImGui(URenderer renderer, HWND hwnd) {
+void ImGuiManager::InitImGui(URenderer& renderer, HWND hwnd) {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
@@ -18,7 +18,19 @@ void ImGuiManager::NewImGuiFrame() {
 	ImGui::NewFrame();
 }
 
-void ImGuiManager::RenderImGui() {
+void ImGuiManager::DrawRenderData() {
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+}
+
+void ImGuiManager::SetupUI() {
+	ImGui::Begin("Jungle Property Window");
+	ImGui::Text("Hello Jungle World!");
+	ImGui::End();
+}
+
+void ImGuiManager::RenderImGui() {
+	ImGuiManager::NewImGuiFrame();
+	ImGuiManager::SetupUI();
+	ImGuiManager::DrawRenderData();
 }
