@@ -13,12 +13,13 @@ void UCamera::Initialize()
     Right = FVector(0.0f, 1.0f, 0.0f);
     Up = FVector(0.0f, 0.0f, 1.0f);
     RelativeLocation = FVector(-5.0f, 0.0f, 0.0f); // 초기 위치 설정
+	fovDegrees = 60.0f;
     UpdateVectors();
 }
 
 void UCamera::Update()
 {
-   
+	
 }
 
 void UCamera::Release()
@@ -26,13 +27,23 @@ void UCamera::Release()
    
 }
 
-void UCamera::SetProjection(float fovDegrees, float aspectRatio, float nearZ, float farZ)
+void UCamera::SetProjection(float aspectRatio, float nearZ, float farZ)
 {
     float fovRadians = fovDegrees * (3.14159265359f / 180.0f);
     float yScale = 1.0f / tanf(fovRadians / 2);
     float xScale = yScale / aspectRatio;
     float zScale = farZ / (farZ - nearZ);
 
+	if (bOrthographic)
+	{
+		ProjectionMatrix = { {
+			{ 2.0f / 10.0f, 0, 0, 0 },
+			{ 0, 2.0f / 10.0f, 0, 0 },
+			{ 0, 0, 1.0f / (farZ - nearZ), 0 },
+			{ 0, 0, -nearZ / (farZ - nearZ), 1 }
+		} };
+		return;
+	}
     ProjectionMatrix = { {
         { xScale, 0,     0,          0 },
         { 0,     yScale, 0,          0 },

@@ -18,4 +18,5 @@ void UObject::Update()
 
 void UObject::Release()
 {
+
 }

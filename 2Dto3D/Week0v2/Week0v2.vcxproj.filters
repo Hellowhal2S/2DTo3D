@@ -58,6 +58,9 @@
     <Filter Include="헤더 파일\Camera">
       <UniqueIdentifier>{9aa5ee52-c753-4da9-96fc-8a954b9cc69b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Model">
+      <UniqueIdentifier>{472ab18e-67cc-4731-8ffd-afc80ad3f449}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -184,7 +187,7 @@
     <ClInclude Include="Camera.h">
       <Filter>헤더 파일\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Modle.h">
+    <ClInclude Include="Model.h">
       <Filter>헤더 파일\Modle</Filter>
     </ClInclude>
   </ItemGroup>

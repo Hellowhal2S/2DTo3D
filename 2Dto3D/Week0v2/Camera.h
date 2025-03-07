@@ -7,12 +7,14 @@ class UCamera : public USceneComponent
 public:
     UCamera();
     virtual ~UCamera();
-
     virtual void Initialize() override;
     virtual void Update() override;
     virtual void Release() override;
 
-    void SetProjection(float fovDegrees, float aspectRatio, float nearZ, float farZ);
+	float fovDegrees;
+	bool bOrthographic;
+
+    void SetProjection(float aspectRatio, float nearZ, float farZ);
     void MoveForward(float delta);
     void MoveRight(float delta);
     void Rotate(float yawDelta, float pitchDelta);

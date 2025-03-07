@@ -27,7 +27,7 @@ void UWorld::Initialize(HINSTANCE hInstance)
     CreateMainWindow(hInstance);
     InputHandler.Initialize(hInstance, hWnd, 1024, 1024);
 	Camera.Initialize();
-    Camera.SetProjection(45.0f, 1024.0f / 1024.0f, 0.1f, 1000.0f);
+    Camera.SetProjection(1024.0f / 1024.0f, 0.1f, 1000.0f);
     graphicDevice.Initialize(hWnd);
     renderer.Initialize(&graphicDevice);
     imguiManager.Initialize(hWnd, graphicDevice.Device, graphicDevice.DeviceContext);
@@ -150,10 +150,6 @@ void UWorld::Update()
     }
 }
 
-
-
-
-
 void UWorld::Render()
 {
     renderer.Prepare();
@@ -163,15 +159,21 @@ void UWorld::Render()
     FMatrix projectionMatrix = Camera.GetProjectionMatrix();
     FMatrix worldMatrix = FMatrix::Identity; // 기본 월드 행렬
 
-  
     renderer.UpdateConstant(worldMatrix, viewMatrix, projectionMatrix);
-
     renderer.RenderPrimitive(vertexBufferSphere, sizeof(sphere_vertices) / sizeof(FVertexSimple));
 
     imguiManager.BeginFrame();
-    ImGui::Begin("Camera Debug");
-    ImGui::Text("Position: (%.2f, %.2f, %.2f)", Camera.RelativeLocation.x, Camera.RelativeLocation.y, Camera.RelativeLocation.z);
-    ImGui::Text("LookAt: (%.2f, %.2f, %.2f)", Camera.GetForward().x, Camera.GetForward().y, Camera.GetForward().z);
+    ImGui::Begin("Jungle Control Panel");
+    ImGui::Text("Hello Jungle World");
+    ImGui::Text("FPS 60");
+    ImGui::Separator();
+    ImGui::SliderFloat("##FOV", &Camera.fovDegrees, 0.0f, 180.0f, "%.1f");
+    float position[3] = { Camera.RelativeLocation.x, Camera.RelativeLocation.y, Camera.RelativeLocation.z };
+    ImGui::PushItemWidth(150); // 네모 박스 크기 조절
+    ImGui::InputFloat3("Position", position, "%.2f", ImGuiInputTextFlags_ReadOnly);
+    // LookAt 벡터를 네모 박스에 표시
+    float lookAt[3] = { Camera.GetForward().x, Camera.GetForward().y, Camera.GetForward().z };
+    ImGui::InputFloat3("LookAt", lookAt, "%.2f", ImGuiInputTextFlags_ReadOnly);
     ImGui::End();
     imguiManager.Render();
 }
