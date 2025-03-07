@@ -43,10 +43,10 @@ PS_INPUT mainVS(VS_INPUT input)
     //output.position = float4(Offset, 0) + (input.position * radius);
     
     // Pass the color to the pixel shader
-    if(rotationAngle ==0.0f)
-        output.color = float4(0.0, 0.0, 0.0, 0.0);
-    else
-        output.color = input.color;
+    //if(rotationAngle ==0.0f)
+    //    output.color = float4(0.0, 0.0, 0.0, 0.0);
+    //else
+    output.color = input.color;
     
     return output;
 }
