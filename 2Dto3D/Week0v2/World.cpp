@@ -2,6 +2,8 @@
 #include "CameraComponent.h"
 #include "SphereComp.h"
 #include "CubeComp.h"
+#include <DirectXMath.h>
+#include "JungleMath.h"
 UWorld::UWorld()
 {
 }
@@ -37,6 +39,7 @@ void UWorld::Initialize()
 
 void UWorld::Update(double deltaTime)
 {
+	Input();
 	for (int i = 0;i < m_pObjectList.size();i++)
 	{
 		for (auto iter = m_pObjectList[i].begin();iter != m_pObjectList[i].end();++iter)
@@ -60,6 +63,11 @@ void UWorld::Release()
 
 void UWorld::Render()
 {
+}
+
+void UWorld::Input()
+{
+
 }
 
 void UWorld::SpawnObject(OBJECTS _Obj)

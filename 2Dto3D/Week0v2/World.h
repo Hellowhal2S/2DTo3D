@@ -13,7 +13,7 @@ public:
 	void Update(double deltaTime);
 	void Release();
 	void Render();
-
+	void Input();
 	void SpawnObject(OBJECTS _Obj);
 private:
 	TArray<TDoubleLinkedList<UObject*>> m_pObjectList;
@@ -23,5 +23,6 @@ public:
 	TDoubleLinkedList<UObject*>& GetSphreList() { return m_pObjectList[OBJ_SPHERE]; }
 	TDoubleLinkedList<UObject*>& GetCubeList() { return m_pObjectList[OBJ_CUBE]; }
 	UObject* GetPickingObj() { return PickingObj; }
+	void	SetPickingObj(UObject* _Obj) { PickingObj = _Obj; };
 };
 
