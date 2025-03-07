@@ -1,9 +1,4 @@
-﻿  main.cpp
-C:\Users\hellowhales\Desktop\Week0v2\Week0v2\main.cpp(39,14): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\hellowhales\Desktop\Week0v2\Week0v2\main.cpp(430,53): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\hellowhales\Desktop\Week0v2\Week0v2\main.cpp(578,83): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
-C:\Users\hellowhales\Desktop\Week0v2\Week0v2\main.cpp(590,1): warning C4305: '-=': 'double'에서 'float'(으)로 잘립니다.
-C:\Users\hellowhales\Desktop\Week0v2\Week0v2\main.cpp(592,1): warning C4305: '+=': 'double'에서 'float'(으)로 잘립니다.
-C:\Users\hellowhales\Desktop\Week0v2\Week0v2\main.cpp(734,17): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\hellowhales\Desktop\Week0v2\Week0v2\main.cpp(751,39): warning C4244: '+=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  Week0v2.vcxproj -> C:\Users\hellowhales\Desktop\Week0v2\x64\Debug\Week0v2.exe
+﻿  JungleMath.cpp
+  World.cpp
+  코드를 생성하고 있습니다...
+  Week0v2.vcxproj -> C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\x64\Debug\Week0v2.exe

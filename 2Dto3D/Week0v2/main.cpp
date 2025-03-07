@@ -6,10 +6,10 @@
 #include "ImGUI/imgui_impl_dx11.h"
 #include "ImGUI/imgui_impl_win32.h"
 #include "Define.h"
-#include "UWorld.h"
+#include "World.h"
 #include "Sphere.h"
-#include "UGraphicDevice.h"
-#include "URenderer.h"
+#include "GraphicDevice.h"
+#include "Renderer.h"
 const float sphereRadius = 1.0f;
 
 
