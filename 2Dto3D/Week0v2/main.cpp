@@ -15,6 +15,7 @@
 #include "Vertex.h"
 #include "VectorUtils.h"
 #include "Renderer.h"
+#include "ImGuiManager.h"
 
 #define PI 3.14
 
@@ -308,11 +309,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.CreateShader();
 	renderer.CreateConstantBuffer();
 
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO();
-	ImGui_ImplWin32_Init((void*)hWnd);
-	ImGui_ImplDX11_Init(renderer.Device, renderer.DeviceContext);
+	// InitImGUI();
+	ImGuiManager::InitImGui(renderer, hWnd);
 
 	UINT numVerticesSphere = sizeof(sphere_vertices) / sizeof(FVertexSimple);
 	ID3D11Buffer* vertexBufferSphere = renderer.CreateVertexBuffer(sphere_vertices, sizeof(sphere_vertices));
@@ -451,9 +449,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//	renderer.RenderPrimitive(vertexBufferSphere, numVerticesSphere);
 		//}
 #pragma endregion
-		ImGui_ImplDX11_NewFrame();
-		ImGui_ImplWin32_NewFrame();
-		ImGui::NewFrame();
+		// NewImGUIFrame()
+		ImGuiManager::NewImGuiFrame();
 
 		// 이후 ImGui UI 컨트롤 추가는 ImGui::NewFrame()과 ImGui::Render() 사이인 여기에 위치합니다.
 		ImGui::Begin("Jungle Property Window");
@@ -501,8 +498,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		ImGui::End();
 		/////////////////////////////////////////////////////////////////////////
-		ImGui::Render();
-		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+		ImGuiManager::RenderImGui();
 
 		//버퍼 교체
 		renderer.SwapBuffer();
