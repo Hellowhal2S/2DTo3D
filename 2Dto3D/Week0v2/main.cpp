@@ -524,7 +524,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 	delete BlackHole;*/
 #pragma endregion
-	renderer.ReleaseVertexBuffer(vertexBufferSphere);
+	URenderer::ReleaseVertexBuffer(vertexBufferSphere);
 	
 	
 	renderer.ReleaseConstantBuffer();
