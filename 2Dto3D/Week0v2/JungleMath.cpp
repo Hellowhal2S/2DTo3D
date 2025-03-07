@@ -44,6 +44,7 @@ FMatrix JungleMath::CreateModelMatrix(FVector translation, FVector rotation, FVe
     Translation.M[3][1] = translation.y;
     Translation.M[3][2] = translation.z;
     Translation.M[3][3] = 1.0f;
+
     // 최종 모델 행렬 = 이동 * 회전 * 스케일
     return Scale * Rotation * Translation;
 }

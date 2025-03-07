@@ -105,13 +105,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		renderer.PrepareShader();
 
 		UCameraComponent* Camera = static_cast<UCameraComponent*>(World->GetCamera());
+		static float fov = 60.0f;
+
 		for (auto iter = World->GetSphreList().begin(); iter != World->GetSphreList().end();++iter)
 		{
 			FMatrix Model = JungleMath::CreateModelMatrix((*iter)->GetLocation(), (*iter)->GetRotation(), (*iter)->GetScale());
 			FMatrix View = JungleMath::CreateViewMatrix(Camera->GetLocation(), Camera->GetLocation() + Camera->GetForwardVector(), { 0, 1, 0 });
-			FMatrix Projection = JungleMath::CreateProjectionMatrix(45.0f * (3.141592f / 180.0f), 16.0f / 9.0f, 0.1f, 1000.0f);
-			Projection = JungleMath::CreateProjectionMatrix(
-				45.0f * (3.141592f / 180.0f),
+			FMatrix Projection = JungleMath::CreateProjectionMatrix(
+				fov * (3.141592f / 180.0f),
 				1.0f,  // 1:1 비율로 변경
 				0.1f,
 				1000.0f
@@ -125,11 +126,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		for (auto iter = World->GetCubeList().begin(); iter != World->GetCubeList().end();++iter)
 		{
-			FMatrix Model = JungleMath::CreateModelMatrix((*iter)->GetLocation(), (*iter)->GetRotation(), (*iter)->GetScale());
+			FMatrix Model = JungleMath::CreateModelMatrix((*iter)->GetLocation(), (*iter)->GetRotation(), FVector(0.5f,0.5f,0.5f));
 			FMatrix View = JungleMath::CreateViewMatrix(Camera->GetLocation(), Camera->GetLocation() + Camera->GetForwardVector(), { 0, 1, 0 });
-			FMatrix Projection = JungleMath::CreateProjectionMatrix(45.0f * (3.141592f / 180.0f), 16.0f / 9.0f, 0.1f, 1000.0f);
-			Projection = JungleMath::CreateProjectionMatrix(
-				45.0f * (3.141592f / 180.0f),
+			FMatrix Projection = JungleMath::CreateProjectionMatrix(
+				fov * (3.141592f / 180.0f),
 				1.0f,  // 1:1 비율로 변경
 				0.1f,
 				1000.0f
@@ -147,22 +147,68 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ImGui::NewFrame();
 
 		// 이후 ImGui UI 컨트롤 추가는 ImGui::NewFrame()과 ImGui::Render() 사이인 여기에 위치합니다.
-		ImGui::Begin("Console");
+		ImGui::Begin("Jungle Control Panel");
+		ImGui::Text("Hello Jungle World!");
+		double fps = 1000.0 / elapsedTime;
+		ImGui::Text("FPS %.2f (%.2fms)", fps, elapsedTime);
+		ImGui::Separator();
+		static int primitiveType = 0;
+		const char* primitives[] = { "Sphere", "Cube", "Triangle"};
+		ImGui::Combo("Primitive", &primitiveType, primitives, IM_ARRAYSIZE(primitives));
+		ImGui::InputInt("Number of Spawn", &primitiveType, 0, 0);
 
+		static int spawnCount = 2;
+		ImGui::InputInt("Number of Spawn", &spawnCount, 0, 0);
+		if (ImGui::Button("Spawn"))
+		{
+			World->SpawnObject(static_cast<OBJECTS>(primitiveType));
+		}
 
-		ImGui::Text("Camera Pos: {x:%f, y:%f, z:%f}", World->GetCamera()->GetLocation().x,
-			World->GetCamera()->GetLocation().y,
-			World->GetCamera()->GetLocation().z);
-		ImGui::Text("Camera Rotation: {x:%f, y:%f, z:%f}", World->GetCamera()->GetRotation().x,
-			World->GetCamera()->GetRotation().y,
-			World->GetCamera()->GetRotation().z
-		);
-		ImGui::Text("Camera Forward: {x:%f, y:%f, z:%f}",Camera->GetForwardVector().x,
-			Camera->GetForwardVector().y,
-			 Camera->GetForwardVector().z
-		);
+		static char sceneName[64] = "Default";
+		ImGui::InputText("Scene Name", sceneName, IM_ARRAYSIZE(sceneName));
+
+		if (ImGui::Button("New scene")) {
+			// Handle new scene creation
+		}
+		if (ImGui::Button("Save scene")) {
+			// Handle saving scene
+		}
+		if (ImGui::Button("Load scene")) {
+			// Handle loading scene
+		}
+
+		ImGui::Separator();
+
+		ImGui::Text("Orthogonal");
+		ImGui::SliderFloat("FOV", &fov, 30.0f, 120.0f);
+
+		float cameraLocation[3] = { Camera->GetLocation().x, Camera->GetLocation().y, Camera->GetLocation().z};
+		ImGui::InputFloat3("Camera Location", cameraLocation);
+
+		float cameraRotation[3] = { Camera->GetRotation().x, Camera->GetRotation().y, Camera->GetRotation().z};
+		ImGui::InputFloat3("Camera Rotation", cameraRotation);
+
 		ImGui::End();
-		/////////////////////////////////////////////////////////////////////////
+		ImGui::Begin("Jungle Property Panel");
+		ImGui::Text("Hello Jungle World!");
+		UObject* PickObj = World->GetPickingObj();
+		if (PickObj) {
+			float pickObjLoc[3] = { PickObj->GetLocation().x,PickObj->GetLocation().y ,PickObj->GetLocation().z };
+			float pickObjRot[3] = { PickObj->GetRotation().x,PickObj->GetRotation().y ,PickObj->GetRotation().z };
+			float pickObjScale[3] = { PickObj->GetScale().x,PickObj->GetScale().y ,PickObj->GetScale().z };
+
+			ImGui::InputFloat3("Tranlsation", pickObjLoc);
+			ImGui::InputFloat3("Rotation", pickObjRot);
+			ImGui::InputFloat3("Scale", pickObjScale);
+
+			PickObj->SetLocation(FVector(pickObjLoc[0], pickObjLoc[1], pickObjLoc[2]));
+			PickObj->SetRotation(FVector(pickObjRot[0], pickObjRot[1], pickObjRot[2]));
+			PickObj->SetScale(FVector(pickObjScale[0], pickObjScale[1], pickObjScale[2]));
+		}
+		ImGui::End();
+
+		// 이후 ImGui UI 컨트롤 추가는 ImGui::NewFrame()과 ImGui::Render() 사이인 여기에 위치합니다.
+
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 

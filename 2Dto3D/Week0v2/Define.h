@@ -97,9 +97,10 @@ struct FMatrix
 
 enum OBJECTS
 {
-	OBJ_CAMERA,
 	OBJ_SPHERE,
 	OBJ_CUBE,
+	OBJ_TRIANGLE,
+	OBJ_CAMERA,
 	OBJ_END
 };
 

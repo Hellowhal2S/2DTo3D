@@ -23,6 +23,10 @@ public:
 	inline FVector				GetLocation() { return m_Location; }
 	inline FVector				GetRotation() { return m_Rotation; }
 	inline FVector				GetScale()    {	return m_Scale;    }
-	inline void					SetLocattion(FVector _newLoc) { m_Location = _newLoc; }
+	inline void					SetLocation(FVector _newLoc) { m_Location = _newLoc; }
+	inline void					SetRotation(FVector _newRot) { m_Rotation = _newRot; }
+	inline void					SetScale(FVector _newScale) { m_Scale = _newScale; }
+
+
 };	
 

@@ -1,2 +1,5 @@
-﻿  World.cpp
+﻿  main.cpp
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\GraphicDevice.h(18,45): warning C4305: '초기화 중': 'double'에서 'FLOAT'(으)로 잘립니다.
+  (소스 파일 'main.cpp'을(를) 컴파일하는 중)
+  
   Week0v2.vcxproj -> C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\x64\Debug\Week0v2.exe
