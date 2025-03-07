@@ -7,6 +7,9 @@
 #include "Object.h"
 #include "Input.h"
 #include "Camera.h"
+#include "Model.h"
+
+
 #include <vector> // STL 벡터 사용
 
 class UWorld
@@ -21,6 +24,8 @@ public:
 
     void AddObject(UObject* NewObject);
     void RemoveObject(UObject* ObjectToRemove);
+	void SpawnCube();
+	void SpawnSphere();
 
 private:
     void CreateMainWindow(HINSTANCE hInstance);
@@ -34,6 +39,7 @@ private:
     URenderer renderer;
     UImGuiManager imguiManager;
     ID3D11Buffer* vertexBufferSphere = nullptr;
+	ID3D11Buffer* vertexBufferCube = nullptr;
     InputClass InputHandler; // InputClass 추가
     UCamera Camera;
     bool bIsExit = false;

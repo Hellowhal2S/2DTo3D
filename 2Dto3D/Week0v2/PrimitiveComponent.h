@@ -4,6 +4,6 @@ class UPrimitiveComponent : public USceneComponent
 {
 public:
 	UPrimitiveComponent();
-	virtual ~UPrimitiveComponent();
+ ~UPrimitiveComponent();
 };
 
