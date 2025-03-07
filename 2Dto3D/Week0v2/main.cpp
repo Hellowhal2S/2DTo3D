@@ -21,8 +21,6 @@
 
 #define PI 3.14
 
-#include "Sphere.h"
-
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -68,10 +66,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// InitImGUI();
 	ImGuiManager::InitImGui(renderer, hWnd);
 
-	UINT numVerticesSphere = sizeof(sphere_vertices) / sizeof(FVertexSimple);
-	ID3D11Buffer* vertexBufferSphere = renderer.CreateVertexBuffer(sphere_vertices, sizeof(sphere_vertices));
-
-	EngineLoop::InitEngineLoop();
 	const int targetFPS = 60;
 	const double targetFrameTime = 1000.0 / targetFPS; // 한 프레임의 목표 시간 (밀리초 단위)
 	LARGE_INTEGER frequency;
@@ -79,11 +73,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	LARGE_INTEGER startTime, endTime;
 	double elapsedTime = 1.0;
+	//EngineLoop::InitRenderer(renderer);
+	EngineLoop::InitEngineLoop(renderer);
 	while (EngineLoop::bIsExit == false)
 	{
 		QueryPerformanceCounter(&startTime);
 
-		EngineLoop::InitEngineLoop();
+		
 		EngineLoop::Run(renderer);
 		do
 		{
@@ -96,10 +92,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			elapsedTime = (endTime.QuadPart - startTime.QuadPart) * 1000.0 / frequency.QuadPart;
 
 		} while (elapsedTime < targetFrameTime);
-	}
-	URenderer::ReleaseVertexBuffer(vertexBufferSphere);
+	}	
 	
-	
+	EngineLoop::ReleaseVertexBuffer();
 	renderer.ReleaseConstantBuffer();
 	renderer.ReleaseShader();
 	renderer.Release();

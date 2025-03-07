@@ -179,10 +179,10 @@ ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWi
 	return vertexBuffer;
 }
 
-void URenderer::ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer)
-{
-	vertexBuffer->Release();
-}
+//void URenderer::ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer)
+//{
+//	vertexBuffer->Release();
+//}
 
 void URenderer::CreateConstantBuffer()
 {

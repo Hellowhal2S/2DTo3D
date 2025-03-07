@@ -51,7 +51,7 @@ public:
 	void RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices);
 
 	ID3D11Buffer* CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth);
-	static void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
+	//static void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
 	void CreateConstantBuffer();
 	void ReleaseConstantBuffer();
 	void UpdateConstant(FVector Offset, float radius, float rotationAngle);
