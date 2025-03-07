@@ -10,14 +10,12 @@
 
 #include "VectorUtils.h"
 #include "Vertex.h"
+#include "DeviceManager.h"
 
 class URenderer
 {
 
 public:
-	ID3D11Device* Device = nullptr;
-	ID3D11DeviceContext* DeviceContext = nullptr;
-	IDXGISwapChain* SwapChain = nullptr;
 	// 렌더링에 필요한 리소스 및 상태를 관리하기 위한 변수들
 	ID3D11Texture2D* FrameBuffer = nullptr; // 화면 출력용 텍스처
 	ID3D11RenderTargetView* FrameBufferRTV = nullptr; // 텍스처를 렌더 타겟으로 사용하는 뷰
@@ -25,7 +23,6 @@ public:
 	ID3D11Buffer* ConstantBuffer = nullptr; // 쉐이더에 데이터를 전달하기 위한 상수 버퍼
 
 	FLOAT ClearColor[4] = { 0.025f, 0.025f, 0.025f, 1.0f }; // 화면을 초기화(clear)할 때 사용할 색상 (RGBA)
-	D3D11_VIEWPORT ViewportInfo; // 렌더링 영역을 정의하는 뷰포트 정보
 
 	ID3D11VertexShader* SimpleVertexShader;
 	ID3D11PixelShader* SimplePixelShader;
@@ -35,9 +32,6 @@ public:
 
 	// 렌더러 초기화 함수
 	void Create(HWND hWindow);
-	// 장치 및 스왑체인 생성
-	void CreateDeviceAndSwapChain(HWND hWindow);
-	void ReleaseDeviceAndSwapChain();
 	// 프레임 버퍼를 생성하는 함수
 	void CreateFrameBuffer();
 	// 프레임 버퍼를 해제하는 함수

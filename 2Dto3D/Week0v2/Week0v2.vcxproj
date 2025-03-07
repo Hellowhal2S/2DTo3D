@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DeviceManager.cpp" />
     <ClCompile Include="EngineLoop.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="ImGUI\imgui.cpp" />
@@ -150,6 +151,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DeviceManager.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="ImGUI\imconfig.h" />
     <ClInclude Include="ImGUI\imgui.h" />

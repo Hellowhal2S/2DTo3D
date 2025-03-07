@@ -3,13 +3,14 @@
 #include "ImGUI/imgui.h"
 #include "ImGUI/imgui_impl_dx11.h"
 #include "ImGUI/imgui_impl_win32.h"
+#include "DeviceManager.h"
 
 void ImGuiManager::InitImGui(URenderer& renderer, HWND hwnd) {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui_ImplWin32_Init((void*)hwnd);
-	ImGui_ImplDX11_Init(renderer.Device, renderer.DeviceContext);
+	ImGui_ImplDX11_Init(DeviceManager::Device, DeviceManager::DeviceContext);
 }
 
 void ImGuiManager::NewImGuiFrame() {
