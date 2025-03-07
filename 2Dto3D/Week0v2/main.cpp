@@ -59,6 +59,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	URenderer renderer;
 
 	// 장치 및 기본 다렉 구성원들 생성
+
 	DeviceManager::CreateDeviceAndSwapChain(hWnd);
 	renderer.Create(hWnd);
 	renderer.CreateShader();
@@ -103,10 +104,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer.ReleaseShader();
 	renderer.Release();
 	DeviceManager::ReleaseDeviceAndSwapChain();
-
-	// 여기에서 ImGui 소멸
-	ImGui_ImplDX11_Shutdown();
-	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();
+	ImGuiManager::ReleaseImGUi();
 	return 0;
 }

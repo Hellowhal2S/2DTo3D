@@ -7,4 +7,5 @@ public:
 	static void DrawRenderData();
 	static void SetupUI();
 	static void RenderImGui();
+	static void ReleaseImGUi();
 };

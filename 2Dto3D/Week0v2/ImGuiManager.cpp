@@ -35,3 +35,10 @@ void ImGuiManager::RenderImGui() {
 	ImGuiManager::SetupUI();
 	ImGuiManager::DrawRenderData();
 }
+
+void ImGuiManager::ReleaseImGUi() {
+	// 여기에서 ImGui 소멸
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
+}
