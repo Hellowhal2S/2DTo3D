@@ -19,6 +19,45 @@
     <Filter Include="ImGUI">
       <UniqueIdentifier>{539eb603-241a-4414-83f5-7bc69d8400b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\UWorld">
+      <UniqueIdentifier>{ab59464e-810e-4859-987a-774433a6dbaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\DirectX">
+      <UniqueIdentifier>{92f60cc2-713e-4f67-9975-7b187322df4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\UObject">
+      <UniqueIdentifier>{c5a037ae-40bd-4a41-9402-17ce1d557d4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\DirectX">
+      <UniqueIdentifier>{ec5ca991-d367-4b30-a7a4-4967aeee26d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\UObject">
+      <UniqueIdentifier>{495ac23c-221c-4814-b37c-900afdeb0550}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\UWorld">
+      <UniqueIdentifier>{813ddc80-e257-44f3-9e83-54c441ad28cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Util">
+      <UniqueIdentifier>{4b33086d-f45d-4504-b20f-1554a836f7af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Util">
+      <UniqueIdentifier>{75b1f0dc-2372-4f5f-8e47-e6e1b29dc08f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\GUI">
+      <UniqueIdentifier>{f5c8e8bd-3c7c-421f-89ef-b044e9646ebc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GUI">
+      <UniqueIdentifier>{cb34bb6f-dedf-4264-b666-7e8c5216bffa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Modle">
+      <UniqueIdentifier>{600b44d0-b039-4705-8707-c509f2b09b96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Camera">
+      <UniqueIdentifier>{23b3ba81-4230-49da-9fa3-b00f9ddee61c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Camera">
+      <UniqueIdentifier>{9aa5ee52-c753-4da9-96fc-8a954b9cc69b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -44,6 +83,36 @@
     </ClCompile>
     <ClCompile Include="ImGUI\imgui_widgets.cpp">
       <Filter>ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>소스 파일\UWorld</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicDevice.cpp">
+      <Filter>소스 파일\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>소스 파일\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>소스 파일\UObject</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneComponent.cpp">
+      <Filter>소스 파일\UObject</Filter>
+    </ClCompile>
+    <ClCompile Include="PrimitiveComponent.cpp">
+      <Filter>소스 파일\UObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix.cpp">
+      <Filter>소스 파일\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="ImguiManager.cpp">
+      <Filter>소스 파일\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>소스 파일\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>소스 파일\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -76,8 +145,47 @@
     <ClInclude Include="ImGUI\imstb_truetype.h">
       <Filter>ImGUI</Filter>
     </ClInclude>
+    <ClInclude Include="GraphicDevice.h">
+      <Filter>헤더 파일\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>헤더 파일\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>헤더 파일\UObject</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>헤더 파일\UWorld</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix.h">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneComponent.h">
+      <Filter>헤더 파일\UObject</Filter>
+    </ClInclude>
+    <ClInclude Include="PrimitiveComponent.h">
+      <Filter>헤더 파일\UObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Define.h">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="ImguiManager.h">
+      <Filter>헤더 파일\GUI</Filter>
+    </ClInclude>
     <ClInclude Include="Sphere.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Modle</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>헤더 파일\Modle</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>헤더 파일\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Modle.h">
+      <Filter>헤더 파일\Modle</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

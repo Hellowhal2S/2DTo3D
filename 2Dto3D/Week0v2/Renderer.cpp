@@ -1,0 +1,138 @@
+#include "Renderer.h"
+#include "GraphicDevice.h"
+void URenderer::Initialize(UGraphicsDevice* graphics) {
+    Graphics = graphics;
+    CreateShader();
+    CreateConstantBuffer();
+}
+
+void URenderer::Release() {
+    ReleaseShader();
+    if (ConstantBuffer) ConstantBuffer->Release();
+}
+
+void URenderer::Prepare() {
+    float ClearColor[4] = { 0.025f, 0.025f, 0.025f, 1.0f };
+    Graphics->DeviceContext->ClearRenderTargetView(Graphics->FrameBufferRTV, ClearColor);
+    Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    Graphics->DeviceContext->RSSetViewports(1, &Graphics->ViewportInfo);
+    Graphics->DeviceContext->RSSetState(Graphics->RasterizerState);
+    Graphics->DeviceContext->OMSetRenderTargets(1, &Graphics->FrameBufferRTV, nullptr);
+}
+
+
+void URenderer::CreateShader() {
+    ID3DBlob* vertexshaderCSO;
+    ID3DBlob* pixelshaderCSO;
+
+    D3DCompileFromFile(L"ShaderW0.hlsl", nullptr, nullptr, "mainVS", "vs_5_0", 0, 0, &vertexshaderCSO, nullptr);
+    Graphics->Device->CreateVertexShader(vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), nullptr, &VertexShader);
+
+    D3DCompileFromFile(L"ShaderW0.hlsl", nullptr, nullptr, "mainPS", "ps_5_0", 0, 0, &pixelshaderCSO, nullptr);
+    Graphics->Device->CreatePixelShader(pixelshaderCSO->GetBufferPointer(), pixelshaderCSO->GetBufferSize(), nullptr, &PixelShader);
+
+    D3D11_INPUT_ELEMENT_DESC layout[] = {
+        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+    };
+    Graphics->Device->CreateInputLayout(layout, ARRAYSIZE(layout), vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), &InputLayout);
+
+    Stride = sizeof(FVertexSimple);
+    vertexshaderCSO->Release();
+    pixelshaderCSO->Release();
+}
+void  URenderer::ReleaseShader()
+{
+    if (InputLayout)
+    {
+        InputLayout->Release();
+        InputLayout = nullptr;
+    }
+
+    if (PixelShader)
+    {
+        PixelShader->Release();
+        PixelShader = nullptr;
+    }
+
+    if (VertexShader)
+    {
+        VertexShader->Release();
+        VertexShader = nullptr;
+    }
+}
+void URenderer::PrepareShader()
+{
+    Graphics->DeviceContext->VSSetShader(VertexShader, nullptr, 0);
+    Graphics->DeviceContext->PSSetShader(PixelShader, nullptr, 0);
+    Graphics->DeviceContext->IASetInputLayout(InputLayout);
+
+    if (ConstantBuffer)
+    {
+        Graphics->DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer);
+    }
+}
+void URenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices) {
+    UINT offset = 0;
+    Graphics->DeviceContext->IASetVertexBuffers(0, 1, &pBuffer, &Stride, &offset);
+    Graphics->DeviceContext->Draw(numVertices, 0);
+}
+
+ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth)
+{
+    // 2. Create a vertex buffer
+    D3D11_BUFFER_DESC vertexbufferdesc = {};
+    vertexbufferdesc.ByteWidth = byteWidth;
+    vertexbufferdesc.Usage = D3D11_USAGE_IMMUTABLE; // will never be updated 
+    vertexbufferdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+    D3D11_SUBRESOURCE_DATA vertexbufferSRD = { vertices };
+
+    ID3D11Buffer* vertexBuffer;
+
+    Graphics->Device->CreateBuffer(&vertexbufferdesc, &vertexbufferSRD, &vertexBuffer);
+
+    return vertexBuffer;
+}
+
+void URenderer::ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer)
+{
+    vertexBuffer->Release();
+}
+
+void URenderer::CreateConstantBuffer()
+{
+    D3D11_BUFFER_DESC constantbufferdesc = {};
+    constantbufferdesc.ByteWidth = sizeof(FConstants);
+    constantbufferdesc.Usage = D3D11_USAGE_DYNAMIC;
+    constantbufferdesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    constantbufferdesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+
+    Graphics->Device->CreateBuffer(&constantbufferdesc, nullptr, &ConstantBuffer);
+}
+
+
+void URenderer::ReleaseConstantBuffer()
+{
+    if (ConstantBuffer)
+    {
+        ConstantBuffer->Release();
+        ConstantBuffer = nullptr;
+    }
+}
+void URenderer::UpdateConstant(const FMatrix& worldMatrix, const FMatrix& viewMatrix, const FMatrix& projectionMatrix)
+{
+    if (ConstantBuffer)
+    {
+        D3D11_MAPPED_SUBRESOURCE constantbufferMSR;
+
+        Graphics->DeviceContext->Map(ConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantbufferMSR);
+        FConstants* constants = (FConstants*)constantbufferMSR.pData;
+        {
+            constants->World = worldMatrix;
+            constants->View = viewMatrix;
+            constants->Projection = projectionMatrix;
+        }
+        Graphics->DeviceContext->Unmap(ConstantBuffer, 0);
+    }
+}
