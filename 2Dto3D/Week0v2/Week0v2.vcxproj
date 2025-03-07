@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CameraComponent.cpp" />
+    <ClCompile Include="CubeComp.cpp" />
     <ClCompile Include="Define.cpp" />
     <ClCompile Include="ImGUI\imgui.cpp" />
     <ClCompile Include="ImGUI\imgui_demo.cpp" />
@@ -143,6 +144,7 @@
     <ClCompile Include="PrimitiveComponent.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="SceneComponent.cpp" />
+    <ClCompile Include="SphereComp.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +159,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraComponent.h" />
+    <ClInclude Include="Cube.h" />
+    <ClInclude Include="CubeComp.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="ImGUI\imconfig.h" />
     <ClInclude Include="ImGUI\imgui.h" />
@@ -173,6 +177,7 @@
     <ClInclude Include="GraphicDevice.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="SphereComp.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -11,6 +11,8 @@ public:
 	virtual void		Update(double deltaTime);
 	virtual void		Release();
 
+	FVector				GetForwardVector();
+	FVector				GetRightVector();
 protected:
 	FVector				m_Location;
 	FVector				m_Rotation;
@@ -21,6 +23,6 @@ public:
 	inline FVector				GetLocation() { return m_Location; }
 	inline FVector				GetRotation() { return m_Rotation; }
 	inline FVector				GetScale()    {	return m_Scale;    }
-
+	inline void					SetLocattion(FVector _newLoc) { m_Location = _newLoc; }
 };	
 

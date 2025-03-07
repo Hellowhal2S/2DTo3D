@@ -1,5 +1,4 @@
 #include "CameraComponent.h"
-#include <windows.h>
 
 UCameraComponent::UCameraComponent()
 {
@@ -26,6 +25,36 @@ void UCameraComponent::Release()
 
 void UCameraComponent::Input()
 {
+	if (GetAsyncKeyState(VK_RBUTTON) & 0x8000) // VK_RBUTTON은 마우스 오른쪽 버튼을 나타냄
+	{
+		if (!bRightMouseDown)
+		{
+			// 마우스 오른쪽 버튼을 처음 눌렀을 때, 마우스 위치 초기화
+			bRightMouseDown = true;
+			GetCursorPos(&m_LastMousePos);
+		}
+		else
+		{
+			// 마우스 이동량 계산
+			POINT currentMousePos;
+			GetCursorPos(&currentMousePos);
+
+			// 마우스 이동 차이 계산
+			int deltaX = currentMousePos.x - m_LastMousePos.x;
+			int deltaY = currentMousePos.y - m_LastMousePos.y;
+
+			// Yaw(좌우 회전) 및 Pitch(상하 회전) 값 변경
+			RotateYaw(deltaX * 0.1f);  // X 이동에 따라 좌우 회전
+			RotatePitch(deltaY * 0.1f);  // Y 이동에 따라 상하 회전
+
+			// 새로운 마우스 위치 저장
+			m_LastMousePos = currentMousePos;
+		}
+	}
+	else
+	{
+		bRightMouseDown = false; // 마우스 오른쪽 버튼을 떼면 상태 초기화
+	}
 	if (GetAsyncKeyState('A') & 0x8000)
 	{
 		MoveRight(-1.f);
@@ -42,15 +71,46 @@ void UCameraComponent::Input()
 	{
 		MoveForward(-1.f);
 	}
-
+	if (GetAsyncKeyState('E') & 0x8000)
+	{
+		MoveUp(1.f);
+	}
+	if (GetAsyncKeyState('Q') & 0x8000)
+	{
+		MoveUp(-1.f);
+	}
+	if (GetAsyncKeyState('J') & 0x8000)
+	{
+		RotateYaw(-1.f);
+	}
+	if (GetAsyncKeyState('L') & 0x8000)
+	{
+		RotateYaw(1.f);
+	}
 }
 
 void UCameraComponent::MoveForward(float _Value)
 {
-	m_Location.x += _Value;
+	m_Location = m_Location + GetForwardVector() * m_mouseSpeed * _Value;
 }
 
 void UCameraComponent::MoveRight(float _Value)
 {
-	m_Location.y += _Value;
+	m_Location = m_Location + GetRightVector() * m_mouseSpeed * _Value;
 }
+
+void UCameraComponent::MoveUp(float _Value)
+{
+	m_Location.y += _Value *0.5f;
+}
+
+void UCameraComponent::RotateYaw(float _Value)
+{
+	m_Rotation.y += _Value;
+}
+
+void UCameraComponent::RotatePitch(float _Value)
+{
+	m_Rotation.x += _Value;
+}
+

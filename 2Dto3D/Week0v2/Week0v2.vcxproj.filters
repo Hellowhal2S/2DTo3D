@@ -96,6 +96,12 @@
     <ClCompile Include="CameraComponent.cpp">
       <Filter>소스 파일\UObject</Filter>
     </ClCompile>
+    <ClCompile Include="SphereComp.cpp">
+      <Filter>소스 파일\UObject</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeComp.cpp">
+      <Filter>소스 파일\UObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ShaderW0.hlsl">
@@ -155,6 +161,15 @@
       <Filter>헤더 파일\Util</Filter>
     </ClInclude>
     <ClInclude Include="CameraComponent.h">
+      <Filter>헤더 파일\UObject</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereComp.h">
+      <Filter>헤더 파일\UObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeComp.h">
       <Filter>헤더 파일\UObject</Filter>
     </ClInclude>
   </ItemGroup>

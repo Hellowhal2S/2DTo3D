@@ -1,4 +1,5 @@
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\CameraComponent.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\CameraComponent.obj
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\CubeComp.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\CubeComp.obj
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Define.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\Define.obj
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\ImGUI\imgui.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\imgui.obj
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\ImGUI\imgui_demo.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\imgui_demo.obj
@@ -14,4 +15,5 @@ C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Object.cpp;C:\Users\Jungl
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\PrimitiveComponent.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\PrimitiveComponent.obj
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Renderer.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\Renderer.obj
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\SceneComponent.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\SceneComponent.obj
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\SphereComp.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\SphereComp.obj
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\World.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\World.obj

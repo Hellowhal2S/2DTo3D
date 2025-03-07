@@ -1,5 +1,7 @@
 #include "World.h"
 #include "CameraComponent.h"
+#include "SphereComp.h"
+#include "CubeComp.h"
 UWorld::UWorld()
 {
 }
@@ -18,6 +20,17 @@ void UWorld::Initialize()
 	Camera->Initialize(this);
 
 	m_pObjectList[OBJ_CAMERA].push_back(Camera);
+
+	UObject* Sphere = new USphereComp;
+	Sphere->Initialize(this);
+
+	m_pObjectList[OBJ_SPHERE].push_back(Sphere);
+	UObject* Cube = new UCubeComp;
+	Cube->Initialize(this);
+	Cube->SetLocattion(FVector(10.f, 0.0f, 0.f));
+	m_pObjectList[OBJ_CUBE].push_back(Cube);
+
+
 }
 
 void UWorld::Update(double deltaTime)

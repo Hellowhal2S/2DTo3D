@@ -7,6 +7,6 @@ public:
 	static FMatrix CreateModelMatrix(FVector translation, FVector rotation, FVector scale);
 	static FMatrix CreateViewMatrix(FVector eye, FVector target, FVector up);
 	static FMatrix CreateProjectionMatrix(float fov, float aspect, float nearPlane, float farPlane);
-
+	static FVector FVectorRotate(FVector& origin, const FVector& rotation);
 };
 

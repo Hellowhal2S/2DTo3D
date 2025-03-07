@@ -7,132 +7,14 @@
 #include "ImGUI/imgui_impl_win32.h"
 #include "Define.h"
 #include "World.h"
-#include "Sphere.h"
 #include "GraphicDevice.h"
 #include "Renderer.h"
 #include "JungleMath.h"
 #include "CameraComponent.h"
-const float sphereRadius = 1.0f;
 
+#include "Sphere.h"
+#include "Cube.h"
 
-//class UBall
-//{
-//public:
-//	UBall() {}
-//	~UBall() {}
-//public:
-//	// 클래스 이름과, 아래 두개의 변수 이름은 변경하지 않습니다.
-//	FVector3 Location;
-//	FVector3 Velocity;
-//	float Radius;
-//	float Mass;
-//	float AngularVelocity = 0.01f;
-//	float RotationAngle = 0.1f;
-//
-//	UBall* NextBall;
-//	UBall* PrevBall;
-//	static INT32 ballCount;
-//
-//	float Index = 0;
-//
-//	bool CreateBall() // 새로운 공 생성
-//	{
-//		ballCount++;
-//		UBall* PossibleBall  = new UBall;
-//		// 생성할 위치 초기화
-//		FVector3 newLocation;
-//		bool locationValid = false;
-//
-//		// 최대 시도 횟수 (너무 많은 시도가 되지 않도록 제한)
-//		int maxAttempts = 10;
-//		int attempts = 0;
-//		
-//		//생성 가능 여부 확인
-//		while (!locationValid && attempts < maxAttempts)
-//		{
-//			newLocation = FVector3(((rand() % 2000) / 1000.0f) - 1.0f, ((rand() % 2000) / 1000.0f) - 1.0f, 0.f);
-//
-//
-//			UBall* pIter = NextBall;
-//			locationValid = true;
-//			while (pIter)
-//			{
-//
-//				float distance = (newLocation - pIter->Location).Magnitude();
-//				float radiusSum = NextBall->Radius + pIter->Radius;
-//				if (distance < radiusSum)  // 겹침 발생
-//				{
-//					locationValid = false; // 겹침이 있으면 유효하지 않음
-//					break;
-//				}
-//				pIter = pIter->NextBall;
-//			}
-//
-//			attempts++;
-//		}
-//		// 생성 가능 위치를 찾았다면 생성
-//		if (locationValid)
-//		{
-//			PossibleBall->Location = newLocation;
-//			PossibleBall->Velocity = FVector3(((float)(rand() % 100 - 50)) * ballSpeed, ((float)(rand() % 100 - 50)) * ballSpeed, 0.0f);
-//			PossibleBall->Radius = (sphereRadius * scaleMod) * (1.f - ((rand() % 1001) / 1000.0) * 0.9);
-//			PossibleBall->Mass = PossibleBall->Radius * 100.0f;
-//			PossibleBall->NextBall = NextBall;
-//			PossibleBall->PrevBall = this;
-//			if(NextBall)
-//				NextBall->PrevBall = PossibleBall;
-//			NextBall = PossibleBall;
-//			return true;
-//		}
-//		else
-//		{
-//			delete PossibleBall;
-//			ballCount--;
-//			return false;
-//		}
-//	}
-//	void DeleteRandomBall() // 랜덤 위치의 공 지우기
-//	{
-//		int deleteIdx = (rand() % UBall::ballCount) + 1;
-//		UBall* pIter = this;
-//		int count = 1;
-//		while (pIter)
-//		{
-//			UBall* pNext = pIter->NextBall;
-//			if (pNext == nullptr)
-//				break;
-//			if (count == deleteIdx)
-//			{
-//				pIter->NextBall = pNext->NextBall;
-//				delete pNext;
-//				break;
-//			}
-//			pIter = pIter->NextBall;
-//			count++;
-//		}
-//		ballCount--;
-//	}
-//	void DeleteBall() // 지금 공 지우기
-//	{
-//		if (PrevBall)
-//		{
-//			PrevBall->NextBall = NextBall;
-//		}
-//		if (NextBall)
-//		{
-//			NextBall->PrevBall = PrevBall;
-//		}
-//		ballCount--;
-//		delete this;
-//	}
-//
-//	void Update(float deltaTime) // 업데이트 함수
-//	{
-//		Move(deltaTime);
-//		if(bRotate)
-//			Rotate(deltaTime);
-//	}
-//};
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -182,6 +64,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UINT numVerticesSphere = sizeof(sphere_vertices) / sizeof(FVertexSimple);
 	ID3D11Buffer* vertexBufferSphere = renderer.CreateVertexBuffer(sphere_vertices, sizeof(sphere_vertices));
 
+	UINT numVerticesCube = sizeof(cube_vertices) / sizeof(FVertexSimple);
+	ID3D11Buffer* vertexBufferCube = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
+
+
 	UWorld* World = new UWorld;
 	World->Initialize();
 
@@ -214,19 +100,47 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		World->Update(elapsedTime);
 
 
-		// 준비 작업
+		// 준비 작업a
 		renderer.Prepare();
 		renderer.PrepareShader();
 
-		FMatrix Model = FMatrix::Identity;
-		FMatrix View = JungleMath::CreateViewMatrix(World->GetCamera()->GetLocation(), {0, 0, 0}, {0, 1, 0});
-		FMatrix Projection = JungleMath::CreateProjectionMatrix(45.0f * (3.141592f / 180.0f), 16.0f / 9.0f, 0.1f, 100.0f);
+		UCameraComponent* Camera = static_cast<UCameraComponent*>(World->GetCamera());
+		for (auto iter = World->GetSphreList().begin(); iter != World->GetSphreList().end();++iter)
+		{
+			FMatrix Model = JungleMath::CreateModelMatrix((*iter)->GetLocation(), (*iter)->GetRotation(), (*iter)->GetScale());
+			FMatrix View = JungleMath::CreateViewMatrix(Camera->GetLocation(), Camera->GetLocation() + Camera->GetForwardVector(), { 0, 1, 0 });
+			FMatrix Projection = JungleMath::CreateProjectionMatrix(45.0f * (3.141592f / 180.0f), 16.0f / 9.0f, 0.1f, 1000.0f);
+			Projection = JungleMath::CreateProjectionMatrix(
+				45.0f * (3.141592f / 180.0f),
+				1.0f,  // 1:1 비율로 변경
+				0.1f,
+				1000.0f
+			);
+			// 최종 MVP 행렬
+			FMatrix MVP = Model * View * Projection;
 
-		// 최종 MVP 행렬
-		FMatrix MVP = Model * View * Projection;
+			renderer.UpdateConstant(MVP);
+			renderer.RenderPrimitive(vertexBufferSphere, numVerticesSphere);
+		}
 
-		renderer.UpdateConstant(MVP);
-		renderer.RenderPrimitive(vertexBufferSphere, numVerticesSphere);
+		for (auto iter = World->GetCubeList().begin(); iter != World->GetCubeList().end();++iter)
+		{
+			FMatrix Model = JungleMath::CreateModelMatrix((*iter)->GetLocation(), (*iter)->GetRotation(), (*iter)->GetScale());
+			FMatrix View = JungleMath::CreateViewMatrix(Camera->GetLocation(), Camera->GetLocation() + Camera->GetForwardVector(), { 0, 1, 0 });
+			FMatrix Projection = JungleMath::CreateProjectionMatrix(45.0f * (3.141592f / 180.0f), 16.0f / 9.0f, 0.1f, 1000.0f);
+			Projection = JungleMath::CreateProjectionMatrix(
+				45.0f * (3.141592f / 180.0f),
+				1.0f,  // 1:1 비율로 변경
+				0.1f,
+				1000.0f
+			);
+			// 최종 MVP 행렬
+			FMatrix MVP = Model * View * Projection;
+
+			renderer.UpdateConstant(MVP);
+			renderer.RenderPrimitive(vertexBufferCube, numVerticesCube);
+		}
+
 
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
@@ -236,14 +150,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ImGui::Begin("Console");
 
 
-		ImGui::Text("Camera : {x:%f, y:%f, x:%f}", World->GetCamera()->GetLocation().x,
+		ImGui::Text("Camera Pos: {x:%f, y:%f, z:%f}", World->GetCamera()->GetLocation().x,
 			World->GetCamera()->GetLocation().y,
 			World->GetCamera()->GetLocation().z);
-
-
-		ImGui::SameLine();
-		ImGui::Text("Number of Balls");
-
+		ImGui::Text("Camera Rotation: {x:%f, y:%f, z:%f}", World->GetCamera()->GetRotation().x,
+			World->GetCamera()->GetRotation().y,
+			World->GetCamera()->GetRotation().z
+		);
+		ImGui::Text("Camera Forward: {x:%f, y:%f, z:%f}",Camera->GetForwardVector().x,
+			Camera->GetForwardVector().y,
+			 Camera->GetForwardVector().z
+		);
 		ImGui::End();
 		/////////////////////////////////////////////////////////////////////////
 		ImGui::Render();
