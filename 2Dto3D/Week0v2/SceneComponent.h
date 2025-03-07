@@ -5,7 +5,7 @@ class USceneComponent : public UObject
 {
 public:
     USceneComponent();
-    virtual ~USceneComponent();
+ ~USceneComponent();
 
 public:
     FVector RelativeLocation;

@@ -4,7 +4,7 @@ class UObject
 {
 public:
 						UObject();
-	virtual				~UObject();
+				~UObject();
 
 	virtual void		Initialize();
 	virtual void		Update();

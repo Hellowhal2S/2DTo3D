@@ -1,5 +1,6 @@
 #include "World.h"
-#include "sphere.h"
+#include "Cube.h"
+#include "Sphere.h"
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -15,27 +16,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
-
     return 0;
 }
 
 UWorld::UWorld() : hWnd(nullptr) {}
 UWorld::~UWorld() {}
 
-void UWorld::Initialize(HINSTANCE hInstance) {
-    UCubeComp* cube1 = new UCubeComp();
-    UCubeComp* cube2 = new UCubeComp();
-    USphereComp* sphere = new USphereComp();
+void UWorld::Initialize(HINSTANCE hInstance)
+{
+    CreateMainWindow(hInstance);
+    InputHandler.Initialize(hInstance, hWnd, 1024, 1024);
+	Camera.Initialize();
+    Camera.SetProjection(1024.0f / 1024.0f, 0.1f, 1000.0f);
+    graphicDevice.Initialize(hWnd);
+    renderer.Initialize(&graphicDevice);
+    imguiManager.Initialize(hWnd, graphicDevice.Device, graphicDevice.DeviceContext);
 
-    cube1->Initialize(&graphicDevice);
-    cube2->Initialize(&graphicDevice);
-    sphere->Initialize(&graphicDevice);
+    UINT numVerticesSphere = sizeof(sphere_vertices) / sizeof(FVertexSimple);
+    vertexBufferSphere = renderer.CreateVertexBuffer(sphere_vertices, sizeof(sphere_vertices));
+    UINT numVerticescue = sizeof(cube_vertices) / sizeof(FVertexSimple);
+    vertexBufferCube = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
 
-    AddObject(cube1);
-    AddObject(cube2);
-    AddObject(sphere);
+	SpawnCube();
+	SpawnSphere();
 }
-
 
 void UWorld::CreateMainWindow(HINSTANCE hInstance)
 {
@@ -149,6 +153,7 @@ void UWorld::Update()
         //  우클릭이 해제되면 firstClick 초기화
         firstClick = true;
     }
+	Camera.SetProjection(1024.0f / 1024.0f, 0.1f, 1000.0f); 
 }
 
 void UWorld::Render()
@@ -156,13 +161,34 @@ void UWorld::Render()
     renderer.Prepare();
     renderer.PrepareShader();
 
-    FMatrix viewMatrix = Camera.GetViewMatrix();
-    FMatrix projectionMatrix = Camera.GetProjectionMatrix();
-    FMatrix worldMatrix = FMatrix::Identity; // 기본 월드 행렬
-
-    renderer.UpdateConstant(worldMatrix, viewMatrix, projectionMatrix);
-    renderer.RenderPrimitive(vertexBufferSphere, sizeof(sphere_vertices) / sizeof(FVertexSimple));
-
+    for (auto& Object : ObjectList)
+    {
+        UCubeComp* Cube = dynamic_cast<UCubeComp*>(Object);
+        if (Cube)
+        {
+            FMatrix worldMatrix = FMatrix::Identity;
+            worldMatrix.M[3][0] = Cube->RelativeLocation.x;
+            worldMatrix.M[3][1] = Cube->RelativeLocation.y;
+            worldMatrix.M[3][2] = Cube->RelativeLocation.z;;
+            FMatrix viewMatrix = Camera.GetViewMatrix();
+            FMatrix projectionMatrix = Camera.GetProjectionMatrix();
+            renderer.UpdateConstant(worldMatrix, viewMatrix, projectionMatrix);
+            renderer.RenderPrimitive(vertexBufferCube, sizeof(cube_vertices) / sizeof(FVertexSimple));
+        }
+        USphereComp* Sphere = dynamic_cast<USphereComp*>(Object);
+        if (Sphere)
+        {
+            FMatrix worldMatrix = FMatrix::Identity;
+            worldMatrix.M[3][0] = Sphere->RelativeLocation.x;
+            worldMatrix.M[3][1] = Sphere->RelativeLocation.y;
+            worldMatrix.M[3][2] = Sphere->RelativeLocation.z;
+            FMatrix viewMatrix = Camera.GetViewMatrix();
+            FMatrix projectionMatrix = Camera.GetProjectionMatrix();
+            renderer.UpdateConstant(worldMatrix, viewMatrix, projectionMatrix);
+            renderer.RenderPrimitive(vertexBufferSphere, sizeof(sphere_vertices) / sizeof(FVertexSimple));
+        }
+    }
+   
     imguiManager.BeginFrame();
     ImGui::Begin("Jungle Control Panel");
     ImGui::Text("Hello Jungle World");
@@ -201,5 +227,17 @@ void UWorld::RemoveObject(UObject* ObjectToRemove)
     ObjectList.erase(std::remove(ObjectList.begin(), ObjectList.end(), ObjectToRemove), ObjectList.end());
 }
 
+void UWorld::SpawnCube()
+{
+	UCubeComp* NewCube = new UCubeComp();
+	NewCube->RelativeLocation = FVector(0.0f, 0.0f, 2.0f);
+	AddObject(NewCube);
+}  
+
+void UWorld::SpawnSphere()
+{
+	USphereComp* NewSphere = new USphereComp();
+	AddObject(NewSphere);
+}
 
 
