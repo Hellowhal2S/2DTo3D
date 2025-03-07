@@ -19,6 +19,30 @@
     <Filter Include="ImGUI">
       <UniqueIdentifier>{539eb603-241a-4414-83f5-7bc69d8400b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Object">
+      <UniqueIdentifier>{1fe0406e-ac56-4d38-9068-8c072edd3530}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Object">
+      <UniqueIdentifier>{10df0807-dece-416b-b2d6-2592c4987a74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Containers">
+      <UniqueIdentifier>{bf659a94-965c-4176-a47f-83115573b57b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\System">
+      <UniqueIdentifier>{3e684247-c2d7-4213-94a7-f202a48b0dc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\World">
+      <UniqueIdentifier>{d50b0a12-fd28-41d1-9f91-7372b8a8294d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Utils">
+      <UniqueIdentifier>{3e64854c-16c6-4349-897d-2ef80e01f05a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Primitive">
+      <UniqueIdentifier>{c66d7314-4e31-4176-871f-6e580e8881ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Utils">
+      <UniqueIdentifier>{4df9bd3b-a07c-468c-a5aa-575911d1d2ac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -60,6 +84,12 @@
     <ClCompile Include="Sphere.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="UObject.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="MatrixUtils.cpp">
+      <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ShaderW0.hlsl">
@@ -91,26 +121,47 @@
     <ClInclude Include="ImGUI\imstb_truetype.h">
       <Filter>ImGUI</Filter>
     </ClInclude>
-    <ClInclude Include="Sphere.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="VectorUtils.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Vertex.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Renderer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ImGuiManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="EngineLoop.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="DeviceManager.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="UObject.h">
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryManager.h">
+      <Filter>헤더 파일\System</Filter>
+    </ClInclude>
+    <ClInclude Include="UWorld.h">
+      <Filter>헤더 파일\World</Filter>
+    </ClInclude>
+    <ClInclude Include="AActor.h">
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="UEngineStatics.h">
+      <Filter>헤더 파일\System</Filter>
+    </ClInclude>
+    <ClInclude Include="ContainerDefs.h">
+      <Filter>헤더 파일\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>헤더 파일\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>헤더 파일\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineLoop.h">
+      <Filter>헤더 파일\System</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorUtils.h">
+      <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="MatrixUtils.h">
+      <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

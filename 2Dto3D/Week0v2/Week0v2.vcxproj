@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -138,8 +138,10 @@
     <ClCompile Include="ImGUI\imgui_tables.cpp" />
     <ClCompile Include="ImGUI\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MatrixUtils.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Sphere.cpp" />
+    <ClCompile Include="UObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ShaderW0.hlsl">
@@ -152,6 +154,8 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AActor.h" />
+    <ClInclude Include="ContainerDefs.h" />
     <ClInclude Include="DeviceManager.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="ImGUI\imconfig.h" />
@@ -163,10 +167,15 @@
     <ClInclude Include="ImGUI\imstb_textedit.h" />
     <ClInclude Include="ImGUI\imstb_truetype.h" />
     <ClInclude Include="EngineLoop.h" />
+    <ClInclude Include="MatrixUtils.h" />
+    <ClInclude Include="MemoryManager.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Sphere.h" />
+    <ClInclude Include="UEngineStatics.h" />
+    <ClInclude Include="UObject.h" />
     <ClInclude Include="VectorUtils.h" />
     <ClInclude Include="Vertex.h" />
+    <ClInclude Include="UWorld.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
