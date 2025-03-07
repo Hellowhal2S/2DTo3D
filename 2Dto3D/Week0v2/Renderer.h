@@ -31,12 +31,10 @@ public:
     ID3D11Buffer* CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth);
     void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
     void ReleaseConstantBuffer();
-    void UpdateConstant(FVector Offset, float radius, float rotationAngle);
+    void UpdateConstant(FMatrix _MVP);
     struct FConstants
     {
-        FVector Offset;
-        float radius;
-        float rotationAngle;
+        FMatrix MVP;
     };
 };
 

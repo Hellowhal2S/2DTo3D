@@ -119,7 +119,7 @@ void URenderer::ReleaseConstantBuffer()
         ConstantBuffer = nullptr;
     }
 }
-void URenderer::UpdateConstant(FVector Offset, float radius, float rotationAngle)
+void URenderer::UpdateConstant(FMatrix _MVP)
 {
     if (ConstantBuffer)
     {
@@ -128,9 +128,7 @@ void URenderer::UpdateConstant(FVector Offset, float radius, float rotationAngle
         Graphics->DeviceContext->Map(ConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantbufferMSR); // update constant buffer every frame
         FConstants* constants = (FConstants*)constantbufferMSR.pData; //GPU 메모리 직접 접근
         {
-            constants->Offset = Offset;
-            constants->radius = radius;
-            constants->rotationAngle = rotationAngle;
+            constants->MVP = _MVP;
         }
         Graphics->DeviceContext->Unmap(ConstantBuffer, 0); // GPU가 다시 사용가능하게 만들기
     }

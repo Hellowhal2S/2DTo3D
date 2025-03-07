@@ -8,13 +8,18 @@ UObject::~UObject()
 {
 }
 
-void UObject::Initialize()
+
+
+void UObject::Initialize(UWorld* _World)
+{
+	m_World = _World;
+}
+
+void UObject::Update(double deltaTime)
 {
 }
 
-void UObject::Update()
-{
-}
+
 
 void UObject::Release()
 {

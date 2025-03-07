@@ -10,6 +10,8 @@
 #include "Sphere.h"
 #include "GraphicDevice.h"
 #include "Renderer.h"
+#include "JungleMath.h"
+#include "CameraComponent.h"
 const float sphereRadius = 1.0f;
 
 
@@ -209,14 +211,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 
-		World->Update();
+		World->Update(elapsedTime);
 
 
 		// 준비 작업
 		renderer.Prepare();
 		renderer.PrepareShader();
 
-		renderer.UpdateConstant(FVector(), 1, 10);
+		FMatrix Model = FMatrix::Identity;
+		FMatrix View = JungleMath::CreateViewMatrix(World->GetCamera()->GetLocation(), {0, 0, 0}, {0, 1, 0});
+		FMatrix Projection = JungleMath::CreateProjectionMatrix(45.0f * (3.141592f / 180.0f), 16.0f / 9.0f, 0.1f, 100.0f);
+
+		// 최종 MVP 행렬
+		FMatrix MVP = Model * View * Projection;
+
+		renderer.UpdateConstant(MVP);
 		renderer.RenderPrimitive(vertexBufferSphere, numVerticesSphere);
 
 		ImGui_ImplDX11_NewFrame();
@@ -224,11 +233,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ImGui::NewFrame();
 
 		// 이후 ImGui UI 컨트롤 추가는 ImGui::NewFrame()과 ImGui::Render() 사이인 여기에 위치합니다.
-		ImGui::Begin("Jungle Property Window");
+		ImGui::Begin("Console");
 
-		ImGui::Text("Hello Jungle World!");
 
-		//ImGui::Text("%f", HeadBall->NextBall->Mass);
+		ImGui::Text("Camera : {x:%f, y:%f, x:%f}", World->GetCamera()->GetLocation().x,
+			World->GetCamera()->GetLocation().y,
+			World->GetCamera()->GetLocation().z);
 
 
 		ImGui::SameLine();

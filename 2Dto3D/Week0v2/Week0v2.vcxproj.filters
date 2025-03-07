@@ -93,6 +93,9 @@
     <ClCompile Include="Define.cpp">
       <Filter>소스 파일\Util</Filter>
     </ClCompile>
+    <ClCompile Include="CameraComponent.cpp">
+      <Filter>소스 파일\UObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ShaderW0.hlsl">
@@ -150,6 +153,9 @@
     </ClInclude>
     <ClInclude Include="JungleMath.h">
       <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraComponent.h">
+      <Filter>헤더 파일\UObject</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
