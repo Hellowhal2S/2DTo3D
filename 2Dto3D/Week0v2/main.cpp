@@ -22,7 +22,7 @@ struct FVertexSimple
 
 #include "Sphere.h"
 const FVector gravity(0.f, 0.000005f, 0.f);
-
+/*
 class URenderer
 {
 	struct FConstants
@@ -32,156 +32,11 @@ class URenderer
 		float rotationAngle;
 	};
 public:
-	ID3D11Device* Device = nullptr;
-	ID3D11DeviceContext* DeviceContext = nullptr;
-	IDXGISwapChain* SwapChain = nullptr;
-	// 렌더링에 필요한 리소스 및 상태를 관리하기 위한 변수들
-	ID3D11Texture2D* FrameBuffer = nullptr; // 화면 출력용 텍스처
-	ID3D11RenderTargetView* FrameBufferRTV = nullptr; // 텍스처를 렌더 타겟으로 사용하는 뷰
-	ID3D11RasterizerState* RasterizerState = nullptr; // 래스터라이저 상태(컬링, 채우기 모드 등 정의)
-	ID3D11Buffer* ConstantBuffer = nullptr; // 쉐이더에 데이터를 전달하기 위한 상수 버퍼
-
-	FLOAT ClearColor[4] = { 0.025f, 0.025f, 0.025f, 1.0f }; // 화면을 초기화(clear)할 때 사용할 색상 (RGBA)
-	D3D11_VIEWPORT ViewportInfo; // 렌더링 영역을 정의하는 뷰포트 정보
-
 	ID3D11VertexShader* SimpleVertexShader;
 	ID3D11PixelShader* SimplePixelShader;
 	ID3D11InputLayout* SimpleInputLayout;
 	unsigned int Stride;
 public:
-
-	// 렌더러 초기화 함수
-	void Create(HWND hWindow)
-	{
-		// Direct3D 장치 및 스왑 체인 생성
-		CreateDeviceAndSwapChain(hWindow);
-
-		// 프레임 버퍼 생성
-		CreateFrameBuffer();
-
-		// 래스터라이저 상태 생성
-		CreateRasterizerState();
-
-		// 깊이 스텐실 버퍼 및 블렌드 상태는 이 코드에서는 다루지 않음
-	}
-	// 장치 및 스왑체인 생성
-	void CreateDeviceAndSwapChain(HWND hWindow)
-	{
-		// 지원하는 Direct3D 기능 레벨을 정의
-		D3D_FEATURE_LEVEL featurelevels[] = { D3D_FEATURE_LEVEL_11_0 };
-
-		// 스왑 체인 설정 구조체 초기화
-		DXGI_SWAP_CHAIN_DESC swapchaindesc = {};
-		swapchaindesc.BufferDesc.Width = 0; // 창 크기에 맞게 자동으로 설정
-		swapchaindesc.BufferDesc.Height = 0; // 창 크기에 맞게 자동으로 설정
-		swapchaindesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM; // 색상 포맷
-		swapchaindesc.SampleDesc.Count = 1; // 멀티 샘플링 비활성화
-		swapchaindesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; // 렌더 타겟으로 사용
-		swapchaindesc.BufferCount = 2; // 더블 버퍼링
-		swapchaindesc.OutputWindow = hWindow; // 렌더링할 창 핸들
-		swapchaindesc.Windowed = TRUE; // 창 모드
-		swapchaindesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // 스왑 방식
-
-		D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr,
-			D3D11_CREATE_DEVICE_BGRA_SUPPORT | D3D11_CREATE_DEVICE_DEBUG,
-			featurelevels, ARRAYSIZE(featurelevels), D3D11_SDK_VERSION,
-			&swapchaindesc, &SwapChain, &Device, nullptr, &DeviceContext);
-
-		SwapChain->GetDesc(&swapchaindesc);// 자동으로 설정 되는 값들을 다시 가져와야하기 때문에 호출
-
-		// 뷰포트 정보 설정
-		ViewportInfo = { 0.0f, 0.0f, (float)swapchaindesc.BufferDesc.Width, (float)swapchaindesc.BufferDesc.Height, 0.0f, 1.0f };
-	}
-	void ReleaseDeviceAndSwapChain()
-	{
-		if (DeviceContext)
-		{
-			DeviceContext->Flush(); // 남아있는 GPU 명령 실행
-		}
-
-		if (SwapChain)
-		{
-			SwapChain->Release();
-			SwapChain = nullptr;
-		}
-
-		if (Device)
-		{
-			Device->Release();
-			Device = nullptr;
-		}
-
-		if (DeviceContext)
-		{
-			DeviceContext->Release();
-			DeviceContext = nullptr;
-		}
-	}
-	// 프레임 버퍼를 생성하는 함수
-	void CreateFrameBuffer()
-	{
-		// 스왑 체인으로부터 백 버퍼 텍스처 가져오기
-		SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&FrameBuffer);
-
-		// 렌더 타겟 뷰 생성
-		D3D11_RENDER_TARGET_VIEW_DESC framebufferRTVdesc = {};
-		framebufferRTVdesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB; // 색상 포맷
-		framebufferRTVdesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D; // 2D 텍스처
-
-		Device->CreateRenderTargetView(FrameBuffer, &framebufferRTVdesc, &FrameBufferRTV);
-	}
-	// 프레임 버퍼를 해제하는 함수
-	void ReleaseFrameBuffer()
-	{
-		if (FrameBuffer)
-		{
-			FrameBuffer->Release();
-			FrameBuffer = nullptr;
-		}
-
-		if (FrameBufferRTV)
-		{
-			FrameBufferRTV->Release();
-			FrameBufferRTV = nullptr;
-		}
-	}
-
-	// 래스터라이저 상태를 생성하는 함수
-	void CreateRasterizerState()
-	{
-		D3D11_RASTERIZER_DESC rasterizerdesc = {};
-		rasterizerdesc.FillMode = D3D11_FILL_SOLID; // 채우기 모드
-		rasterizerdesc.CullMode = D3D11_CULL_BACK; // 백 페이스 컬링
-
-		Device->CreateRasterizerState(&rasterizerdesc, &RasterizerState);
-	}
-	void ReleaseRasterizerState()
-	{
-		if (RasterizerState)
-		{
-			RasterizerState->Release();
-			RasterizerState = nullptr;
-		}
-	}
-
-	// 렌더러에 사용된 모든 리소스를 해제하는 함수
-	void Release()
-	{
-		RasterizerState->Release();
-
-		// 렌더 타겟을 초기화
-		DeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
-
-		ReleaseFrameBuffer();
-		ReleaseDeviceAndSwapChain();
-	}
-
-	// 스왑 체인의 백 버퍼와 프론트 버퍼를 교체하여 화면에 출력
-	void SwapBuffer()
-	{
-		SwapChain->Present(1, 0); // 1: VSync 활성화
-	}
-
 	void CreateShader()
 	{
 		ID3DBlob* vertexshaderCSO;
@@ -230,18 +85,16 @@ public:
 		}
 	}
 
-	void Prepare()
-	{
-		DeviceContext->ClearRenderTargetView(FrameBufferRTV, ClearColor); // 렌더 타겟 뷰에 저장된 이전 프레임 데이터를 삭제
+	//void Prepare()
+	//{
+	//	DeviceContext->ClearRenderTargetView(FrameBufferRTV, ClearColor); // 렌더 타겟 뷰에 저장된 이전 프레임 데이터를 삭제
 
-		DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 정정 연결 방식 설정
+	//	DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 정정 연결 방식 설정
 
-		DeviceContext->RSSetViewports(1, &ViewportInfo); // GPU가 화면을 렌더링할 영역 설정
-		DeviceContext->RSSetState(RasterizerState); //레스터 라이저 상태 설정
 
-		DeviceContext->OMSetRenderTargets(1, &FrameBufferRTV, nullptr); // 렌더 타겟 설정(백버퍼를 가르킴)
-		DeviceContext->OMSetBlendState(nullptr, nullptr, 0xffffffff); // 블렌뎅 상태 설정, 기본블렌딩 상태임
-	}
+	//	DeviceContext->OMSetRenderTargets(1, &FrameBufferRTV, nullptr); // 렌더 타겟 설정(백버퍼를 가르킴)
+	//	DeviceContext->OMSetBlendState(nullptr, nullptr, 0xffffffff); // 블렌뎅 상태 설정, 기본블렌딩 상태임
+	//}
 
 	void PrepareShader()
 	{
@@ -321,6 +174,7 @@ public:
 	}
 
 };
+*/
 const float leftBorder = -1.0f;
 const float rightBorder = 1.0f;
 const float topBorder = -1.0f;
