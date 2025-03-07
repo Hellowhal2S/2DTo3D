@@ -1,4 +1,5 @@
-#include <Windows.h>
+#include "Define.h"
+#include "System.h"
 
 #pragma comment(lib, "user32")
 #pragma comment(lib, "d3d11")
@@ -12,53 +13,21 @@
 #include "ImGUI/imgui_impl_dx11.h"
 #include "ImGUI/imgui_impl_win32.h"
 #define PI 3.14
+
 struct FVertexSimple
 {
-	float x, y, z;    // Position
+	float X, Y, z;    // Position
 	float r, g, b, a; // Color
-};
-struct FVector3
-{
-	float x, y, z;
-	FVector3(float _x = 0, float _y = 0, float _z = 0) : x(_x), y(_y), z(_z) {}
-
-	FVector3 operator-(const FVector3& other) const {
-		return FVector3(x - other.x, y - other.y, z - other.z);
-	}
-	FVector3 operator+(const FVector3& other) const {
-		return FVector3(x + other.x, y + other.y, z + other.z);
-	}
-
-	// 벡터 내적
-	float Dot(const FVector3& other) const {
-		return x * other.x + y * other.y + z * other.z;
-	}
-
-	// 벡터 크기
-	float Magnitude() const {
-		return sqrt(x * x + y * y + z * z);
-	}
-
-	// 벡터 정규화
-	FVector3 Normalize() const {
-		float mag = Magnitude();
-		return (mag > 0) ? FVector3(x / mag, y / mag, z / mag) : FVector3(0, 0, 0);
-	}
-
-	// 스칼라 곱셈
-	FVector3 operator*(float scalar) const {
-		return FVector3(x * scalar, y * scalar, z * scalar);
-	}
 };
 
 #include "Sphere.h"
-const FVector3 gravity(0.f, 0.000005f, 0.f);
+const FVector gravity(0.f, 0.000005f, 0.f);
 
 class URenderer
 {
 	struct FConstants
 	{
-		FVector3 Offset;
+		FVector Offset;
 		float radius; 
 		float rotationAngle;
 	};
@@ -334,7 +303,7 @@ public:
 			ConstantBuffer = nullptr;
 		}
 	}
-	void UpdateConstant(FVector3 Offset, float radius, float rotationAngle)
+	void UpdateConstant(FVector Offset, float radius, float rotationAngle)
 	{
 		if (ConstantBuffer)
 		{
@@ -361,7 +330,7 @@ const float ballSpeed = 0.000005f;
 
 float scaleMod = 0.1f;
 bool bBlackHole = false;
-FVector3 locBlackHole(0.0f, 0.0f, 0.0f);
+FVector locBlackHole(0.0f, 0.0f, 0.0f);
 float blackHolePower = 1.0f;
 bool bGravity = false;
 bool bRotate = false;
@@ -374,8 +343,8 @@ public:
 	~UBall() {}
 public:
 	// 클래스 이름과, 아래 두개의 변수 이름은 변경하지 않습니다.
-	FVector3 Location;
-	FVector3 Velocity;
+	FVector Location;
+	FVector Velocity;
 	float Radius;
 	float Mass;
 	float AngularVelocity = 0.01f;
@@ -392,7 +361,7 @@ public:
 		ballCount++;
 		UBall* PossibleBall  = new UBall;
 		// 생성할 위치 초기화
-		FVector3 newLocation;
+		FVector newLocation;
 		bool locationValid = false;
 
 		// 최대 시도 횟수 (너무 많은 시도가 되지 않도록 제한)
@@ -402,7 +371,7 @@ public:
 		//생성 가능 여부 확인
 		while (!locationValid && attempts < maxAttempts)
 		{
-			newLocation = FVector3(((rand() % 2000) / 1000.0f) - 1.0f, ((rand() % 2000) / 1000.0f) - 1.0f, 0.f);
+			newLocation = FVector(((rand() % 2000) / 1000.0f) - 1.0f, ((rand() % 2000) / 1000.0f) - 1.0f, 0.f);
 
 
 			UBall* pIter = NextBall;
@@ -410,7 +379,7 @@ public:
 			while (pIter)
 			{
 
-				float distance = (newLocation - pIter->Location).Magnitude();
+				float distance = (newLocation - pIter->Location).Length();
 				float radiusSum = NextBall->Radius + pIter->Radius;
 				if (distance < radiusSum)  // 겹침 발생
 				{
@@ -426,7 +395,7 @@ public:
 		if (locationValid)
 		{
 			PossibleBall->Location = newLocation;
-			PossibleBall->Velocity = FVector3(((float)(rand() % 100 - 50)) * ballSpeed, ((float)(rand() % 100 - 50)) * ballSpeed, 0.0f);
+			PossibleBall->Velocity = FVector(((float)(rand() % 100 - 50)) * ballSpeed, ((float)(rand() % 100 - 50)) * ballSpeed, 0.0f);
 			PossibleBall->Radius = (sphereRadius * scaleMod) * (1.f - ((rand() % 1001) / 1000.0) * 0.9);
 			PossibleBall->Mass = PossibleBall->Radius * 100.0f;
 			PossibleBall->NextBall = NextBall;
@@ -485,49 +454,50 @@ public:
 			Rotate(deltaTime);
 	}
 private:
-	void ResolveOverlap(FVector3& pos1, FVector3& pos2, float penetrationDepth) // 겹쳤을 때 떨어뜨리기
-	{
-		FVector3 normal = (pos1 - pos2).Normalize();
+    private:
+    void ResolveOverlap(FVector& pos1, FVector& pos2, float penetrationDepth) // 겹쳤을 때 떨어뜨리기
+    {
+        FVector normal = (pos1 - pos2).Normalize();
 
-		float move1 = penetrationDepth * 0.55f; // 0.5이지만 안정적인 충돌 처리를 위해 좀더 멀리 떨어뜨림
-		float move2 = penetrationDepth * 0.55f;
+        float move1 = penetrationDepth * 0.55f; // 0.5이지만 안정적인 충돌 처리를 위해 좀더 멀리 떨어뜨림
+        float move2 = penetrationDepth * 0.55f;
 
-		pos1 = pos1 + normal * move1;
-		pos2 = pos2 - normal * move2;
-	}
+        pos1 = pos1 + normal * move1;
+        pos2 = pos2 - normal * move2;
+    }
 	void BoundaryHandle() // 화면 경계 확인 함수
 	{
-		if (Location.x < leftBorder + Radius)
+		if (Location.X < leftBorder + Radius)
 		{
-			Velocity.x *= -1.0f;
+			Velocity.X *= -1.0f;
 		}
-		if (Location.x > rightBorder - Radius)
+		if (Location.X > rightBorder - Radius)
 		{
-			Velocity.x *= -1.0f;
+			Velocity.X *= -1.0f;
 		}
-		if (Location.y < topBorder + Radius)
+		if (Location.Y < topBorder + Radius)
 		{
-			Velocity.y *= -1.0f;
+			Velocity.Y *= -1.0f;
 		}
-		if (Location.y > bottomBorder - Radius)
+		if (Location.Y > bottomBorder - Radius)
 		{
-			Velocity.y *= -1.0f;
+			Velocity.Y *= -1.0f;
 		}
-		if (Location.x < leftBorder + Radius)
+		if (Location.X < leftBorder + Radius)
 		{
-			Location.x = leftBorder + Radius;
+			Location.X = leftBorder + Radius;
 		}
-		if (Location.x > rightBorder - Radius)
+		if (Location.X > rightBorder - Radius)
 		{
-			Location.x = rightBorder - Radius;
+			Location.X = rightBorder - Radius;
 		}
-		if (Location.y < topBorder + Radius)
+		if (Location.Y < topBorder + Radius)
 		{
-			Location.y = topBorder + Radius;
+			Location.Y = topBorder + Radius;
 		}
-		if (Location.y > bottomBorder - Radius)
+		if (Location.Y > bottomBorder - Radius)
 		{
-			Location.y = bottomBorder - Radius;
+			Location.Y = bottomBorder - Radius;
 		}
 	}
 	void CollisionHandle() // 충돌 처리 함수
@@ -536,15 +506,15 @@ private:
 		while (pIter)
 		{
 			//원과 원의 충돌
-			float distance = (Location - pIter->Location).Magnitude();
+			float distance = (Location - pIter->Location).Length();
 			float radiusSum = Radius + pIter->Radius;
 			float penetrationDepth = radiusSum - distance;
 			if (distance <= radiusSum)
 			{
-				FVector3 normal = (Location - pIter->Location).Normalize();
+				FVector normal = (Location - pIter->Location).Normalize();
 				ResolveOverlap(Location, pIter->Location, penetrationDepth);
 
-				FVector3 relativeVelocity = Velocity - pIter->Velocity;
+				FVector relativeVelocity = Velocity - pIter->Velocity;
 
 				float velocityAlongNormal = relativeVelocity.Dot(normal);
 
@@ -555,7 +525,7 @@ private:
 				pIter->Velocity = pIter->Velocity - normal * (impulse * Mass);
 
 				// 회전 추가 
-				FVector3 tangent = FVector3(-normal.y, normal.x, 0); // 접선 방향
+				FVector tangent = FVector(-normal.Y, normal.X, 0); // 접선 방향
 				float relativeTangentialVelocity = relativeVelocity.Dot(tangent);
 
 				float rotationalImpulse = relativeTangentialVelocity / (Radius + pIter->Radius);
@@ -596,38 +566,36 @@ private:
 
 INT32 UBall::ballCount = 0;
 
-extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
-	if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
+	bool bResult;
+
+	USystem* System = new USystem;
+	if (!System)
 	{
-		return true;
+		return 0;
 	}
-	switch (message)
+
+	// system 객체를 초기화하고 run을 호출한다.
+	bResult = System->Initialize();
+	if (bResult)
 	{
-	case WM_DESTROY:
-		PostQuitMessage(0);
-	default:
-		return DefWindowProc(hWnd, message, wParam, lParam);
+		System->Run();
 	}
+
+	// system객체를 종료하고 메모리를 반환한다.
+	System->Release();
+	delete System;
+	System = 0;
 
 	return 0;
 }
+/*
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
-{
-	WCHAR WindowClass[] = L"JungleWindowClass";
-
-	WCHAR Title[] = L"Game Tech Lab";
-
-	WNDCLASSW wndclass = { 0, WndProc, 0,0,0,0,0,0,0, WindowClass };
-
-	RegisterClassW(&wndclass);
-
-	HWND hWnd = CreateWindowExW(0, WindowClass, Title, WS_POPUP | WS_VISIBLE | WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT, CW_USEDEFAULT, 1024, 1024,
-		nullptr, nullptr, hInstance, nullptr);
+	///////////////////////////////
+	///////////////////////////////
+	///////////////////////////////
+	///////////////////////////////
 
 	URenderer renderer;
 
@@ -681,35 +649,35 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			if (bBlackHole) {
 				if (msg.wParam == VK_LEFT)
 				{
-					locBlackHole.x -= 0.05f;
+					locBlackHole.X -= 0.05f;
 				}
 				if (msg.wParam == VK_RIGHT)
 				{
-					locBlackHole.x += 0.05f;
+					locBlackHole.X += 0.05f;
 				}
 				if (msg.wParam == VK_UP)
 				{
-					locBlackHole.y += 0.05f;
+					locBlackHole.Y += 0.05f;
 				}
 				if (msg.wParam == VK_DOWN)
 				{
-					locBlackHole.y -= 0.05f;
+					locBlackHole.Y -= 0.05f;
 				}
-				if (locBlackHole.x < leftBorder)
+				if (locBlackHole.X < leftBorder)
 				{
-					locBlackHole.x = leftBorder;
+					locBlackHole.X = leftBorder;
 				}
-				if (locBlackHole.x > rightBorder)
+				if (locBlackHole.X > rightBorder)
 				{
-					locBlackHole.x = rightBorder;
+					locBlackHole.X = rightBorder;
 				}
-				if (locBlackHole.y < topBorder)
+				if (locBlackHole.Y < topBorder)
 				{
-					locBlackHole.y = topBorder;
+					locBlackHole.Y = topBorder;
 				}
-				if (locBlackHole.y > bottomBorder)
+				if (locBlackHole.Y > bottomBorder)
 				{
-					locBlackHole.y = bottomBorder;
+					locBlackHole.Y = bottomBorder;
 				}
 			}
 		}
@@ -743,7 +711,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				UBall* ptmp = HeadBall->NextBall;
 				while (ptmp)
 				{
-					float distance = (BlackHole->Location - ptmp->Location).Magnitude();
+					float distance = (BlackHole->Location - ptmp->Location).Length();
 					float radiusSum = BlackHole->Radius + ptmp->Radius;
 					if (distance <= radiusSum)
 					{
@@ -861,3 +829,4 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ImGui::DestroyContext();
 	return 0;
 }
+*/
