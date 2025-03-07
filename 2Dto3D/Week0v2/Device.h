@@ -40,9 +40,6 @@ public:
     FLOAT ClearColor[4] = { 0.025f, 0.025f, 0.025f, 1.0f }; // 화면을 초기화(clear)할 때 사용할 색상 (RGBA)
 
 private:
-    bool m_vsync_enabled;
-    int m_videoCardMemory;
-    char m_videoCardDescription[128];
     ID3D11Device* m_device;
     ID3D11DeviceContext* m_deviceContext;
     IDXGISwapChain* m_swapChain;
