@@ -1,9 +1,14 @@
 #pragma once
 #include "SceneComponent.h"
-class UPrimitiveComponent : public USceneComponent
-{
+#include "Renderer.h"
+class UPrimitiveComponent : public USceneComponent {
 public:
-	UPrimitiveComponent();
-	virtual ~UPrimitiveComponent();
+    UPrimitiveComponent();
+    virtual ~UPrimitiveComponent();
+
+protected:
+    ID3D11Buffer* vertexBuffer = nullptr;
+    UINT numVertices = 0;
 };
+
 

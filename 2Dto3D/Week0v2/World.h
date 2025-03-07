@@ -7,6 +7,7 @@
 #include "Object.h"
 #include "Input.h"
 #include "Camera.h"
+#include "Model.h"
 #include <vector> // STL º¤ÅÍ »ç¿ë
 
 class UWorld

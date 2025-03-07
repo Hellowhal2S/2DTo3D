@@ -1,5 +1,5 @@
 #include "World.h"
-#include "Sphere.h"
+#include "sphere.h"
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -22,19 +22,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 UWorld::UWorld() : hWnd(nullptr) {}
 UWorld::~UWorld() {}
 
-void UWorld::Initialize(HINSTANCE hInstance)
-{
-    CreateMainWindow(hInstance);
-    InputHandler.Initialize(hInstance, hWnd, 1024, 1024);
-	Camera.Initialize();
-    Camera.SetProjection(1024.0f / 1024.0f, 0.1f, 1000.0f);
-    graphicDevice.Initialize(hWnd);
-    renderer.Initialize(&graphicDevice);
-    imguiManager.Initialize(hWnd, graphicDevice.Device, graphicDevice.DeviceContext);
+void UWorld::Initialize(HINSTANCE hInstance) {
+    UCubeComp* cube1 = new UCubeComp();
+    UCubeComp* cube2 = new UCubeComp();
+    USphereComp* sphere = new USphereComp();
 
-    UINT numVerticesSphere = sizeof(sphere_vertices) / sizeof(FVertexSimple);
-    vertexBufferSphere = renderer.CreateVertexBuffer(sphere_vertices, sizeof(sphere_vertices));
+    cube1->Initialize(&graphicDevice);
+    cube2->Initialize(&graphicDevice);
+    sphere->Initialize(&graphicDevice);
+
+    AddObject(cube1);
+    AddObject(cube2);
+    AddObject(sphere);
 }
+
 
 void UWorld::CreateMainWindow(HINSTANCE hInstance)
 {
