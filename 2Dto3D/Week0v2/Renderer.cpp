@@ -119,7 +119,7 @@ void URenderer::ReleaseConstantBuffer()
         ConstantBuffer = nullptr;
     }
 }
-void URenderer::UpdateConstant(FMatrix _MVP)
+void URenderer::UpdateConstant(FMatrix _MVP, float _Flag)
 {
     if (ConstantBuffer)
     {
@@ -129,6 +129,7 @@ void URenderer::UpdateConstant(FMatrix _MVP)
         FConstants* constants = (FConstants*)constantbufferMSR.pData; //GPU 메모리 직접 접근
         {
             constants->MVP = _MVP;
+            constants->Flag = _Flag;
         }
         Graphics->DeviceContext->Unmap(ConstantBuffer, 0); // GPU가 다시 사용가능하게 만들기
     }

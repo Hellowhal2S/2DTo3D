@@ -4,6 +4,7 @@
 #include "CubeComp.h"
 #include <DirectXMath.h>
 #include "JungleMath.h"
+#include "GizmoComponent.h"
 UWorld::UWorld()
 {
 }
@@ -34,7 +35,26 @@ void UWorld::Initialize()
 	Cube->SetLocation(FVector(10.f, 0.0f, 0.f));
 	m_pObjectList[OBJ_CUBE].push_back(Cube);
 
+	UObject* gizmo = new UGizmoComponent;
+	gizmo->Initialize(this);
+	//gizmo->SetLocation(FVector(0.f, 0.0f, 0.f));
 
+	UObject* localGizmo = new UCubeComp;
+	localGizmo->Initialize(this);
+	localGizmo->SetLocation(FVector(1.f, 0.0f, 0.0f));
+	localGizmo->SetScale(FVector(2.0f, .1f, 0.1f));
+	LocalGizmo[0] = localGizmo;
+	localGizmo = new UCubeComp;
+	localGizmo->Initialize(this);
+	localGizmo->SetLocation(FVector(0.0f, 1.f, 0.0f));
+	localGizmo->SetScale(FVector(.1f, 2.0f, .1f));
+	LocalGizmo[1] = localGizmo;
+	localGizmo = new UCubeComp;
+	localGizmo->Initialize(this);
+	localGizmo->SetLocation(FVector(0.0f, 0.0f, 1.f));
+	localGizmo->SetScale(FVector(.1f, .1f, 2.0f));
+	LocalGizmo[2] = localGizmo;
+	gizmo->Initialize(this);
 }
 
 void UWorld::Update(double deltaTime)
@@ -59,6 +79,7 @@ void UWorld::Release()
 		}
 		m_pObjectList[i].clear();
 	}
+	delete worldGizmo;
 }
 
 void UWorld::Render()
@@ -90,5 +111,5 @@ void UWorld::SpawnObject(OBJECTS _Obj)
 	default:
 		break;
 	}
-	PickingObj = pObj;
+	pickingObj = pObj;
 }

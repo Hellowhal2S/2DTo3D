@@ -17,12 +17,15 @@ public:
 	void SpawnObject(OBJECTS _Obj);
 private:
 	TArray<TDoubleLinkedList<UObject*>> m_pObjectList;
-	UObject* PickingObj = nullptr;
+	UObject* pickingObj = nullptr;
+	UObject* worldGizmo = nullptr;
 public:
+	UObject* LocalGizmo[3] = { nullptr, nullptr, nullptr };
 	UObject* GetCamera() { return m_pObjectList[OBJ_CAMERA].front(); }
 	TDoubleLinkedList<UObject*>& GetSphreList() { return m_pObjectList[OBJ_SPHERE]; }
 	TDoubleLinkedList<UObject*>& GetCubeList() { return m_pObjectList[OBJ_CUBE]; }
-	UObject* GetPickingObj() { return PickingObj; }
-	void	SetPickingObj(UObject* _Obj) { PickingObj = _Obj; };
+	UObject* GetPickingObj() { return pickingObj; }
+	void	SetPickingObj(UObject* _Obj) { pickingObj = _Obj; };
+	UObject* GetWorldGizmo() { return worldGizmo; }
 };
 

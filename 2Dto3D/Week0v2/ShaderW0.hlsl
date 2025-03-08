@@ -2,6 +2,7 @@
 cbuffer constants : register(b0)
 {
     row_major float4x4 MVP;
+    float Flag;
 }
 
 
@@ -26,8 +27,11 @@ PS_INPUT mainVS(VS_INPUT input)
     output.position = mul(float4(input.position.xyz, 1.0f), modelViewProjection);
 
     // Pass the color to the pixel shader
-    output.color = input.color;
     
+    output.color = input.color;
+    if(Flag == 1.0f){
+        output.color.rgb *= 1.5f;
+    }
     return output;
 }
 

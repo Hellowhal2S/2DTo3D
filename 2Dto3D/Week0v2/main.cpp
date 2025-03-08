@@ -11,9 +11,11 @@
 #include "Renderer.h"
 #include "JungleMath.h"
 #include "CameraComponent.h"
+#include "GizmoComponent.h"
 
 #include "Sphere.h"
 #include "Cube.h"
+#include "Gizmo.h"
 int screenWidth = 1024; // 예시 값
 int screenHeight = 1024; // 예시 값
 
@@ -126,6 +128,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ID3D11Buffer* vertexBufferCube = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
 
 
+	UINT numVerticesGizmo = sizeof(gizmoVertices) / sizeof(FVertexSimple);
+	ID3D11Buffer* vertexBufferGizmo = renderer.CreateVertexBuffer(gizmoVertices, sizeof(gizmoVertices));
+
+
 	UWorld* World = new UWorld;
 	World->Initialize();
 	UCameraComponent* Camera = static_cast<UCameraComponent*>(World->GetCamera());
@@ -200,8 +206,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			// 최종 MVP 행렬
 			FMatrix MVP = Model * View * Projection;
+			if ((*iter) == World->GetPickingObj()) {
+				renderer.UpdateConstant(MVP, 1.0f);
+			}
+			else
+				renderer.UpdateConstant(MVP, 0.0f);
 
-			renderer.UpdateConstant(MVP);
 			renderer.RenderPrimitive(vertexBufferSphere, numVerticesSphere);
 		}
 
@@ -211,11 +221,29 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			// 최종 MVP 행렬
 			FMatrix MVP = Model * View * Projection;
 
-			renderer.UpdateConstant(MVP);
+			renderer.UpdateConstant(MVP, 0.0f);
 			renderer.RenderPrimitive(vertexBufferCube, numVerticesCube);
 		}
+		graphicDevice.DeviceContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_LINELIST);
+		FMatrix Model = JungleMath::CreateModelMatrix(FVector(0.f, 0.f, 0.f),
+			FVector(0.f,0.f,0.f), FVector(1000000.0f, 1000000.0f, 1000000.0f));
+		FMatrix MVP = Model * View * Projection;
+		renderer.UpdateConstant(MVP,0.0f);
+		renderer.RenderPrimitive(vertexBufferGizmo, numVerticesGizmo);
+		graphicDevice.DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-
+		if (World->GetPickingObj())
+		{
+			UObject* pickedObj = World->GetPickingObj();
+			for (int i = 0;i < 3;i++)
+			{
+				FMatrix Model = JungleMath::CreateModelMatrix(pickedObj->GetLocation()+ World->LocalGizmo[i]->GetLocation(),
+					pickedObj->GetRotation(), World->LocalGizmo[i]->GetScale());
+				FMatrix MVP = Model * View * Projection;
+				renderer.UpdateConstant(MVP, 0.0f);
+				renderer.RenderPrimitive(vertexBufferCube, numVerticesCube);
+			}
+		}
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();

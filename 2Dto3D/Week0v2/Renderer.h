@@ -31,10 +31,11 @@ public:
     ID3D11Buffer* CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth);
     void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
     void ReleaseConstantBuffer();
-    void UpdateConstant(FMatrix _MVP);
+    void UpdateConstant(FMatrix _MVP, float _Flag);
     struct FConstants
     {
         FMatrix MVP;
+        float   Flag;
     };
 };
 

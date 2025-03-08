@@ -130,6 +130,7 @@
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="CubeComp.cpp" />
     <ClCompile Include="Define.cpp" />
+    <ClCompile Include="GizmoComponent.cpp" />
     <ClCompile Include="ImGUI\imgui.cpp" />
     <ClCompile Include="ImGUI\imgui_demo.cpp" />
     <ClCompile Include="ImGUI\imgui_draw.cpp" />
@@ -162,6 +163,8 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="CubeComp.h" />
     <ClInclude Include="Define.h" />
+    <ClInclude Include="Gizmo.h" />
+    <ClInclude Include="GizmoComponent.h" />
     <ClInclude Include="ImGUI\imconfig.h" />
     <ClInclude Include="ImGUI\imgui.h" />
     <ClInclude Include="ImGUI\imgui_impl_dx11.h" />
