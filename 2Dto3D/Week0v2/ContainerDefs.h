@@ -1,23 +1,28 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <list>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+using namespace std;
+template<typename T>
+using TArray = vector<T>;
 
 template<typename T>
-using TArray = std::vector<T>;
-
-template<typename T>
-using TDoubleLinkedList = std::list<T>;
+using TDoubleLinkedList = list<T>;
 
 template<typename Key, typename Value>
-using TMap = std::map<Key, Value>;
+using TMap = map<Key, Value>;
 
 template<typename T>
-using TSet = std::set<T>;
+using TSet = set<T>;
 
 template<typename T>
-using TQueue = std::queue<T>;
+using TQueue = queue<T>;
 
 template<typename T>
-using TStack = std::stack<T>;
+using TStack = stack<T>;
 
-using Fstring = std::string;
+using Fstring = string;

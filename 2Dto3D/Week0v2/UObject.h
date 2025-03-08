@@ -1,4 +1,10 @@
 #pragma once
+#include <cstdint>
+#include <type_traits>
+#include "ContainerDefs.h"
+
+//MOD
+class UWorld;
 class UObject {
 public:
 	// 기본 생성자
@@ -9,6 +15,14 @@ public:
 	uint32_t UUID;
 	uint32_t Internalndex;
 
+	//template <typename T>
+	static UObject* NewObject();
+
+	virtual void Init(UWorld* _World) {};
+	virtual void Update(double deltaTime) {};
+	virtual void Release() {};
+
+	static TArray<UObject*> GUObjectArray;
 #pragma region  추후 구현 함수들
 	/*
 	// 객체 이름 반환
@@ -34,10 +48,8 @@ protected:
 	UObject* NewObject();
 	*/
 #pragma endregion
-	UObject* NewObject();
 	// 도형 정점 정보 저장 파일 관리
 	
 	// 정점 데이터들 NewObject
+	
 };
-
-TArray<UObject*> GUObjectArray;

@@ -10,6 +10,7 @@
 
 #include "VectorUtils.h"
 #include "Vertex.h"
+#include "MatrixUtils.h"
 #include "DeviceManager.h"
 
 class URenderer
@@ -54,6 +55,6 @@ public:
 	//static void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
 	void CreateConstantBuffer();
 	void ReleaseConstantBuffer();
-	void UpdateConstant(FVector Offset, float radius, float rotationAngle);
+	void UpdateConstant(FMatrix MVPmat);
 
 };

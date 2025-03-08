@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Define.cpp" />
     <ClCompile Include="DeviceManager.cpp" />
     <ClCompile Include="EngineLoop.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
@@ -139,9 +140,14 @@
     <ClCompile Include="ImGUI\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MatrixUtils.cpp" />
+    <ClCompile Include="MemoryManager.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Sphere.cpp" />
+    <ClCompile Include="UCameraComponent.cpp" />
+    <ClCompile Include="UEngineStatics.cpp" />
     <ClCompile Include="UObject.cpp" />
+    <ClCompile Include="USceneComponent.cpp" />
+    <ClCompile Include="UWorld.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ShaderW0.hlsl">
@@ -154,8 +160,8 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AActor.h" />
     <ClInclude Include="ContainerDefs.h" />
+    <ClInclude Include="Define.h" />
     <ClInclude Include="DeviceManager.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="ImGUI\imconfig.h" />
@@ -171,8 +177,10 @@
     <ClInclude Include="MemoryManager.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Sphere.h" />
+    <ClInclude Include="UCameraComponent.h" />
     <ClInclude Include="UEngineStatics.h" />
     <ClInclude Include="UObject.h" />
+    <ClInclude Include="USceneComponent.h" />
     <ClInclude Include="VectorUtils.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="UWorld.h" />

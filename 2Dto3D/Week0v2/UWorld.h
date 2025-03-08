@@ -1,18 +1,22 @@
 #pragma once
-#include "AActor.h"
 #include "ContainerDefs.h"
-#include "ULevel.h"
+#include "UObject.h"
+#include "UCameraComponent.h"
+#include "Define.h"
 class UWorld {
+public :
+	UWorld();
+	virtual ~UWorld();
 private:
-	// 모든 액터들
-	TArray<AActor*> Actors;
+	// 모든 오브젝트들
+	TArray<TDoubleLinkedList<UObject*>> ObjectLists;
 	// 현재 활성 레벨
-	ULevel* PersistentLevel;
+	//ULevel* PersistentLevel;
 
 public:
-	UWorld();
-
-	template<class T>
-	T* SpawnActor(UClass* Class, Fvector, Loc)
-
+	void InitWorld();
+	void UpdateWorld(double deltaTime);
+	void RenderWorld();
+	void ReleaseWorld();
+	UObject* GetCamera() {return ObjectLists[OBJ_CAMERA].front();}
 };

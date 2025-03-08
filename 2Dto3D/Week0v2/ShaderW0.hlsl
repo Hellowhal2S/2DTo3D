@@ -1,22 +1,20 @@
 // ShaderW0.hlsl
 cbuffer constants : register(b0)
 {
-    float3 Offset;
-    float radius;
-    float rotationAngle;
+    row_major float4x4 MVP;
 }
 
-float4 Rotate(float4 pos, float4 angle)
-{
-    float cosA = cos(angle);
-    float sinA = sin(angle);
-    return float4(
-        pos.x * cosA - pos.y * sinA,
-        pos.x * sinA + pos.y * cosA,
-        0.f,
-        1.0f
-    );
-}
+//float4 Rotate(float4 pos, float4 angle)
+//{
+//    float cosA = cos(angle);
+//    float sinA = sin(angle);
+//    return float4(
+//        pos.x * cosA - pos.y * sinA,
+//        pos.x * sinA + pos.y * cosA,
+//        0.f,
+//        1.0f
+//    );
+//}
 
 struct VS_INPUT
 {
@@ -33,21 +31,11 @@ struct PS_INPUT
 
 PS_INPUT mainVS(VS_INPUT input)
 {
-    PS_INPUT output;
+    PS_INPUT output = input;
     
-    // Pass the position directly to the pixel shader (no transformation)
-    float4 scaledPos = input.position * float4(radius, radius, radius, 1.0);
-    float4 rotatePos = Rotate(scaledPos, rotationAngle);
-
-    output.position = float4(Offset, 0) + rotatePos;
-    //output.position = float4(Offset, 0) + (input.position * radius);
-    
-    // Pass the color to the pixel shader
-    //if(rotationAngle ==0.0f)
-    //    output.color = float4(0.0, 0.0, 0.0, 0.0);
-    //else
+    float4x4 MVProjection = MVP;
+    output.position = mul(float4(input.position. xyz, 1.0f), MVProjection);
     output.color = input.color;
-    
     return output;
 }
 

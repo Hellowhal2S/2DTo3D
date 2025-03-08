@@ -43,6 +43,9 @@
     <Filter Include="소스 파일\Utils">
       <UniqueIdentifier>{4df9bd3b-a07c-468c-a5aa-575911d1d2ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\World">
+      <UniqueIdentifier>{6adbae9e-9f61-4ba5-b549-3d3c90b152f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -89,6 +92,24 @@
     </ClCompile>
     <ClCompile Include="MatrixUtils.cpp">
       <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="UCameraComponent.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="USceneComponent.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="UWorld.cpp">
+      <Filter>소스 파일\World</Filter>
+    </ClCompile>
+    <ClCompile Include="UEngineStatics.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Define.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -139,9 +160,6 @@
     <ClInclude Include="UWorld.h">
       <Filter>헤더 파일\World</Filter>
     </ClInclude>
-    <ClInclude Include="AActor.h">
-      <Filter>헤더 파일\Object</Filter>
-    </ClInclude>
     <ClInclude Include="UEngineStatics.h">
       <Filter>헤더 파일\System</Filter>
     </ClInclude>
@@ -161,6 +179,15 @@
       <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
     <ClInclude Include="MatrixUtils.h">
+      <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="USceneComponent.h">
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="UCameraComponent.h">
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Define.h">
       <Filter>헤더 파일\Utils</Filter>
     </ClInclude>
   </ItemGroup>

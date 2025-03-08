@@ -1,16 +1,21 @@
 #include "EngineLoop.h"
 
-bool EngineLoop::bIsExit = false;
-MSG EngineLoop::msg = {};
-ID3D11Buffer* EngineLoop::vertexBufferSphere = nullptr;
-
 //void EngineLoop::InitRenderer(URenderer& renderer) {
 //	vertexBufferSphere = renderer.CreateVertexBuffer(sphere_vertices, sizeof(sphere_vertices));
 //}
+bool EngineLoop::bIsExit;
+MSG EngineLoop::msg;
+TArray<UWorld*> EngineLoop::WorldList;
+ID3D11Buffer* EngineLoop::vertexBufferSphere;
 void EngineLoop::InitEngineLoop(URenderer& renderer)
 { 
 	EngineLoop::bIsExit = false;
 	EngineLoop::vertexBufferSphere = renderer.CreateVertexBuffer(sphere_vertices, sphere_vertices_size);
+	
+	UWorld* world = new UWorld;
+	WorldList.push_back(world);
+
+	WorldList.front()->InitWorld();
 }
 
 void EngineLoop:: ProcessInput() {
@@ -24,13 +29,16 @@ void EngineLoop:: ProcessInput() {
 			EngineLoop::bIsExit = true;
 			break;
 		}
-
+		else {
+			
+		}
 		/* 추후 InputManager를 통한 인풋 로직 추가*/
 	}
 }
 
 void EngineLoop::Update() {
-	/* 추후 연산 로직 추가 */
+
+	WorldList.front()->UpdateWorld(0.0f); 
 }
 
 void EngineLoop::Render(URenderer& renderer) {
@@ -38,12 +46,7 @@ void EngineLoop::Render(URenderer& renderer) {
 	renderer.Prepare();
 	renderer.PrepareShader();
 
-	//FIXME : 테스트용 코드
-	FVector pos = { 0,  0, 0 };
-	float rot = 0;
-	float scale = 1;
-	renderer.UpdateConstant(pos, scale, rot);
-
+	WorldList.front()->RenderWorld();
 	UINT numVerticesSphere = sphere_vertices_size / sizeof(FVertexSimple);
 	renderer.RenderPrimitive(vertexBufferSphere, numVerticesSphere);
 	ImGuiManager::RenderImGui();

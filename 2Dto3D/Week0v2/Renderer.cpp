@@ -1,9 +1,7 @@
 #include "Renderer.h"
 struct FConstants
 {
-	FVector Offset;
-	float radius;
-	float rotationAngle;
+	FMatrix MVPMatrix;
 };
 
 void URenderer::Create(HWND hWindow)
@@ -13,9 +11,7 @@ void URenderer::Create(HWND hWindow)
 
 	// 래스터라이저 상태 생성
 	CreateRasterizerState();
-
 }
-
 
 // 프레임 버퍼를 생성하는 함수
 void URenderer::CreateFrameBuffer()
@@ -202,7 +198,7 @@ void URenderer::ReleaseConstantBuffer()
 		ConstantBuffer = nullptr;
 	}
 }
-void URenderer::UpdateConstant(FVector Offset, float radius, float rotationAngle)
+void URenderer::UpdateConstant(FMatrix MVPmat)
 {
 	if (ConstantBuffer)
 	{
@@ -211,9 +207,7 @@ void URenderer::UpdateConstant(FVector Offset, float radius, float rotationAngle
 		DeviceManager::DeviceContext->Map(ConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantbufferMSR); // update constant buffer every frame
 		FConstants* constants = (FConstants*)constantbufferMSR.pData; //GPU 메모리 직접 접근
 		{
-			constants->Offset = Offset;
-			constants->radius = radius;
-			constants->rotationAngle = rotationAngle;
+			constants->MVPMatrix = MVPmat;
 		}
 		DeviceManager::DeviceContext->Unmap(ConstantBuffer, 0); // GPU가 다시 사용가능하게 만들기
 	}
