@@ -17,6 +17,10 @@ public:
     ID3D11InputLayout* InputLayout = nullptr;
     ID3D11Buffer* ConstantBuffer = nullptr;
 
+    ID3D11Texture2D* DepthStencilBuffer = nullptr;
+    ID3D11DepthStencilView* DepthStencilView = nullptr;
+    ID3D11DepthStencilState* DepthStencilState = nullptr;
+
     D3D11_VIEWPORT ViewportInfo;
     unsigned int Stride;
 
@@ -32,6 +36,8 @@ public:
     void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
     void ReleaseConstantBuffer();
     void UpdateConstant(const FMatrix& worldMatrix, const FMatrix& viewMatrix, const FMatrix& projectionMatrix);
+    void CreateDepthBuffer();
+    void ReleaseDepthBuffer();
 
     struct FConstants
     {
@@ -40,3 +46,5 @@ public:
         FMatrix Projection;
     };
 };
+
+

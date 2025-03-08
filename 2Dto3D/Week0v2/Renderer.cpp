@@ -4,21 +4,30 @@ void URenderer::Initialize(UGraphicsDevice* graphics) {
     Graphics = graphics;
     CreateShader();
     CreateConstantBuffer();
+    CreateDepthBuffer();  // ±íÀÌ ¹öÆÛ »ý¼º Ãß°¡
 }
+
 
 void URenderer::Release() {
     ReleaseShader();
-    if (ConstantBuffer) ConstantBuffer->Release();
+    ReleaseConstantBuffer();
+    ReleaseDepthBuffer();  // ±íÀÌ ¹öÆÛ ÇØÁ¦ Ãß°¡
 }
 
-void URenderer::Prepare() {
+
+void URenderer::Prepare()
+{
     float ClearColor[4] = { 0.025f, 0.025f, 0.025f, 1.0f };
     Graphics->DeviceContext->ClearRenderTargetView(Graphics->FrameBufferRTV, ClearColor);
+    Graphics->DeviceContext->ClearDepthStencilView(DepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
     Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     Graphics->DeviceContext->RSSetViewports(1, &Graphics->ViewportInfo);
     Graphics->DeviceContext->RSSetState(Graphics->RasterizerState);
-    Graphics->DeviceContext->OMSetRenderTargets(1, &Graphics->FrameBufferRTV, nullptr);
+    Graphics->DeviceContext->OMSetRenderTargets(1, &Graphics->FrameBufferRTV, DepthStencilView);
+    Graphics->DeviceContext->OMSetDepthStencilState(DepthStencilState, 1);
 }
+
 
 
 void URenderer::CreateShader() {
@@ -134,5 +143,52 @@ void URenderer::UpdateConstant(const FMatrix& worldMatrix, const FMatrix& viewMa
             constants->Projection = projectionMatrix;
         }
         Graphics->DeviceContext->Unmap(ConstantBuffer, 0);
+    }
+}
+
+void URenderer::CreateDepthBuffer()
+{
+    // ±íÀÌ ½ºÅÙ½Ç ÅØ½ºÃ³ »ý¼º
+    D3D11_TEXTURE2D_DESC depthBufferDesc = {};
+    depthBufferDesc.Width = (UINT)Graphics->ViewportInfo.Width;
+    depthBufferDesc.Height = (UINT)Graphics->ViewportInfo.Height;
+    depthBufferDesc.MipLevels = 1;
+    depthBufferDesc.ArraySize = 1;
+    depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    depthBufferDesc.SampleDesc.Count = 1;
+    depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+    depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+    Graphics->Device->CreateTexture2D(&depthBufferDesc, nullptr, &DepthStencilBuffer);
+
+    // ±íÀÌ ½ºÅÙ½Ç ºä »ý¼º
+    D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc = {};
+    depthStencilViewDesc.Format = depthBufferDesc.Format;
+    depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+    depthStencilViewDesc.Texture2D.MipSlice = 0;
+
+    Graphics->Device->CreateDepthStencilView(DepthStencilBuffer, &depthStencilViewDesc, &DepthStencilView);
+
+    // ±íÀÌ ½ºÅÙ½Ç »óÅÂ »ý¼º
+    D3D11_DEPTH_STENCIL_DESC depthStencilDesc = {};
+    depthStencilDesc.DepthEnable = TRUE;
+    depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+    depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+    Graphics->Device->CreateDepthStencilState(&depthStencilDesc, &DepthStencilState);
+}
+
+void URenderer::ReleaseDepthBuffer()
+{
+    if (DepthStencilBuffer) {
+        DepthStencilBuffer->Release();
+        DepthStencilBuffer = nullptr;
+    }
+    if (DepthStencilView) {
+        DepthStencilView->Release();
+        DepthStencilView = nullptr;
+    }
+    if (DepthStencilState) {
+        DepthStencilState->Release();
+        DepthStencilState = nullptr;
     }
 }

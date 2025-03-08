@@ -27,7 +27,7 @@ bool InputClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int
     result = keyboard->SetDataFormat(&c_dfDIKeyboard);
     if (FAILED(result)) return false;
 
-    result = keyboard->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_EXCLUSIVE);
+    result = keyboard->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
     if (FAILED(result)) return false;
 
     result = keyboard->Acquire();

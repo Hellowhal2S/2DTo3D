@@ -128,37 +128,60 @@ FVector4 ConvertV3ToV4(FVector vec3)
     return newVec4;
 }
 
-FMatrix CreateRotation(float angle, FVector axis)
-{
-    axis = axis.Normalize();
-    float cosA = cosf(angle * (3.14159265359f / 180.0f));
-    float sinA = sinf(angle * (3.14159265359f / 180.0f));
-    float oneMinusCosA = 1.0f - cosA;
 
-    return {
-        {
-            {
-                cosA + axis.x * axis.x * oneMinusCosA,
-                axis.x * axis.y * oneMinusCosA - axis.z * sinA,
-                axis.x * axis.z * oneMinusCosA + axis.y * sinA,
-                0
-            },
-            {
-                axis.y * axis.x * oneMinusCosA + axis.z * sinA,
-                cosA + axis.y * axis.y * oneMinusCosA,
-                axis.y * axis.z * oneMinusCosA - axis.x * sinA,
-                0
-            },
-            {
-                axis.z * axis.x * oneMinusCosA - axis.y * sinA,
-                axis.z * axis.y * oneMinusCosA + axis.x * sinA,
-                cosA + axis.z * axis.z * oneMinusCosA,
-                0
-            },
-            {0, 0, 0, 1}
-        }
-    };
+
+    // 회전 행렬 생성 (Yaw, Pitch, Roll)
+FMatrix FMatrix::CreateRotation(float roll, float pitch, float yaw)
+{
+    float radRoll = roll * (3.14159265359f / 180.0f);
+    float radPitch = pitch * (3.14159265359f / 180.0f);
+    float radYaw = yaw * (3.14159265359f / 180.0f);
+
+    float cosRoll = cos(radRoll), sinRoll = sin(radRoll);
+    float cosPitch = cos(radPitch), sinPitch = sin(radPitch);
+    float cosYaw = cos(radYaw), sinYaw = sin(radYaw);
+
+    // Z축 (Yaw) 회전
+    FMatrix rotationZ = { {
+        { cosYaw, -sinYaw, 0, 0 },
+        { sinYaw, cosYaw, 0, 0 },
+        { 0, 0, 1, 0 },
+        { 0, 0, 0, 1 }
+    } };
+
+    // Y축 (Pitch) 회전
+    FMatrix rotationY = { {
+        { cosPitch, 0, sinPitch, 0 },
+        { 0, 1, 0, 0 },
+        { -sinPitch, 0, cosPitch, 0 },
+        { 0, 0, 0, 1 }
+    } };
+
+    // X축 (Roll) 회전
+    FMatrix rotationX = { {
+        { 1, 0, 0, 0 },
+        { 0, cosRoll, -sinRoll, 0 },
+        { 0, sinRoll, cosRoll, 0 },
+        { 0, 0, 0, 1 }
+    } };
+
+    // DirectX 표준 순서: Z(Yaw) → Y(Pitch) → X(Roll)
+    return rotationX * rotationY * rotationZ;
 }
+
+
+    // 스케일 행렬 생성
+ FMatrix FMatrix::CreateScale(float scaleX, float scaleY, float scaleZ)
+    {
+        return { {
+            { scaleX, 0, 0, 0 },
+            { 0, scaleY, 0, 0 },
+            { 0, 0, scaleZ, 0 },
+            { 0, 0, 0, 1 }
+        } };
+    }
+
+
 
 
 

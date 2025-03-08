@@ -13,7 +13,6 @@ class InputClass
 {
 public:
     InputClass();
-    InputClass(const InputClass&);
     ~InputClass();
 
     bool Initialize(HINSTANCE, HWND, int, int);

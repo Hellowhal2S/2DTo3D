@@ -26,6 +26,7 @@ public:
     void RemoveObject(UObject* ObjectToRemove);
 	void SpawnCube();
 	void SpawnSphere();
+	void CreateGizmo();
 
 private:
     void CreateMainWindow(HINSTANCE hInstance);
@@ -40,8 +41,11 @@ private:
     UImGuiManager imguiManager;
     ID3D11Buffer* vertexBufferSphere = nullptr;
 	ID3D11Buffer* vertexBufferCube = nullptr;
+    ID3D11Buffer* vertexBufferGizmo = nullptr;
     InputClass InputHandler; // InputClass Ãß°¡
     UCamera Camera;
+    USceneComponent* currentObject;
+    EObjectType Type;
     bool bIsExit = false;
 };
 
