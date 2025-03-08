@@ -27,7 +27,7 @@ struct FMatrix
     static float Determinant3x3(const float(&m)[3][3]);
     float Determinant() const;
 
-    FMatrix GetModelMatrix(FVector eye, FVector target, FVector up);
+    static FMatrix GetModelMatrix(FVector translation, FVector rotation, FVector scale);
     FMatrix Lookat(FVector pos, FVector look, FVector up);
     FMatrix Perspective(float fov, float width, float height, float zNear, float zFar);
     float& Get(int row, int col);

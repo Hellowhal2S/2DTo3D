@@ -16,7 +16,7 @@ public:
 	uint32_t Internalndex;
 
 	//template <typename T>
-	static UObject* NewObject();
+	//static UObject* NewObject();
 
 	virtual void Init(UWorld* _World) {};
 	virtual void Update(double deltaTime) {};

@@ -1,4 +1,6 @@
 #include "UWorld.h"
+#include "UCameraComponent.h"
+#include "UObject.h"           
 #include <d3d11.h>
 
 UWorld::UWorld() {
@@ -14,15 +16,20 @@ void UWorld::InitWorld() {
 		ObjectLists.push_back(TDoubleLinkedList<UObject*>());
 	}
 	//UCameraComponent* mainCamera = UObject::NewObject();
-	UObject* mainCamera = new UCameraComponent;
-	//UCameraComponent* mainCamera = new UObject;
-	//FIXME : 추후 전체 
-
+	mainCamera = new UCameraComponent;
+	
+	//TEST_CODE
+	UObject* sphere_obj = new USphereComp;
+	USphereComp* sphere_comp = static_cast<USphereComp*>(sphere_obj);
+	sphere_comp->RelativeLocation = FVector(0, 0, 0);
+	sphere_comp->RelativeRotation = FVector(0, 0, 0);
+	sphere_comp->RelativeScale3D = FVector(0.5, 0.5, 0.5);
+	PrimitiveList.push_back(sphere_obj);
 
 	mainCamera->Init(this);
 
 	//테스트용 초기화Set
-	static_cast<UCameraComponent*>(mainCamera)->SetEyePosition(FVector(0, 0, -10.f));
+	mainCamera->SetEyePosition(FVector(0, 0, -10.f));
 
 	ObjectLists[OBJ_CAMERA].push_back(mainCamera);
 }
@@ -43,4 +50,12 @@ void UWorld::RenderWorld() {
 
 void UWorld::ReleaseWorld() {
 
+}
+
+TArray<TDoubleLinkedList<UObject*>> UWorld::GetObjectLists() {
+	return ObjectLists;
+}
+
+TArray<UObject*> UWorld::GetPrimitiveList() {
+	return PrimitiveList;
 }

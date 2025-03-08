@@ -6,10 +6,10 @@ float UCameraComponent::width = 1280.0f;
 float UCameraComponent::height = 800.0f;
 float UCameraComponent::zNear = 0.1f;
 float UCameraComponent::zFar = 1000.0f;
-float UCameraComponent::velocity;
+float UCameraComponent::velocity = 0.1f;
+
 UCameraComponent::UCameraComponent() {
 	// FIXME : 추후 카메라의 회전에 따라 변경.
-	velocity = 0.1;
 	forward = FVector(0, 0, -1);
 	right = FVector(1, 0, 0);
 	look = FVector(0, 0, 0);
@@ -17,9 +17,9 @@ UCameraComponent::UCameraComponent() {
 }
 void UCameraComponent::MoveForward() {
 	 SetEyePosition(RelativeLocation + (forward * velocity));
-	 std::string msg = "forward {" + std::to_string(RelativeLocation.x) + ", " + std::to_string(RelativeLocation.y) + ", " + std::to_string(RelativeLocation.z);
+	 /*std::string msg = "forward {" + std::to_string(RelativeLocation.x) + ", " + std::to_string(RelativeLocation.y) + ", " + std::to_string(RelativeLocation.z);
 	 std::wstring wmsg(msg.begin(), msg.end());
-	 MessageBox(NULL, wmsg.c_str(), L"Message Box", MB_OK);
+	 MessageBox(NULL, wmsg.c_str(), L"Message Box", MB_OK);*/
 }
 
 void UCameraComponent::MoveBack() {
@@ -87,11 +87,16 @@ void UCameraComponent::Input() {
 	}
 }
 
-
+FMatrix UCameraComponent::GetViewMatrix() {
+	return viewMatrix;
+}
 void UCameraComponent::UpdateViewMatrix() {
 	viewMatrix.Lookat(RelativeLocation, look, up);
 }
 
+FMatrix UCameraComponent::GetProjectionMatrix() {
+	return projMatrix;
+}
 void UCameraComponent::UpdateProjectionMatrix() {
 	projMatrix = projMatrix.Perspective(FOV, width, height, zNear, zFar);
 }

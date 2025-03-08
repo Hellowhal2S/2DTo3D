@@ -7,6 +7,8 @@ bool EngineLoop::bIsExit;
 MSG EngineLoop::msg;
 TArray<UWorld*> EngineLoop::WorldList;
 ID3D11Buffer* EngineLoop::vertexBufferSphere;
+int EngineLoop::numVerticesSphere;
+
 void EngineLoop::InitEngineLoop(URenderer& renderer)
 { 
 	EngineLoop::bIsExit = false;
@@ -16,6 +18,7 @@ void EngineLoop::InitEngineLoop(URenderer& renderer)
 	WorldList.push_back(world);
 
 	WorldList.front()->InitWorld();
+	numVerticesSphere = sphere_vertices_size / sizeof(FVertexSimple);
 }
 
 void EngineLoop:: ProcessInput() {
@@ -39,16 +42,30 @@ void EngineLoop:: ProcessInput() {
 void EngineLoop::Update() {
 
 	WorldList.front()->UpdateWorld(0.0f); 
+	
 }
 
 void EngineLoop::Render(URenderer& renderer) {
+	FMatrix Model;
 	/* 추후 렌더링 로직 추가*/
 	renderer.Prepare();
 	renderer.PrepareShader();
 
-	WorldList.front()->RenderWorld();
-	UINT numVerticesSphere = sphere_vertices_size / sizeof(FVertexSimple);
-	renderer.RenderPrimitive(vertexBufferSphere, numVerticesSphere);
+	UWorld* myWorld = WorldList.front();
+	myWorld->RenderWorld();
+
+	for (auto pmv : myWorld->GetPrimitiveList()) {
+		UPrimitiveComponent* pmv_comp = static_cast<UPrimitiveComponent*>(pmv);
+		Model = FMatrix::GetModelMatrix(pmv_comp->RelativeLocation, pmv_comp->RelativeRotation, pmv_comp->RelativeScale3D);
+		FMatrix MVP = Model * myWorld->mainCamera->GetViewMatrix() * myWorld->mainCamera->GetProjectionMatrix();
+		
+		renderer.UpdateConstant(MVP);
+
+		renderer.RenderPrimitive(vertexBufferSphere, numVerticesSphere);
+	
+	}
+	/*UINT numVerticesSphere = sphere_vertices_size / sizeof(FVertexSimple);
+	renderer.RenderPrimitive(vertexBufferSphere, numVerticesSphere);*/
 	ImGuiManager::RenderImGui();
 
 	

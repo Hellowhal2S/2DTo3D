@@ -2,8 +2,7 @@
 #include "UObject.h"
 #include "VectorUtils.h"
 #include "USceneComponent.h"
-#include "Windows.h"
-#include "MatrixUtils.h"
+#include "Define.h"
 #include "UWorld.h"
 class UCameraComponent:public USceneComponent{
 	// View ฐüทร
@@ -51,11 +50,14 @@ public:
 	FVector GetRight();
 	void SetRight(FVector pos);
 
+	FMatrix GetViewMatrix();
+	void UpdateViewMatrix();
+
+	FMatrix GetProjectionMatrix();
+	void UpdateProjectionMatrix();
+
 	void Init(UWorld* _World) override;
 	void Update(double deltaTime) override;
 	void Release() override;
-	
-	void UpdateViewMatrix();
-	void UpdateProjectionMatrix();
 	void Input();
 };

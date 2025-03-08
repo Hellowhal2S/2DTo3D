@@ -215,15 +215,14 @@ FMatrix FMatrix::Lookat(FVector pos, FVector look, FVector up) {
     FVector right = up.Cross(forward).Normalize();
     FVector upDir = forward.Cross(right).Normalize();
 
-    float x = right.Dot(pos);
-    float y = upDir.Dot(pos);
-    float z = forward.Dot(pos);
-
     FMatrix result;
-    result.Get(0, 0) = right.x;	    result.Get(0, 1) = upDir.x;	    result.Get(0, 2) = forward.x;	result.Get(0, 3) = 0.0f;
-    result.Get(1, 0) = right.y;	    result.Get(1, 1) = upDir.y;	    result.Get(1, 2) = forward.y;	result.Get(1, 3) = 0.0f;
-    result.Get(2, 0) = right.z;		result.Get(2, 1) = upDir.z;		result.Get(2, 2) = forward.z;	result.Get(2, 3) = 0.0f;
-    result.Get(3, 0) = -x;			result.Get(3, 1) = -y;			result.Get(3, 2) = -z;			result.Get(3, 3) = 1.0f;
+    result.Get(0, 0) = right.x;    result.Get(0, 1) = upDir.x;    result.Get(0, 2) = forward.x;    result.Get(0, 3) = 0.0f;
+    result.Get(1, 0) = right.y;    result.Get(1, 1) = upDir.y;    result.Get(1, 2) = forward.y;    result.Get(1, 3) = 0.0f;
+    result.Get(2, 0) = right.z;    result.Get(2, 1) = upDir.z;    result.Get(2, 2) = forward.z;    result.Get(2, 3) = 0.0f;
+    result.Get(3, 0) = -right.Dot(pos);
+    result.Get(3, 1) = -upDir.Dot(pos);
+    result.Get(3, 2) = -forward.Dot(pos);
+    result.Get(3, 3) = 1.0f;
     return result;
 }
 
@@ -249,7 +248,7 @@ FMatrix FMatrix::Perspective(float fov, float width, float height, float zNear, 
     return mat;
 }
 
-FMatrix GetModelMatrix(FVector translation, FVector rotation, FVector scale) {
+FMatrix FMatrix::GetModelMatrix(FVector translation, FVector rotation, FVector scale) {
     // 스케일 행렬
     FMatrix Scale = FMatrix::Identity;
     Scale.M[0][0] = scale.x;
