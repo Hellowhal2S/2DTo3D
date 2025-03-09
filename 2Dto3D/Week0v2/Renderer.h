@@ -18,6 +18,7 @@ public:
     D3D11_VIEWPORT ViewportInfo; // 렌더링 영역을 정의하는 뷰포트 정보
 
 
+
     unsigned int Stride;
 
     void Initialize(UGraphicsDevice* graphics);
@@ -32,6 +33,7 @@ public:
     void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
     void ReleaseConstantBuffer();
     void UpdateConstant(FMatrix _MVP, float _Flag);
+
     struct FConstants
     {
         FMatrix MVP;

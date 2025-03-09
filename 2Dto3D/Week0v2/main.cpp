@@ -129,7 +129,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		);
 
 		// 준비 작업a
-		renderer.Prepare();
+		graphicDevice.Prepare();
 		renderer.PrepareShader();
 
 

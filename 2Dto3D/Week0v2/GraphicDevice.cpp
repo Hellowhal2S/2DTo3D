@@ -4,6 +4,7 @@ void UGraphicsDevice::Initialize(HWND hWindow) {
     CreateDeviceAndSwapChain(hWindow);
     CreateFrameBuffer();
     CreateDepthStencilBuffer(hWindow);
+    CreateDepthStencilState();
     D3D11_RASTERIZER_DESC rasterizerdesc = {};
     rasterizerdesc.FillMode = D3D11_FILL_SOLID;
     rasterizerdesc.CullMode = D3D11_CULL_BACK;
@@ -56,8 +57,8 @@ void UGraphicsDevice::CreateDepthStencilBuffer(HWND hWindow) {
     // 깊이/스텐실 텍스처 생성
     D3D11_TEXTURE2D_DESC descDepth;
     ZeroMemory(&descDepth, sizeof(descDepth));
-    descDepth.Width = 1500; // 텍스처 너비 설정
-    descDepth.Height = 1500; // 텍스처 높이 설정
+    descDepth.Width = width; // 텍스처 너비 설정
+    descDepth.Height = height; // 텍스처 높이 설정
     descDepth.MipLevels = 1; // 미맵 레벨 수 (1로 설정하여 미맵 없음)
     descDepth.ArraySize = 1; // 텍스처 배열의 크기 (1로 단일 텍스처)
     descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // 24비트 깊이와 8비트 스텐실을 위한 포맷
@@ -67,6 +68,7 @@ void UGraphicsDevice::CreateDepthStencilBuffer(HWND hWindow) {
     descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL; // 깊이 스텐실 뷰로 바인딩 설정
     descDepth.CPUAccessFlags = 0; // CPU 접근 방식 설정
     descDepth.MiscFlags = 0; // 기타 플래그 설정
+
     HRESULT hr = Device->CreateTexture2D(&descDepth, NULL, &DepthStencilBuffer);
 
     if (FAILED(hr)) {
@@ -74,20 +76,13 @@ void UGraphicsDevice::CreateDepthStencilBuffer(HWND hWindow) {
         return;
     }
 
-    // DepthStencilView 생성 (Prepare에서 호출하지 않고 여기서 처리)
-    //D3D11_DEPTH_STENCIL_VIEW_DESC descDSV;
-    //descDSV.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-    //descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-    //descDSV.Texture2D.MipSlice = 0;
-
-    //hr = Device->CreateDepthStencilView(DepthStencilBuffer, &descDSV, &DepthStencilView);
-
 
     D3D11_DEPTH_STENCIL_VIEW_DESC descDSV;
     ZeroMemory(&descDSV, sizeof(descDSV));
     descDSV.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // 깊이 스텐실 포맷
     descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D; // 뷰 타입 설정 (2D 텍스처)
     descDSV.Texture2D.MipSlice = 0; // 사용할 미맵 슬라이스 설정
+
     hr = Device->CreateDepthStencilView(DepthStencilBuffer, // Depth stencil texture
         &descDSV, // Depth stencil desc
         &DepthStencilView);  // [out] Depth stencil view
@@ -127,7 +122,7 @@ void UGraphicsDevice::CreateDepthStencilState()
     dsDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
     dsDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
-    // DepthStencil 상태 생성
+    //// DepthStencil 상태 생성
     HRESULT hr = Device->CreateDepthStencilState(&dsDesc, &DepthStencilState);
     if (FAILED(hr)) {
         // 오류 처리
@@ -235,6 +230,7 @@ void UGraphicsDevice::SwapBuffer() {
 void UGraphicsDevice::Prepare()
 {
     DeviceContext->ClearRenderTargetView(FrameBufferRTV, ClearColor); // 렌더 타겟 뷰에 저장된 이전 프레임 데이터를 삭제
+    DeviceContext->ClearDepthStencilView(DepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0); // 깊이 버퍼 초기화 추가
 
     DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 정정 연결 방식 설정
 
@@ -248,7 +244,6 @@ void UGraphicsDevice::Prepare()
 }
 
 void UGraphicsDevice::OnResize(HWND hWindow) {
-    // GPU 작업이 완료될 때까지 기다리기 위해 Flush 호출
     DeviceContext->OMSetRenderTargets(0, 0, 0);
     
     FrameBufferRTV->Release();
@@ -257,9 +252,7 @@ void UGraphicsDevice::OnResize(HWND hWindow) {
         DepthStencilView->Release();
         DepthStencilView = nullptr;
     }
-    // 렌더 타겟을 해제
 
-    // 기존의 프레임 버퍼 리소스를 해제
     ReleaseFrameBuffer();
 
     // 윈도우 크기 가져오기

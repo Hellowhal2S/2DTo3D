@@ -4,20 +4,24 @@ void URenderer::Initialize(UGraphicsDevice* graphics) {
     Graphics = graphics;
     CreateShader();
     CreateConstantBuffer();
+
 }
 
 void URenderer::Release() {
     ReleaseShader();
     if (ConstantBuffer) ConstantBuffer->Release();
+
 }
 
 void URenderer::Prepare() {
-    float ClearColor[4] = { 0.025f, 0.025f, 0.025f, 1.0f };
-    Graphics->DeviceContext->ClearRenderTargetView(Graphics->FrameBufferRTV, ClearColor);
-    Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    Graphics->DeviceContext->RSSetViewports(1, &Graphics->ViewportInfo);
-    Graphics->DeviceContext->RSSetState(Graphics->RasterizerState);
-    Graphics->DeviceContext->OMSetRenderTargets(1, &Graphics->FrameBufferRTV, nullptr);
+    //float ClearColor[4] = { 0.025f, 0.025f, 0.025f, 1.0f };
+    //Graphics->DeviceContext->ClearRenderTargetView(Graphics->FrameBufferRTV, ClearColor);
+    //Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    //Graphics->DeviceContext->RSSetViewports(1, &Graphics->ViewportInfo);
+
+
+    //Graphics->DeviceContext->RSSetState(Graphics->RasterizerState);
+    //Graphics->DeviceContext->OMSetRenderTargets(1, &Graphics->FrameBufferRTV, Graphics->DepthStencilView);
 }
 
 
@@ -134,3 +138,6 @@ void URenderer::UpdateConstant(FMatrix _MVP, float _Flag)
         Graphics->DeviceContext->Unmap(ConstantBuffer, 0); // GPU가 다시 사용가능하게 만들기
     }
 }
+
+
+
