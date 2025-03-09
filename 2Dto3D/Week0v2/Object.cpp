@@ -26,7 +26,7 @@ void UObject::Update(double deltaTime)
 void UObject::Release()
 {
 }
-
+//
 FVector UObject::GetForwardVector()
 {
 	FVector Forward = FVector(0.f,0.f,1.0f);

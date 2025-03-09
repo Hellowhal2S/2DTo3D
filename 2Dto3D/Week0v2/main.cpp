@@ -18,6 +18,7 @@
 #include "Gizmo.h"
 #include "Console.h"
 UGraphicsDevice graphicDevice;
+URenderer renderer;
 HWND hWnd;
 FMatrix View;
 FMatrix Projection;
@@ -33,6 +34,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_DESTROY:
 		PostQuitMessage(0);
+	case WM_SIZE:
+		if (wParam != SIZE_MINIMIZED) {
+			 //UGraphicsDevice 객체의 OnResize 함수 호출
+			if (graphicDevice.SwapChain) {
+				graphicDevice.OnResize(hWnd);
+			}
+		}
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
@@ -51,12 +59,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	RegisterClassW(&wndclass);
 
 	hWnd = CreateWindowExW(0, WindowClass, Title, WS_POPUP | WS_VISIBLE | WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT, CW_USEDEFAULT, 1024, 1024,
+		CW_USEDEFAULT, CW_USEDEFAULT, 1500, 1500,
 		nullptr, nullptr, hInstance, nullptr);
 
 
 	graphicDevice.Initialize(hWnd);
-	URenderer renderer;
+
 	renderer.Initialize(&graphicDevice);
 
 
@@ -91,10 +99,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	LARGE_INTEGER startTime, endTime;
 	double elapsedTime = 1.0;
-	
+
 	UE_LOG(LogLevel::Display,"Hello Jungle");
 	while (bIsExit == false)
 	{
+
 		QueryPerformanceCounter(&startTime);
 
 		MSG msg;
@@ -109,7 +118,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				break;
 			}
 		}
-
 		World->Update(elapsedTime);
 
 		View = JungleMath::CreateViewMatrix(Camera->GetLocation(), Camera->GetLocation() + Camera->GetForwardVector(), {0, 1, 0});

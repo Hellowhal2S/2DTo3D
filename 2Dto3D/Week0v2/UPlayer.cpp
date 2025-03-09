@@ -41,7 +41,7 @@ void UPlayer::Input()
 		FVector rayDir;
 		ScreenToRay(mousePos.x, mousePos.y, View, Projection, rayOrigin, rayDir);
 		UObject* Possible = nullptr;
-
+		//UE_LOG(LogLevel::Warning, "%f %f %f", rayOrigin.x, rayOrigin.y, rayOrigin.z);
 		for (auto iter = GetWorld()->GetSphreList().begin(); iter != GetWorld()->GetSphreList().end();++iter)
 		{
 			if (RayIntersectsSphere(rayOrigin, rayDir, (*iter)->GetLocation(), (*iter)->GetScale().x))
