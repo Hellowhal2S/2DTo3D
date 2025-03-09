@@ -9,7 +9,7 @@ public:
 	UCameraComponent();
 	~UCameraComponent();
 
-	virtual void		Initialize(UWorld* _World)	override;
+	virtual void		Initialize()	override;
 	virtual void		Update(double deltaTime)		override;
 	virtual void		Release()					override;
 
@@ -28,5 +28,10 @@ private:
 	FVector zAxis;  // DirectX는 LH이므로 -z가 아니라 +z 사용
 	FVector xAxis;
 	FVector yAxis;
+	float fov;
+public:
+	void SetFov(float _fov) { fov = _fov; }
+	float& GetFov() { return fov; }
+
 };
 

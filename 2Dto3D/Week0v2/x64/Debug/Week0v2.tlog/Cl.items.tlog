@@ -1,5 +1,7 @@
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\ArrowComp.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\ArrowComp.obj
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\CameraComponent.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\CameraComponent.obj
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Console.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\Console.obj
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\ControlPaner.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\ControlPaner.obj
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\CubeComp.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\CubeComp.obj
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Define.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\Define.obj
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\EngineLoop.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\EngineLoop.obj
@@ -14,14 +16,16 @@ C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\ImGUI\imgui_tables.cpp;C:
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\ImGUI\imgui_widgets.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\imgui_widgets.obj
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\JungleMath.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\JungleMath.obj
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\LocalGizmoComponent.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\LocalGizmoComponent.obj
-C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\main.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\main.obj
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Launch.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\Launch.obj
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\GraphicDevice.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\GraphicDevice.obj
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Object.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\Object.obj
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\ObjectFactory.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\ObjectFactory.obj
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\PrimitiveComponent.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\PrimitiveComponent.obj
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\PropertyPanel.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\PropertyPanel.obj
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Renderer.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\Renderer.obj
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\ResourceMgr.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\ResourceMgr.obj
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\SceneComponent.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\SceneComponent.obj
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\SceneMgr.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\SceneMgr.obj
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\SphereComp.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\SphereComp.obj
-C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\UPlayer.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\UPlayer.obj
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\Player.obj
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\World.cpp;C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\x64\Debug\World.obj

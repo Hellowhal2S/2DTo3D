@@ -1,6 +1,7 @@
 #include "CubeComp.h"
-
-UCubeComp::UCubeComp()
+#include "JungleMath.h"
+#include "World.h"
+UCubeComp::UCubeComp() : UPrimitiveComponent("Cube")
 {
 }
 
@@ -8,7 +9,7 @@ UCubeComp::~UCubeComp()
 {
 }
 
-void UCubeComp::Initialize(UWorld* _World)
+void UCubeComp::Initialize()
 {
 }
 
@@ -18,4 +19,19 @@ void UCubeComp::Update(double deltaTime)
 
 void UCubeComp::Release()
 {
+}
+
+void UCubeComp::Render()
+{
+	FMatrix Model = JungleMath::CreateModelMatrix(GetLocation(), GetRotation(), GetScale());
+
+	// 최종 MVP 행렬
+	FMatrix MVP = Model * GetEngine().View * GetEngine().Projection;
+	if (this == GetWorld()->GetPickingObj()) {
+		FEngineLoop::renderer.UpdateConstant(MVP, 1.0f);
+	}
+	else
+		FEngineLoop::renderer.UpdateConstant(MVP, 0.0f);
+
+	FEngineLoop::renderer.RenderPrimitive(FEngineLoop::resourceMgr.vertexBufferCube, FEngineLoop::resourceMgr.numVerticesCube);
 }

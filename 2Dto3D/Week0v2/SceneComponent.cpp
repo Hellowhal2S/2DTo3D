@@ -8,9 +8,9 @@ USceneComponent::USceneComponent()
 USceneComponent::~USceneComponent()
 {
 }
-void USceneComponent::Initialize(UWorld* _World)
+void USceneComponent::Initialize()
 {
-	Super::Initialize(_World);
+	Super::Initialize();
 }
 
 void USceneComponent::Update(double deltaTime)
@@ -19,5 +19,9 @@ void USceneComponent::Update(double deltaTime)
 
 
 void USceneComponent::Release()
+{
+}
+
+void USceneComponent::Render()
 {
 }

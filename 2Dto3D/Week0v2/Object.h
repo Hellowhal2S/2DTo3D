@@ -1,5 +1,9 @@
 #pragma once
 #include "Define.h"
+#include "EngineLoop.h"
+#include "World.h"
+extern FEngineLoop GEngineLoop;
+
 class UWorld;
 class UObject
 {
@@ -7,10 +11,10 @@ public:
 						UObject();
 	virtual				~UObject();
 
-	virtual void		Initialize(UWorld* _World);
+	virtual void		Initialize();
 	virtual void		Update(double deltaTime);
 	virtual void		Release();
-
+	virtual void		Render();
 	FVector				GetForwardVector();
 	FVector				GetRightVector();
 	FVector				GetUpVector();
@@ -28,7 +32,8 @@ public:
 	inline void					SetRotation(FVector _newRot) { m_Rotation = _newRot; }
 	inline void					SetScale(FVector _newScale) { m_Scale = _newScale; }
 
-	inline UWorld*				GetWorld() { return m_World; }
+	inline UWorld*				GetWorld() { return GEngineLoop.GetWorld(); }
+	inline FEngineLoop&			GetEngine() { return GEngineLoop; }
 
 };	
 

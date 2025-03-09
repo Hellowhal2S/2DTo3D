@@ -17,8 +17,10 @@ public:
 	int32 Init(HINSTANCE hInstance);
 	void Tick();
 	void Exit();
+	
 private:
 	void WindowInit(HINSTANCE hInstance);
+	void Render();
 public:
 	static FGraphicsDevice graphicDevice;
 	static FRenderer renderer;
@@ -29,6 +31,10 @@ public:
 private:
 	UImGuiManager* UIMgr;
 	UWorld* GWorld;
+	bool bIsExit = false;
+	const int32 targetFPS = 60;
+
+
 public:
 	UWorld* GetWorld(){ return GWorld; }
 	

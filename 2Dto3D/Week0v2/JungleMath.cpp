@@ -111,34 +111,65 @@ FVector JungleMath::FVectorRotateCamera(FVector& origin, const FVector& rotation
 
     return FVector(result.x, result.y, result.z);
 }
+//FVector JungleMath::FVectorRotate(FVector& origin, const FVector& rotation)
+//{
+//    // 회전 값 (degree -> radian 변환)
+//    float pitch = rotation.x * XM_PI / 180.0f;
+//    float yaw = rotation.y * XM_PI / 180.0f;
+//    float roll = rotation.z * XM_PI / 180.0f;
+//
+//    // 삼각함수 값 미리 계산
+//    float cosPitch = cosf(pitch), sinPitch = sinf(pitch);
+//    float cosYaw = cosf(yaw), sinYaw = sinf(yaw);
+//    float cosRoll = cosf(roll), sinRoll = sinf(roll);
+//
+//    // 회전 행렬을 직접 적용하여 새 위치 계산
+//    FVector rotated;
+//    rotated.x = origin.x * (cosYaw * cosRoll) +
+//        origin.y * (cosYaw * sinRoll) +
+//        origin.z * (-sinYaw);
+//
+//    rotated.y = origin.x * (sinPitch * sinYaw * cosRoll - cosPitch * sinRoll) +
+//        origin.y * (sinPitch * sinYaw * sinRoll + cosPitch * cosRoll) +
+//        origin.z * (sinPitch * cosYaw);
+//
+//    rotated.z = origin.x * (cosPitch * sinYaw * cosRoll + sinPitch * sinRoll) +
+//        origin.y * (cosPitch * sinYaw * sinRoll - sinPitch * cosRoll) +
+//        origin.z * (cosPitch * cosYaw);
+//
+//    return rotated;
+//}
+
 FVector JungleMath::FVectorRotate(FVector& origin, const FVector& rotation)
 {
     // 회전 값 (degree -> radian 변환)
-    float pitch = rotation.x * XM_PI / 180.0f;
-    float yaw = rotation.y * XM_PI / 180.0f;
-    float roll = rotation.z * XM_PI / 180.0f;
+    float pitch = rotation.x * XM_PI / 180.0f; // X축 (Pitch)
+    float yaw = rotation.y * XM_PI / 180.0f; // Y축 (Yaw)
+    float roll = rotation.z * XM_PI / 180.0f; // Z축 (Roll)
 
     // 삼각함수 값 미리 계산
     float cosPitch = cosf(pitch), sinPitch = sinf(pitch);
     float cosYaw = cosf(yaw), sinYaw = sinf(yaw);
     float cosRoll = cosf(roll), sinRoll = sinf(roll);
 
-    // 회전 행렬을 직접 적용하여 새 위치 계산
+    // 다이렉트X 좌표계 기준 (Yaw-Pitch-Roll 순서 적용)
     FVector rotated;
-    rotated.x = origin.x * (cosYaw * cosRoll) +
-        origin.y * (cosYaw * sinRoll) +
-        origin.z * (-sinYaw);
+    rotated.x = origin.x * (cosYaw * cosRoll + sinYaw * sinPitch * sinRoll) +
+        origin.y * (sinRoll * cosPitch) +
+        origin.z * (-sinYaw * cosRoll + cosYaw * sinPitch * sinRoll);
 
-    rotated.y = origin.x * (sinPitch * sinYaw * cosRoll - cosPitch * sinRoll) +
-        origin.y * (sinPitch * sinYaw * sinRoll + cosPitch * cosRoll) +
-        origin.z * (sinPitch * cosYaw);
+    rotated.y = origin.x * (-cosYaw * sinRoll + sinYaw * sinPitch * cosRoll) +
+        origin.y * (cosRoll * cosPitch) +
+        origin.z * (sinYaw * sinRoll + cosYaw * sinPitch * cosRoll);
 
-    rotated.z = origin.x * (cosPitch * sinYaw * cosRoll + sinPitch * sinRoll) +
-        origin.y * (cosPitch * sinYaw * sinRoll - sinPitch * cosRoll) +
-        origin.z * (cosPitch * cosYaw);
+    rotated.z = origin.x * (sinYaw * cosPitch) +
+        origin.y * (-sinPitch) +
+        origin.z * (cosYaw * cosPitch);
 
+    rotated.z *= -1;
     return rotated;
 }
+
 float JungleMath::RadToDeg(float radian)
 {
     return radian * (180.0f / PI);

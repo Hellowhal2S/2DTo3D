@@ -12,8 +12,10 @@ public:
 	ID3D11Buffer* vertexBufferSphere = nullptr;
 	ID3D11Buffer* vertexBufferCube = nullptr;
 	ID3D11Buffer* vertexBufferGizmo = nullptr;
+	ID3D11Buffer* vertexBufferArrow = nullptr;
 	UINT numVerticesSphere;
 	UINT numVerticesCube;
 	UINT numVerticesGizmo;
+	UINT numVerticesArrow;
 };
 

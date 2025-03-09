@@ -5,6 +5,7 @@
 #include <vector>
 #include <DirectXMath.h>
 #include <string>
+#include <unordered_map>
 #define PI 3.141592
 #pragma once
 
@@ -13,6 +14,7 @@
 #define FString std::string
 #define UE_LOG Console::GetInstance().AddLog
 #define Super __super
+#define TMap std::unordered_map
 using int32 = int;
 using uint32 = unsigned int;
 #include "Console.h"

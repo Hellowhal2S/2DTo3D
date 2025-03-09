@@ -7,6 +7,7 @@ public:
 	static UObject* ConstructObject()
 	{
 		UObject* obj = new T;
+		obj->Initialize();
 		return obj;
 	}
 };

@@ -4,6 +4,7 @@
 #include "Gizmo.h"
 #include "Renderer.h"
 #include "Define.h"
+#include "Arrow.h"
 void FResourceMgr::Initialize(FRenderer* renderer)
 {
 	numVerticesSphere = sizeof(sphere_vertices) / sizeof(FVertexSimple);
@@ -15,6 +16,10 @@ void FResourceMgr::Initialize(FRenderer* renderer)
 
 	numVerticesGizmo = sizeof(gizmoVertices) / sizeof(FVertexSimple);
 	vertexBufferGizmo = renderer->CreateVertexBuffer(gizmoVertices, sizeof(gizmoVertices));
+
+	numVerticesArrow = sizeof(arrow_vertices) / sizeof(FVertexSimple);
+	vertexBufferArrow = renderer->CreateVertexBuffer(arrow_vertices, sizeof(arrow_vertices));
+
 }
 
 void FResourceMgr::Release(FRenderer* renderer)
@@ -22,4 +27,6 @@ void FResourceMgr::Release(FRenderer* renderer)
 	renderer->ReleaseVertexBuffer(vertexBufferSphere);
 	renderer->ReleaseVertexBuffer(vertexBufferCube);
 	renderer->ReleaseVertexBuffer(vertexBufferGizmo);
+	renderer->ReleaseVertexBuffer(vertexBufferArrow);
+
 }

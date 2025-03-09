@@ -9,10 +9,11 @@ UCameraComponent::~UCameraComponent()
 {
 }
 
-void UCameraComponent::Initialize(UWorld* _World)
+void UCameraComponent::Initialize()
 {
-	Super::Initialize(_World);
+	Super::Initialize();
 	m_Location = FVector(0.0f, 0.0f, 0.5f);
+	fov = 60.f;
 }
 
 void UCameraComponent::Update(double deltaTime)
@@ -123,7 +124,7 @@ void UCameraComponent::MoveUp(float _Value)
 
 void UCameraComponent::RotateYaw(float _Value)
 {
-	m_Rotation.y -= _Value;
+	m_Rotation.y += _Value;
 }
 
 void UCameraComponent::RotatePitch(float _Value)

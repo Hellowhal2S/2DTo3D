@@ -4,11 +4,15 @@ UPrimitiveComponent::UPrimitiveComponent()
 {
 }
 
+UPrimitiveComponent::UPrimitiveComponent(FString _Type) : m_Type(_Type)
+{
+}
+
 UPrimitiveComponent::~UPrimitiveComponent()
 {
 }
 
-void UPrimitiveComponent::Initialize(UWorld* _World)
+void UPrimitiveComponent::Initialize()
 {
 }
 
@@ -17,5 +21,9 @@ void UPrimitiveComponent::Update(double deltaTime)
 }
 
 void UPrimitiveComponent::Release()
+{
+}
+
+void UPrimitiveComponent::Render()
 {
 }

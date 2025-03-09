@@ -23,7 +23,7 @@ void UImGuiManager::BeginFrame()
     ImGui::NewFrame();
 }
 
-void UImGuiManager::Render()
+void UImGuiManager::EndFrame()
 {
     ImGui::Render();
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());

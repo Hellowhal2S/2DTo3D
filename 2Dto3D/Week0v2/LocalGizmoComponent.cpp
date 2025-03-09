@@ -8,7 +8,7 @@ LocalGizmoComponent::~LocalGizmoComponent()
 {
 }
 
-void LocalGizmoComponent::Initialize(UWorld* _World)
+void LocalGizmoComponent::Initialize()
 {
 }
 

@@ -51,7 +51,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="Launch.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ImGUI\imgui.cpp">
@@ -111,7 +111,7 @@
     <ClCompile Include="GizmoComponent.cpp">
       <Filter>소스 파일\UObject</Filter>
     </ClCompile>
-    <ClCompile Include="UPlayer.cpp">
+    <ClCompile Include="Player.cpp">
       <Filter>소스 파일\UObject</Filter>
     </ClCompile>
     <ClCompile Include="LocalGizmoComponent.cpp">
@@ -131,6 +131,18 @@
     </ClCompile>
     <ClCompile Include="ResourceMgr.cpp">
       <Filter>소스 파일\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="ControlPaner.cpp">
+      <Filter>소스 파일\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="PropertyPanel.cpp">
+      <Filter>소스 파일\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneMgr.cpp">
+      <Filter>소스 파일\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="ArrowComp.cpp">
+      <Filter>소스 파일\UObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -211,7 +223,7 @@
     <ClInclude Include="ObjectFactory.h">
       <Filter>헤더 파일\Util</Filter>
     </ClInclude>
-    <ClInclude Include="UPlayer.h">
+    <ClInclude Include="Player.h">
       <Filter>헤더 파일\UObject</Filter>
     </ClInclude>
     <ClInclude Include="LocalGizmoComponent.h">
@@ -228,6 +240,24 @@
     </ClInclude>
     <ClInclude Include="ResourceMgr.h">
       <Filter>헤더 파일\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ControlPaner.h">
+      <Filter>헤더 파일\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="PropertyPanel.h">
+      <Filter>헤더 파일\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Arrow.h">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="json.hpp">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneMgr.h">
+      <Filter>헤더 파일\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrowComp.h">
+      <Filter>헤더 파일\UObject</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
