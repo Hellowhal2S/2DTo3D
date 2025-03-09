@@ -1,3 +1,3 @@
 ﻿  GraphicDevice.cpp
-C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\GraphicDevice.cpp(279,17): warning C4101: 'errorMsg' :참조되지 않은 지역 변수입니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\GraphicDevice.cpp(283,17): warning C4101: 'errorMsg' :참조되지 않은 지역 변수입니다.
   Week0v2.vcxproj -> C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\x64\Debug\Week0v2.exe
