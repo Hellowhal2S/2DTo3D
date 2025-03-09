@@ -13,6 +13,7 @@ public:
 
 	FVector				GetForwardVector();
 	FVector				GetRightVector();
+	FVector				GetUpVector();
 protected:
 	FVector				m_Location;
 	FVector				m_Rotation;
@@ -27,6 +28,7 @@ public:
 	inline void					SetRotation(FVector _newRot) { m_Rotation = _newRot; }
 	inline void					SetScale(FVector _newScale) { m_Scale = _newScale; }
 
+	inline UWorld*				GetWorld() { return m_World; }
 
 };	
 

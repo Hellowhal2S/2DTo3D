@@ -18,6 +18,7 @@ public:
 private:
 	TArray<TDoubleLinkedList<UObject*>> m_pObjectList;
 	UObject* pickingObj = nullptr;
+	UObject* pickingGizmo = nullptr;
 	UObject* worldGizmo = nullptr;
 public:
 	UObject* LocalGizmo[3] = { nullptr, nullptr, nullptr };
@@ -27,5 +28,8 @@ public:
 	UObject* GetPickingObj() { return pickingObj; }
 	void	SetPickingObj(UObject* _Obj) { pickingObj = _Obj; };
 	UObject* GetWorldGizmo() { return worldGizmo; }
+	UObject* GetPickingGizmo() { return pickingGizmo; }
+	void	SetPickingGizmo(UObject* _Obj) { pickingGizmo = _Obj; };
+
 };
 

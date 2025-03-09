@@ -5,6 +5,8 @@
 #include <DirectXMath.h>
 #include "JungleMath.h"
 #include "GizmoComponent.h"
+#include "ObjectFactory.h"
+#include "UPlayer.h"
 UWorld::UWorld()
 {
 }
@@ -16,15 +18,20 @@ UWorld::~UWorld()
 
 void UWorld::Initialize()
 {
+
 	for (int i = 0;i < OBJ_END;++i)
 	{
 		m_pObjectList.push_back(TDoubleLinkedList<UObject*>());
 	}
+	UObject* player = FObjectFactory::ConstructObject<UPlayer>();
+	player->Initialize(this);
+	m_pObjectList[OBJ_PLAYER].push_back(player);
+
 	UObject* Camera = new UCameraComponent;
 	Camera->Initialize(this);
 	Camera->SetLocation(FVector(0, 0, -10.f));
-
 	m_pObjectList[OBJ_CAMERA].push_back(Camera);
+
 
 	UObject* Sphere = new USphereComp;
 	Sphere->Initialize(this);
@@ -41,20 +48,22 @@ void UWorld::Initialize()
 
 	UObject* localGizmo = new UCubeComp;
 	localGizmo->Initialize(this);
-	localGizmo->SetLocation(FVector(1.f, 0.0f, 0.0f));
+	//localGizmo->SetLocation(FVector(1.f, 0.0f, 0.0f));
 	localGizmo->SetScale(FVector(2.0f, .1f, 0.1f));
 	LocalGizmo[0] = localGizmo;
 	localGizmo = new UCubeComp;
 	localGizmo->Initialize(this);
-	localGizmo->SetLocation(FVector(0.0f, 1.f, 0.0f));
+	//localGizmo->SetLocation(FVector(0.0f, 1.f, 0.0f));
 	localGizmo->SetScale(FVector(.1f, 2.0f, .1f));
 	LocalGizmo[1] = localGizmo;
 	localGizmo = new UCubeComp;
 	localGizmo->Initialize(this);
-	localGizmo->SetLocation(FVector(0.0f, 0.0f, 1.f));
+	//localGizmo->SetLocation(FVector(0.0f, 0.0f, 1.f));
 	localGizmo->SetScale(FVector(.1f, .1f, 2.0f));
 	LocalGizmo[2] = localGizmo;
 	gizmo->Initialize(this);
+
+
 }
 
 void UWorld::Update(double deltaTime)

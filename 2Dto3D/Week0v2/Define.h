@@ -5,7 +5,7 @@
 #include <vector>
 #include <DirectXMath.h>
 
-#define PI 3.14
+#define PI 3.141592
 #pragma once
 
 #define TArray std::vector
@@ -138,6 +138,6 @@ enum OBJECTS
 	OBJ_CUBE,
 	OBJ_TRIANGLE,
 	OBJ_CAMERA,
+	OBJ_PLAYER,
 	OBJ_END
 };
-

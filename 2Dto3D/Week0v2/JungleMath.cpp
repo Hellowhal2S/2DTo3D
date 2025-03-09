@@ -20,9 +20,16 @@ FMatrix JungleMath::CreateModelMatrix(FVector translation, FVector rotation, FVe
     Scale.M[2][2] = scale.z;
 
     // 회전 행렬 (Yaw-Pitch-Roll)
-    float cosX = cos(rotation.x), sinX = sin(rotation.x);
-    float cosY = cos(rotation.y), sinY = sin(rotation.y);
-    float cosZ = cos(rotation.z), sinZ = sin(rotation.z);
+    float x = DegToRad(rotation.x);
+    float y = DegToRad(rotation.y);
+    float z = DegToRad(rotation.z);
+
+    //float cosX = cos(rotation.x), sinX = sin(rotation.x);
+    //float cosY = cos(rotation.y), sinY = sin(rotation.y);
+    //float cosZ = cos(rotation.z), sinZ = sin(rotation.z);
+    float cosX = cos(x), sinX = sin(x);
+    float cosY = cos(y), sinY = sin(y);
+    float cosZ = cos(z), sinZ = sin(z);
 
     FMatrix RotationX = FMatrix::Identity;
     RotationX.M[1][1] = cosX; RotationX.M[1][2] = -sinX;
@@ -85,21 +92,58 @@ FMatrix JungleMath::CreateProjectionMatrix(float fov, float aspect, float nearPl
 
 FVector JungleMath::FVectorRotate(FVector& origin, const FVector& rotation)
 {
-    float pitch = XMConvertToRadians(rotation.x);  // Pitch (X축 회전)
-    float yaw = XMConvertToRadians(rotation.y);    // Yaw (Y축 회전)
-    float roll = XMConvertToRadians(rotation.z);   // Roll (Z축 회전)
+    //float pitch = XMConvertToRadians(rotation.x);  // Pitch (X축 회전)
+    //float yaw = XMConvertToRadians(rotation.y);    // Yaw (Y축 회전)
+    //float roll = XMConvertToRadians(rotation.z);   // Roll (Z축 회전)
 
-    XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
+    ////float pitch = rotation.x;  // Pitch (X축 회전)
+    ////float yaw = rotation.y;   // Yaw (Y축 회전)
+    ////    float roll = rotation.z;   // Roll (Z축 회전)
+    //XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
 
-    // 현재 벡터를 XMMATRIX와 결합하여 회전된 벡터 구하기
-    XMVECTOR vec = XMVectorSet(origin.x, origin.y, origin.z, 0.0f); // 벡터를 XMVECTOR로 변환
-    XMVECTOR rotatedVec = XMVector3TransformNormal(vec, rotationMatrix); // 회전 변환
+    //// 현재 벡터를 XMMATRIX와 결합하여 회전된 벡터 구하기
+    //XMVECTOR vec = XMVectorSet(origin.x, origin.y, origin.z, 0.0f); // 벡터를 XMVECTOR로 변환
+    //XMVECTOR rotatedVec = XMVector3TransformNormal(vec, rotationMatrix); // 회전 변환
 
-    // 결과 벡터를 FVector로 변환하여 반환
-    XMFLOAT3 result;
-    XMStoreFloat3(&result, rotatedVec);
+    //// 결과 벡터를 FVector로 변환하여 반환
+    //XMFLOAT3 result;
+    //XMStoreFloat3(&result, rotatedVec);
 
-    return FVector(result.x, result.y, result.z);
+    //return FVector(result.x, result.y, result.z);
+    float pitch = DegToRad(rotation.x);  // X축 회전 (Pitch)
+    float yaw = DegToRad(rotation.y);  // Y축 회전 (Yaw)
+    float roll = DegToRad(rotation.z);  // Z축 회전 (Roll)
+
+    // 회전 행렬을 직접 계산
+    float cosPitch = cosf(pitch), sinPitch = sinf(pitch);
+    float cosYaw = cosf(yaw), sinYaw = sinf(yaw);
+    float cosRoll = cosf(roll), sinRoll = sinf(roll);
+
+    // 회전 변환 행렬을 적용하여 새 위치 계산
+    FVector rotated;
+    rotated.x = origin.x * (cosYaw * cosRoll) +
+        origin.y * (cosYaw * sinRoll) +
+        origin.z * (-sinYaw);
+
+    rotated.y = origin.x * (sinPitch * sinYaw * cosRoll - cosPitch * sinRoll) +
+        origin.y * (sinPitch * sinYaw * sinRoll + cosPitch * cosRoll) +
+        origin.z * (sinPitch * cosYaw);
+
+    rotated.z = origin.x * (cosPitch * sinYaw * cosRoll + sinPitch * sinRoll) +
+        origin.y * (cosPitch * sinYaw * sinRoll - sinPitch * cosRoll) +
+        origin.z * (cosPitch * cosYaw);
+
+    return rotated;
+}
+
+float JungleMath::RadToDeg(float radian)
+{
+    return radian * (180.0f / PI);
+}
+
+float JungleMath::DegToRad(float degree)
+{
+    return degree * (PI / 180.0f);
 }
 
 
