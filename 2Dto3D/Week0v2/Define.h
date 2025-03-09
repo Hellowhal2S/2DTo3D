@@ -13,7 +13,8 @@
 #define FString std::string
 #define UE_LOG Console::GetInstance().AddLog
 #define Super __super
-
+using int32 = int;
+using uint32 = unsigned int;
 #include "Console.h"
 
 struct FVertexSimple

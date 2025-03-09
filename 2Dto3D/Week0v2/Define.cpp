@@ -11,8 +11,8 @@ const FMatrix FMatrix::Identity = { {
 // Çà·Ä µ¡¼À
 FMatrix FMatrix::operator+(const FMatrix& Other) const {
     FMatrix Result;
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
+    for (int32 i = 0; i < 4; i++)
+        for (int32 j = 0; j < 4; j++)
             Result.M[i][j] = M[i][j] + Other.M[i][j];
     return Result;
 }
@@ -20,8 +20,8 @@ FMatrix FMatrix::operator+(const FMatrix& Other) const {
 // Çà·Ä »¬¼À
 FMatrix FMatrix::operator-(const FMatrix& Other) const {
     FMatrix Result;
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
+    for (int32 i = 0; i < 4; i++)
+        for (int32 j = 0; j < 4; j++)
             Result.M[i][j] = M[i][j] - Other.M[i][j];
     return Result;
 }
@@ -29,9 +29,9 @@ FMatrix FMatrix::operator-(const FMatrix& Other) const {
 // Çà·Ä °ö¼À
 FMatrix FMatrix::operator*(const FMatrix& Other) const {
     FMatrix Result = {};
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
-            for (int k = 0; k < 4; k++)
+    for (int32 i = 0; i < 4; i++)
+        for (int32 j = 0; j < 4; j++)
+            for (int32 k = 0; k < 4; k++)
                 Result.M[i][j] += M[i][k] * Other.M[k][j];
     return Result;
 }
@@ -39,8 +39,8 @@ FMatrix FMatrix::operator*(const FMatrix& Other) const {
 // ½ºÄ®¶ó °ö¼À
 FMatrix FMatrix::operator*(float Scalar) const {
     FMatrix Result;
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
+    for (int32 i = 0; i < 4; i++)
+        for (int32 j = 0; j < 4; j++)
             Result.M[i][j] = M[i][j] * Scalar;
     return Result;
 }
@@ -48,8 +48,8 @@ FMatrix FMatrix::operator*(float Scalar) const {
 // ½ºÄ®¶ó ³ª´°¼À
 FMatrix FMatrix::operator/(float Scalar) const {
     FMatrix Result;
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
+    for (int32 i = 0; i < 4; i++)
+        for (int32 j = 0; j < 4; j++)
             Result.M[i][j] = M[i][j] / Scalar;
     return Result;
 }
@@ -57,8 +57,8 @@ FMatrix FMatrix::operator/(float Scalar) const {
 // ÀüÄ¡ Çà·Ä
 FMatrix FMatrix::Transpose(const FMatrix& Mat) {
     FMatrix Result;
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
+    for (int32 i = 0; i < 4; i++)
+        for (int32 j = 0; j < 4; j++)
             Result.M[i][j] = Mat.M[j][i];
     return Result;
 }
@@ -66,11 +66,11 @@ FMatrix FMatrix::Transpose(const FMatrix& Mat) {
 // Çà·Ä½Ä °è»ê (¶óÇÃ¶ó½º Àü°³, 4x4 Çà·Ä)
 float FMatrix::Determinant(const FMatrix& Mat) {
     float det = 0.0f;
-    for (int i = 0; i < 4; i++) {
+    for (int32 i = 0; i < 4; i++) {
         float subMat[3][3];
-        for (int j = 1; j < 4; j++) {
-            int colIndex = 0;
-            for (int k = 0; k < 4; k++) {
+        for (int32 j = 1; j < 4; j++) {
+            int32 colIndex = 0;
+            for (int32 k = 0; k < 4; k++) {
                 if (k == i) continue;
                 subMat[j - 1][colIndex] = Mat.M[j][k];
                 colIndex++;
@@ -96,14 +96,14 @@ FMatrix FMatrix::Inverse(const FMatrix& Mat) {
     float invDet = 1.0f / det;
 
     // ¿©ÀÎ¼ö Çà·Ä °è»ê ÈÄ ÀüÄ¡ÇÏ¿© ¿ªÇà·Ä °è»ê
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
+    for (int32 i = 0; i < 4; i++) {
+        for (int32 j = 0; j < 4; j++) {
             float subMat[3][3];
-            int subRow = 0;
-            for (int r = 0; r < 4; r++) {
+            int32 subRow = 0;
+            for (int32 r = 0; r < 4; r++) {
                 if (r == i) continue;
-                int subCol = 0;
-                for (int c = 0; c < 4; c++) {
+                int32 subCol = 0;
+                for (int32 c = 0; c < 4; c++) {
                     if (c == j) continue;
                     subMat[subRow][subCol] = Mat.M[r][c];
                     subCol++;

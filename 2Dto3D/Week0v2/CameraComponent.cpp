@@ -45,8 +45,8 @@ void UCameraComponent::Input()
 			GetCursorPos(&currentMousePos);
 
 			// 마우스 이동 차이 계산
-			int deltaX = currentMousePos.x - m_LastMousePos.x;
-			int deltaY = currentMousePos.y - m_LastMousePos.y;
+			int32 deltaX = currentMousePos.x - m_LastMousePos.x;
+			int32 deltaY = currentMousePos.y - m_LastMousePos.y;
 
 			// Yaw(좌우 회전) 및 Pitch(상하 회전) 값 변경
 			RotateYaw(deltaX * 0.1f);  // X 이동에 따라 좌우 회전

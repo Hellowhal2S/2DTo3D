@@ -26,7 +26,7 @@ public:
 
     TArray<LogEntry> items;
     TArray<FString> history;
-    int historyPos = -1;
+    int32 historyPos = -1;
     char inputBuf[256] = "";
     bool scrollToBottom = false;
 

@@ -1,6 +1,6 @@
 #include "GraphicDevice.h"
 #include <wchar.h>
-void UGraphicsDevice::Initialize(HWND hWindow) {
+void FGraphicsDevice::Initialize(HWND hWindow) {
     CreateDeviceAndSwapChain(hWindow);
     CreateFrameBuffer();
     CreateDepthStencilBuffer(hWindow);
@@ -10,7 +10,7 @@ void UGraphicsDevice::Initialize(HWND hWindow) {
     rasterizerdesc.CullMode = D3D11_CULL_BACK;
     Device->CreateRasterizerState(&rasterizerdesc, &RasterizerState);
 }
-void UGraphicsDevice::CreateDeviceAndSwapChain(HWND hWindow) {
+void FGraphicsDevice::CreateDeviceAndSwapChain(HWND hWindow) {
     // 지원하는 Direct3D 기능 레벨을 정의
     D3D_FEATURE_LEVEL featurelevels[] = { D3D_FEATURE_LEVEL_11_0 };
 
@@ -46,7 +46,7 @@ void UGraphicsDevice::CreateDeviceAndSwapChain(HWND hWindow) {
 
 
 
-void UGraphicsDevice::CreateDepthStencilBuffer(HWND hWindow) {
+void FGraphicsDevice::CreateDepthStencilBuffer(HWND hWindow) {
 
 
     RECT clientRect;
@@ -95,7 +95,7 @@ void UGraphicsDevice::CreateDepthStencilBuffer(HWND hWindow) {
     }
 }
 
-void UGraphicsDevice::CreateDepthStencilState()
+void FGraphicsDevice::CreateDepthStencilState()
 {
     // DepthStencil 상태 설명 설정
     D3D11_DEPTH_STENCIL_DESC dsDesc;
@@ -131,7 +131,7 @@ void UGraphicsDevice::CreateDepthStencilState()
 }
 
 
-void UGraphicsDevice::ReleaseDeviceAndSwapChain()
+void FGraphicsDevice::ReleaseDeviceAndSwapChain()
 {
     if (DeviceContext)
     {
@@ -157,7 +157,7 @@ void UGraphicsDevice::ReleaseDeviceAndSwapChain()
     }
 }
 
-void UGraphicsDevice::CreateFrameBuffer()
+void FGraphicsDevice::CreateFrameBuffer()
 {
     // 스왑 체인으로부터 백 버퍼 텍스처 가져오기
     SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&FrameBuffer);
@@ -170,7 +170,7 @@ void UGraphicsDevice::CreateFrameBuffer()
     Device->CreateRenderTargetView(FrameBuffer, &framebufferRTVdesc, &FrameBufferRTV);
 }
 
-void UGraphicsDevice::ReleaseFrameBuffer()
+void FGraphicsDevice::ReleaseFrameBuffer()
 {
     if (FrameBuffer)
     {
@@ -185,7 +185,7 @@ void UGraphicsDevice::ReleaseFrameBuffer()
     }
 }
 
-void UGraphicsDevice::ReleaseRasterizerState()
+void FGraphicsDevice::ReleaseRasterizerState()
 {
     if (RasterizerState)
     {
@@ -194,7 +194,7 @@ void UGraphicsDevice::ReleaseRasterizerState()
     }
 }
 
-void UGraphicsDevice::ReleaseDepthStencilResources()
+void FGraphicsDevice::ReleaseDepthStencilResources()
 {
     if (DepthStencilView) {
         DepthStencilView->Release();
@@ -214,7 +214,7 @@ void UGraphicsDevice::ReleaseDepthStencilResources()
     }
 }
 
-void UGraphicsDevice::Release() {
+void FGraphicsDevice::Release() {
     RasterizerState->Release();
 
     DeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
@@ -224,10 +224,10 @@ void UGraphicsDevice::Release() {
     ReleaseDeviceAndSwapChain();
 }
 
-void UGraphicsDevice::SwapBuffer() {
+void FGraphicsDevice::SwapBuffer() {
     SwapChain->Present(1, 0);
 }
-void UGraphicsDevice::Prepare()
+void FGraphicsDevice::Prepare()
 {
     DeviceContext->ClearRenderTargetView(FrameBufferRTV, ClearColor); // 렌더 타겟 뷰에 저장된 이전 프레임 데이터를 삭제
     DeviceContext->ClearDepthStencilView(DepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0); // 깊이 버퍼 초기화 추가
@@ -243,7 +243,7 @@ void UGraphicsDevice::Prepare()
     DeviceContext->OMSetBlendState(nullptr, nullptr, 0xffffffff); // 블렌뎅 상태 설정, 기본블렌딩 상태임
 }
 
-void UGraphicsDevice::OnResize(HWND hWindow) {
+void FGraphicsDevice::OnResize(HWND hWindow) {
     DeviceContext->OMSetRenderTargets(0, 0, 0);
     
     FrameBufferRTV->Release();

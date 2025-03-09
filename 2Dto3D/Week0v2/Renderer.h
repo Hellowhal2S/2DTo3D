@@ -6,10 +6,10 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include "Define.h"
-class UGraphicsDevice;
-class URenderer {
+class FGraphicsDevice;
+class FRenderer {
 public:
-    UGraphicsDevice* Graphics;
+    FGraphicsDevice* Graphics;
     ID3D11VertexShader* VertexShader = nullptr;
     ID3D11PixelShader* PixelShader = nullptr;
     ID3D11InputLayout* InputLayout = nullptr;
@@ -21,7 +21,7 @@ public:
 
     unsigned int Stride;
 
-    void Initialize(UGraphicsDevice* graphics);
+    void Initialize(FGraphicsDevice* graphics);
     void Release();
     void Prepare();
     void RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices);

@@ -22,14 +22,8 @@
     <Filter Include="소스 파일\UWorld">
       <UniqueIdentifier>{ab59464e-810e-4859-987a-774433a6dbaa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\DirectX">
-      <UniqueIdentifier>{92f60cc2-713e-4f67-9975-7b187322df4d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\UObject">
       <UniqueIdentifier>{c5a037ae-40bd-4a41-9402-17ce1d557d4c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\DirectX">
-      <UniqueIdentifier>{ec5ca991-d367-4b30-a7a4-4967aeee26d3}</UniqueIdentifier>
     </Filter>
     <Filter Include="헤더 파일\UObject">
       <UniqueIdentifier>{495ac23c-221c-4814-b37c-900afdeb0550}</UniqueIdentifier>
@@ -48,6 +42,12 @@
     </Filter>
     <Filter Include="소스 파일\UI">
       <UniqueIdentifier>{dbcf0b5e-7180-413d-a40f-fc63ac311a8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Engine">
+      <UniqueIdentifier>{92f60cc2-713e-4f67-9975-7b187322df4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Engine">
+      <UniqueIdentifier>{ec5ca991-d367-4b30-a7a4-4967aeee26d3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -79,10 +79,10 @@
       <Filter>소스 파일\UWorld</Filter>
     </ClCompile>
     <ClCompile Include="GraphicDevice.cpp">
-      <Filter>소스 파일\DirectX</Filter>
+      <Filter>소스 파일\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Renderer.cpp">
-      <Filter>소스 파일\DirectX</Filter>
+      <Filter>소스 파일\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp">
       <Filter>소스 파일\UObject</Filter>
@@ -121,7 +121,16 @@
       <Filter>소스 파일\Util</Filter>
     </ClCompile>
     <ClCompile Include="Console.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiManager.cpp">
+      <Filter>소스 파일\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineLoop.cpp">
+      <Filter>소스 파일\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceMgr.cpp">
+      <Filter>소스 파일\Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -155,10 +164,10 @@
       <Filter>ImGUI</Filter>
     </ClInclude>
     <ClInclude Include="GraphicDevice.h">
-      <Filter>헤더 파일\DirectX</Filter>
+      <Filter>헤더 파일\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Renderer.h">
-      <Filter>헤더 파일\DirectX</Filter>
+      <Filter>헤더 파일\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
       <Filter>헤더 파일\UObject</Filter>
@@ -209,7 +218,16 @@
       <Filter>헤더 파일\UObject</Filter>
     </ClInclude>
     <ClInclude Include="Console.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiManager.h">
+      <Filter>헤더 파일\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineLoop.h">
+      <Filter>헤더 파일\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceMgr.h">
+      <Filter>헤더 파일\Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

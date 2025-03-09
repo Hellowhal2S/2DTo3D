@@ -19,7 +19,7 @@ UWorld::~UWorld()
 void UWorld::Initialize()
 {
 
-	for (int i = 0;i < OBJ_END;++i)
+	for (int32 i = 0;i < OBJ_END;++i)
 	{
 		m_pObjectList.push_back(TDoubleLinkedList<UObject*>());
 	}
@@ -69,7 +69,7 @@ void UWorld::Initialize()
 void UWorld::Update(double deltaTime)
 {
 	Input();
-	for (int i = 0;i < m_pObjectList.size();i++)
+	for (int32 i = 0;i < m_pObjectList.size();i++)
 	{
 		for (auto iter = m_pObjectList[i].begin();iter != m_pObjectList[i].end();++iter)
 		{
@@ -80,7 +80,7 @@ void UWorld::Update(double deltaTime)
 
 void UWorld::Release()
 {
-	for (int i = 0;i < m_pObjectList.size();i++)
+	for (int32 i = 0;i < m_pObjectList.size();i++)
 	{
 		for (auto iter = m_pObjectList[i].begin();iter != m_pObjectList[i].end();++iter)
 		{

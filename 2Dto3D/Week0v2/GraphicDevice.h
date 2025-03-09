@@ -6,7 +6,7 @@
 #include <windows.h>
 #include <d3d11.h>
 
-class UGraphicsDevice {
+class FGraphicsDevice {
 public:
     ID3D11Device* Device = nullptr;
     ID3D11DeviceContext* DeviceContext = nullptr;

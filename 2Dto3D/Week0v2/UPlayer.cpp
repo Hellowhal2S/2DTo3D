@@ -3,10 +3,9 @@
 #include "GraphicDevice.h"
 #include "World.h"
 #include "Define.h"
-extern HWND hWnd;
-extern UGraphicsDevice graphicDevice;
-extern FMatrix View;
-extern FMatrix Projection;
+#include "EngineLoop.h"
+
+extern FEngineLoop GEngineLoop;
 UPlayer::UPlayer()
 {
 }
@@ -35,11 +34,11 @@ void UPlayer::Input()
 	{
 		POINT mousePos;
 		GetCursorPos(&mousePos);
-		ScreenToClient(hWnd, &mousePos);
+		ScreenToClient(GEngineLoop.hWnd, &mousePos);
 
 		FVector rayOrigin;
 		FVector rayDir;
-		ScreenToRay(mousePos.x, mousePos.y, View, Projection, rayOrigin, rayDir);
+		ScreenToRay(mousePos.x, mousePos.y, GEngineLoop.View, GEngineLoop.Projection, rayOrigin, rayDir);
 		UObject* Possible = nullptr;
 		//UE_LOG(LogLevel::Warning, "%f %f %f", rayOrigin.x, rayOrigin.y, rayOrigin.z);
 		for (auto iter = GetWorld()->GetSphreList().begin(); iter != GetWorld()->GetSphreList().end();++iter)
@@ -95,7 +94,7 @@ void UPlayer::ScreenToRay(float screenX, float screenY, const FMatrix& viewMatri
 {
 	D3D11_VIEWPORT viewport;
 	UINT numViewports = 1;
-	graphicDevice.DeviceContext->RSGetViewports(&numViewports, &viewport);
+	FEngineLoop::graphicDevice.DeviceContext->RSGetViewports(&numViewports, &viewport);
 	float screenWidth = viewport.Width;
 	float screenHeight = viewport.Height;
 	float x = (2.0f * screenX) / screenWidth - 1.0f;

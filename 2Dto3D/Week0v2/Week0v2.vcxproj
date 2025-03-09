@@ -131,7 +131,9 @@
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="CubeComp.cpp" />
     <ClCompile Include="Define.cpp" />
+    <ClCompile Include="EngineLoop.cpp" />
     <ClCompile Include="GizmoComponent.cpp" />
+    <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="ImGUI\imgui.cpp" />
     <ClCompile Include="ImGUI\imgui_demo.cpp" />
     <ClCompile Include="ImGUI\imgui_draw.cpp" />
@@ -147,6 +149,7 @@
     <ClCompile Include="ObjectFactory.cpp" />
     <ClCompile Include="PrimitiveComponent.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="ResourceMgr.cpp" />
     <ClCompile Include="SceneComponent.cpp" />
     <ClCompile Include="SphereComp.cpp" />
     <ClCompile Include="UPlayer.cpp" />
@@ -168,8 +171,10 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="CubeComp.h" />
     <ClInclude Include="Define.h" />
+    <ClInclude Include="EngineLoop.h" />
     <ClInclude Include="Gizmo.h" />
     <ClInclude Include="GizmoComponent.h" />
+    <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="ImGUI\imconfig.h" />
     <ClInclude Include="ImGUI\imgui.h" />
     <ClInclude Include="ImGUI\imgui_impl_dx11.h" />
@@ -182,6 +187,7 @@
     <ClInclude Include="LocalGizmoComponent.h" />
     <ClInclude Include="ObjectFactory.h" />
     <ClInclude Include="PrimitiveComponent.h" />
+    <ClInclude Include="ResourceMgr.h" />
     <ClInclude Include="SceneComponent.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="GraphicDevice.h" />

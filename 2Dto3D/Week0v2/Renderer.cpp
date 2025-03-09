@@ -1,19 +1,19 @@
 #include "Renderer.h"
 #include "GraphicDevice.h"
-void URenderer::Initialize(UGraphicsDevice* graphics) {
+void FRenderer::Initialize(FGraphicsDevice* graphics) {
     Graphics = graphics;
     CreateShader();
     CreateConstantBuffer();
 
 }
 
-void URenderer::Release() {
+void FRenderer::Release() {
     ReleaseShader();
     if (ConstantBuffer) ConstantBuffer->Release();
 
 }
 
-void URenderer::Prepare() {
+void FRenderer::Prepare() {
     //float ClearColor[4] = { 0.025f, 0.025f, 0.025f, 1.0f };
     //Graphics->DeviceContext->ClearRenderTargetView(Graphics->FrameBufferRTV, ClearColor);
     //Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -25,7 +25,7 @@ void URenderer::Prepare() {
 }
 
 
-void URenderer::CreateShader() {
+void FRenderer::CreateShader() {
     ID3DBlob* vertexshaderCSO;
     ID3DBlob* pixelshaderCSO;
 
@@ -45,7 +45,7 @@ void URenderer::CreateShader() {
     vertexshaderCSO->Release();
     pixelshaderCSO->Release();
 }
-void  URenderer::ReleaseShader()
+void  FRenderer::ReleaseShader()
 {
     if (InputLayout)
     {
@@ -65,7 +65,7 @@ void  URenderer::ReleaseShader()
         VertexShader = nullptr;
     }
 }
-void URenderer::PrepareShader()
+void FRenderer::PrepareShader()
 {
     Graphics->DeviceContext->VSSetShader(VertexShader, nullptr, 0);
     Graphics->DeviceContext->PSSetShader(PixelShader, nullptr, 0);
@@ -76,13 +76,13 @@ void URenderer::PrepareShader()
         Graphics->DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer);
     }
 }
-void URenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices) {
+void FRenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices) {
     UINT offset = 0;
     Graphics->DeviceContext->IASetVertexBuffers(0, 1, &pBuffer, &Stride, &offset);
     Graphics->DeviceContext->Draw(numVertices, 0);
 }
 
-ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth)
+ID3D11Buffer* FRenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth)
 {
     // 2. Create a vertex buffer
     D3D11_BUFFER_DESC vertexbufferdesc = {};
@@ -99,12 +99,12 @@ ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWi
     return vertexBuffer;
 }
 
-void URenderer::ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer)
+void FRenderer::ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer)
 {
     vertexBuffer->Release();
 }
 
-void URenderer::CreateConstantBuffer()
+void FRenderer::CreateConstantBuffer()
 {
     D3D11_BUFFER_DESC constantbufferdesc = {};
     constantbufferdesc.ByteWidth = sizeof(FConstants) + 0xf & 0xfffffff0;
@@ -115,7 +115,7 @@ void URenderer::CreateConstantBuffer()
     Graphics->Device->CreateBuffer(&constantbufferdesc, nullptr, &ConstantBuffer);
 }
 
-void URenderer::ReleaseConstantBuffer()
+void FRenderer::ReleaseConstantBuffer()
 {
     if (ConstantBuffer)
     {
@@ -123,7 +123,7 @@ void URenderer::ReleaseConstantBuffer()
         ConstantBuffer = nullptr;
     }
 }
-void URenderer::UpdateConstant(FMatrix _MVP, float _Flag)
+void FRenderer::UpdateConstant(FMatrix _MVP, float _Flag)
 {
     if (ConstantBuffer)
     {

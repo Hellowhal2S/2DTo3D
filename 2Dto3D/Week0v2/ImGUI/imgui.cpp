@@ -189,7 +189,9 @@ CODE
      When that happens your backend NEEDS to move the OS or underlying mouse cursor on the next frame. Some of the backends in examples/ do that.
      (If you set the NavEnableSetMousePos flag but don't honor 'io.WantSetMousePos' properly, Dear ImGui will misbehave as it will see your mouse moving back & forth!)
      (In a setup when you may not have easy control over the mouse cursor, e.g. uSynergy.c doesn't expose moving remote mouse cursor, you may want
-     to set a boolean to ignore your other external mouse positions until the external source is moved again.)
+     to set a boolean to ignore your other 
+     
+     al mouse positions until the external source is moved again.)
 
 
  PROGRAMMER GUIDE
