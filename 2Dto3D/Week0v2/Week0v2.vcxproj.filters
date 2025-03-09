@@ -46,6 +46,12 @@
     <Filter Include="소스 파일\World">
       <UniqueIdentifier>{6adbae9e-9f61-4ba5-b549-3d3c90b152f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Input">
+      <UniqueIdentifier>{47179c8e-5340-4fbd-86ca-ad1636c7bd69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Input">
+      <UniqueIdentifier>{a9da2349-4066-4ac5-91da-517dde346601}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

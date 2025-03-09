@@ -16,6 +16,10 @@ UCameraComponent::UCameraComponent() {
 	look = RelativeLocation + forward;
 	right = FVector(1, 0, 0);
 	up = FVector(0, 1, 0);
+	GetCursorPos(&lastMousePos);
+}
+void UCameraComponent::RotateCamera() {
+
 }
 void UCameraComponent::MoveForward() {
 	RelativeLocation = RelativeLocation + GetForwardVector() * velocity;
@@ -35,7 +39,30 @@ void UCameraComponent::MoveLeft() {
 	RelativeLocation = RelativeLocation + GetRightVector() * -velocity;
 	//SetEyePosition(RelativeLocation - (right * velocity));
 }
+void UCameraComponent::OnLeftClick() {
+	
+	
+}
 
+void UCameraComponent::OnMouseMove(float deltaX, float deltaY, float deltaZ) {
+	AdjustRotation(deltaX, deltaY, deltaZ);
+}
+
+void UCameraComponent::AdjustRotation(float x, float y, float z) {
+	float sensitivity = 0.1f;
+	FVector rot;
+	rot.y = - x * sensitivity;		//yaw y축 회전
+	rot.x = - y * sensitivity;	// pitch x축 회전
+	rot.z = z * sensitivity;	// roll z축 회전
+
+	forward = Utils::FVectorRotate(forward, rot);
+	right = Utils::FVectorRotate(right, rot);
+	up = Utils::FVectorRotate(up, rot);
+	/*RelativeRotation.x += x;
+	RelativeRotation.y += y;
+	RelativeRotation.z += z;*/
+	UpdateViewMatrix();
+}
 
 FVector UCameraComponent::GetEyePosition() {
 	return RelativeLocation;
@@ -73,6 +100,9 @@ void UCameraComponent::SetRight(FVector pos) {
 }
 
 void UCameraComponent::Input() {
+	POINT curMousePos;
+	GetCursorPos(&curMousePos);
+
 	if (GetAsyncKeyState(VK_UP) & 0x8000) { // ↑ 방향키
 		//MessageBox(EngineLoop::hWnd, L"앞", L"알림", MB_OK);
 		MoveForward();
@@ -89,6 +119,12 @@ void UCameraComponent::Input() {
 		MoveLeft();
 		//MessageBox(EngineLoop::hWnd, L"왼", L"알림", MB_OK);
 	}
+	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
+		if (curMousePos.x != lastMousePos.x || curMousePos.y != lastMousePos.y) {
+			OnMouseMove(curMousePos.x - lastMousePos.x, curMousePos.y - lastMousePos.y, 0);
+		}
+	}
+	lastMousePos = curMousePos;
 }
 
 FMatrix UCameraComponent::GetViewMatrix() {

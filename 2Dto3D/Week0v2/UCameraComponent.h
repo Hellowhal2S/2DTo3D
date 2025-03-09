@@ -4,6 +4,7 @@
 #include "USceneComponent.h"
 #include "Define.h"
 #include "UWorld.h"
+#include "windows.h"
 class UCameraComponent:public USceneComponent{
 	// View ฐüทร
 private:
@@ -28,13 +29,17 @@ private:
 	FMatrix projMatrix;
 
 public:
+	POINT lastMousePos;
+
 	UCameraComponent();
 
 	void MoveForward();
 	void MoveBack();
 	void MoveRight();
 	void MoveLeft();
-
+	void OnLeftClick();
+	void OnMouseMove(float deltaX, float deltaY, float deltaZ);
+	void AdjustRotation(float x, float y, float z);
 	FVector GetEyePosition();
 	void SetEyePosition(FVector pos);
 	
@@ -60,4 +65,6 @@ public:
 	void Update(double deltaTime) override;
 	void Release() override;
 	void Input();
+
+	void RotateCamera();
 };

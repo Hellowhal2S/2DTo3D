@@ -28,6 +28,8 @@ struct FMatrix
     float Determinant() const;
 
     static FMatrix GetModelMatrix(FVector translation, FVector rotation, FVector scale);
+    //static FVector RotateVector(FVector vec, float pitch, float yaw);
+
     FMatrix Lookat(FVector eye, FVector target, FVector up);
     FMatrix Perspective(float fov, float aspect, float nearPlane, float farPlane);
     float& Get(int row, int col);

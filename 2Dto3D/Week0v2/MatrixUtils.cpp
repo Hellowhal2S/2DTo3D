@@ -286,4 +286,20 @@ FMatrix FMatrix::GetModelMatrix(FVector translation, FVector rotation, FVector s
 
     // 최종 모델 행렬 = 이동 * 회전 * 스케일
     return Scale * Rotation * Translation;
+    
 }
+
+//FVector FMatrix::RotateVector(FVector vec, float pitch, float yaw)
+//{
+//    float cosPitch = cos(pitch);
+//    float sinPitch = sin(pitch);
+//    float cosYaw = cos(yaw);
+//    float sinYaw = sin(yaw);
+//
+//    FVector rotatedVec;
+//    rotatedVec.x = cosYaw * vec.x - sinYaw * vec.z;
+//    rotatedVec.z = sinYaw * vec.x + cosYaw * vec.z;
+//    rotatedVec.y = cosPitch * vec.y - sinPitch * vec.z;
+//
+//    return rotatedVec;
+//}
