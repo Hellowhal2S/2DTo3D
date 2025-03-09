@@ -2,6 +2,9 @@
 #include "Cube.h"
 #include "Sphere.h"
 
+float ndcX;
+float ndcY;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
@@ -120,9 +123,16 @@ void UWorld::Update()
         Camera.MoveRight(0.1f);
     }
 
+    if (InputHandler.IsMousePressed())
+    {
+        SelectObjectWithMouse();
+    }
+
+
     //  마우스 입력 처리 (우클릭 시 회전 가능)
     static int lastMouseX = 0, lastMouseY = 0;
     int mouseX, mouseY;
+
     InputHandler.GetMouseLocation(mouseX, mouseY);
 
     static bool firstClick = true;
@@ -258,6 +268,13 @@ void UWorld::Render()
     float lookAt[3] = { Camera.GetForward().x, Camera.GetForward().y, Camera.GetForward().z };
     ImGui::InputFloat3("LookAt", lookAt, "%.2f", ImGuiInputTextFlags_ReadOnly);
     ImGui::End();
+
+    ImGui::Begin("Ray Info");
+    ImGui::Text("Ray Origin: (%.2f, %.2f, %.2f)", lastRayOrigin.x, lastRayOrigin.y, lastRayOrigin.z);
+    ImGui::Text("Ray Direction: (%.2f, %.2f, %.2f)", lastRayDirection.x, lastRayDirection.y, lastRayDirection.z);
+    ImGui::Text("mouse position: %.2f, %.2f", ndcX, ndcY);
+    ImGui::End();
+
   
 
     if (currentObject)
@@ -302,7 +319,6 @@ void UWorld::SpawnCube()
 	NewCube->RelativeLocation = FVector(0.0f, 0.0f, 2.0f);
     NewCube->RelativeScale3D = FVector(1.0f, 1.0f, 1.0f);
 	AddObject(NewCube);
-	currentObject = NewCube;
 
 }  
 
@@ -333,6 +349,103 @@ void UWorld::CreateGizmo()
     // 기즈모 버퍼 생성
     vertexBufferGizmo = renderer.CreateVertexBuffer(gizmoVertices, sizeof(gizmoVertices));
 }
+
+
+
+void UWorld::SelectObjectWithMouse()
+{
+    int mouseX, mouseY;
+    InputHandler.GetMouseAbsolutePosition(mouseX, mouseY); // 기존 InputHandler는 마우스 이동 값 누적 -> window input으로 변경
+
+    // NDC 좌표 계산
+    ndcX = (2.0f * mouseX) / 1024.0f - 1.0f; // X축: [-1, 1]
+    ndcY = 1.0f - (2.0f * mouseY) / 1024.0f; // Y축: [1, -1]
+
+    // NDC에서 뷰 공간으로 변환
+    FMatrix invProjection = FMatrix::Inverse(Camera.GetProjectionMatrix());
+    FVector4 rayClip(ndcX, ndcY, 1.0f, 1.0f); // Z = 1.0f (뷰 공간에서의 far plane)
+    FVector4 rayEye = FMatrix::TransformVector(rayClip, invProjection);
+    rayEye.z = 1.0f; // 뷰 공간에서의 방향 벡터 (Z = 1.0f)
+    rayEye.a = 0.0f; // 방향 벡터이므로 w = 0
+
+    // 뷰 공간에서 월드 공간으로 변환
+    FMatrix invView = FMatrix::Inverse(Camera.GetViewMatrix());
+    FVector4 rayWorld4 = FMatrix::TransformVector(rayEye, invView);
+    FVector rayWorld(rayWorld4.x, rayWorld4.y, rayWorld4.z);
+    rayWorld = rayWorld.Normalize();
+
+    // Ray의 원점과 방향 설정
+    lastRayOrigin = Camera.RelativeLocation;
+    lastRayDirection = rayWorld;
+
+
+
+    // 충돌 검사
+    float closestDistance = FLT_MAX;
+    USceneComponent* selectedObject = nullptr;
+
+    for (auto& Object : ObjectList)
+    {
+        USceneComponent* sceneComp = dynamic_cast<USceneComponent*>(Object);
+        if (sceneComp)
+        {
+            float hitDistance;
+            if (RayIntersectsObject(lastRayOrigin, lastRayDirection, sceneComp, hitDistance))
+            {
+                if (hitDistance < closestDistance)
+                {
+                    closestDistance = hitDistance;
+                    selectedObject = sceneComp;
+                }
+            }
+        }
+    }
+
+    // 가장 가까운 오브젝트를 선택
+    if (selectedObject)
+    {
+        currentObject = selectedObject;
+    }
+}
+
+
+
+
+// 오브젝트와의 충돌 검사
+bool UWorld::RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDir, USceneComponent* obj, float& hitDistance)
+{
+    FVector halfSize = obj->RelativeScale3D ; // 오브젝트 스케일 적용
+    FVector boxMin = obj->RelativeLocation - halfSize;
+    FVector boxMax = obj->RelativeLocation + halfSize;
+
+
+    //AABB
+
+    float tMin = (boxMin.x - rayOrigin.x) / (fabs(rayDir.x) < 1e-6 ? 1e-6 : rayDir.x);  // rayDir.x 가 0이면 0으로 나누는 문제 해결
+    float tMax = (boxMax.x - rayOrigin.x) / (fabs(rayDir.x) < 1e-6 ? 1e-6 : rayDir.x);
+    if (tMin > tMax) std::swap(tMin, tMax);
+
+    float tyMin = (boxMin.y - rayOrigin.y) / (fabs(rayDir.y) < 1e-6 ? 1e-6 : rayDir.y);
+    float tyMax = (boxMax.y - rayOrigin.y) / (fabs(rayDir.y) < 1e-6 ? 1e-6 : rayDir.y);
+    if (tyMin > tyMax) std::swap(tyMin, tyMax);
+
+    if ((tMin > tyMax) || (tyMin > tMax)) return false;
+    if (tyMin > tMin) tMin = tyMin;
+    if (tyMax < tMax) tMax = tyMax;
+
+    float tzMin = (boxMin.z - rayOrigin.z) / (fabs(rayDir.z) < 1e-6 ? 1e-6 : rayDir.z);
+    float tzMax = (boxMax.z - rayOrigin.z) / (fabs(rayDir.z) < 1e-6 ? 1e-6 : rayDir.z);
+    if (tzMin > tzMax) std::swap(tzMin, tzMax);
+
+    if ((tMin > tzMax) || (tzMin > tMax)) return false;
+    if (tzMin > tMin) tMin = tzMin;
+    if (tzMax < tMax) tMax = tzMax;
+
+    hitDistance = tMin;
+    return true;
+}
+
+
 
 
 

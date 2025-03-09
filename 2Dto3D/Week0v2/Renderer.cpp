@@ -157,7 +157,7 @@ void URenderer::UpdateConstant(const FMatrix& worldMatrix, const FMatrix& viewMa
 
 void URenderer::CreateDepthBuffer()
 {
-    // 表捞 胶刨角 咆胶贸 积己
+    // depth 胶刨角 咆胶贸 积己
     D3D11_TEXTURE2D_DESC depthBufferDesc = {};
     depthBufferDesc.Width = (UINT)Graphics->ViewportInfo.Width;
     depthBufferDesc.Height = (UINT)Graphics->ViewportInfo.Height;
@@ -170,7 +170,7 @@ void URenderer::CreateDepthBuffer()
 
     Graphics->Device->CreateTexture2D(&depthBufferDesc, nullptr, &DepthStencilBuffer);
 
-    // 表捞 胶刨角 轰 积己
+    // depth 胶刨角 轰 积己
     D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc = {};
     depthStencilViewDesc.Format = depthBufferDesc.Format;
     depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
@@ -178,7 +178,7 @@ void URenderer::CreateDepthBuffer()
 
     Graphics->Device->CreateDepthStencilView(DepthStencilBuffer, &depthStencilViewDesc, &DepthStencilView);
 
-    // 表捞 胶刨角 惑怕 积己
+    // depth 胶刨角 惑怕 积己
     D3D11_DEPTH_STENCIL_DESC depthStencilDesc = {};
     depthStencilDesc.DepthEnable = TRUE;
     depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;

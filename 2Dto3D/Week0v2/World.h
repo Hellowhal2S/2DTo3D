@@ -27,6 +27,8 @@ public:
 	void SpawnCube();
 	void SpawnSphere();
 	void CreateGizmo();
+    void SelectObjectWithMouse();
+    bool RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDir, USceneComponent* obj, float& hitDistance);
 
 private:
     void CreateMainWindow(HINSTANCE hInstance);
@@ -47,5 +49,10 @@ private:
     USceneComponent* currentObject;
     EObjectType Type;
     bool bIsExit = false;
+
+private:
+    FVector lastRayOrigin;
+    FVector lastRayDirection;
+
 };
 

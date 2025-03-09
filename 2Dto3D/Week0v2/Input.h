@@ -7,6 +7,7 @@
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 
+#include <windows.h>
 #include <dinput.h>
 
 class InputClass
@@ -27,6 +28,7 @@ public:
     void GetMouseLocation(int&, int&);
     bool IsMousePressed();
     bool IsRightMousePressed();
+    void GetMouseAbsolutePosition(int& x, int& y);
 
 private:
     bool ReadKeyboard();

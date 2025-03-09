@@ -71,6 +71,16 @@ void InputClass::Shutdown()
     }
 }
 
+
+
+void InputClass::GetMouseAbsolutePosition(int& x, int& y)
+{
+    POINT point;
+    GetCursorPos(&point);
+    x = point.x;
+    y = point.y;
+}
+
 bool InputClass::Frame()
 {
     if (!ReadKeyboard() || !ReadMouse())
