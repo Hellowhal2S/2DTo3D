@@ -41,7 +41,19 @@ void UPlayer::Input()
 		FVector rayDir;
 		ScreenToRay(mousePos.x, mousePos.y, View, Projection, rayOrigin, rayDir);
 		UObject* Possible = nullptr;
+
 		for (auto iter = GetWorld()->GetSphreList().begin(); iter != GetWorld()->GetSphreList().end();++iter)
+		{
+			if (RayIntersectsSphere(rayOrigin, rayDir, (*iter)->GetLocation(), (*iter)->GetScale().x))
+			{
+				if (!Possible)
+					Possible = (*iter);
+				else if (Possible->GetLocation().Distance(rayOrigin) > ((*iter)->GetLocation().Distance(rayOrigin)))
+					Possible = (*iter);
+			}
+		}
+
+		for (auto iter = GetWorld()->GetCubeList().begin(); iter != GetWorld()->GetCubeList().end();++iter)
 		{
 			if (RayIntersectsSphere(rayOrigin, rayDir, (*iter)->GetLocation(), (*iter)->GetScale().x))
 			{
@@ -70,10 +82,10 @@ void UPlayer::Input()
 			}
 			else
 			{
-				char message[256];
-				sprintf_s(message, "Ray Origin: (%.2f, %.2f, %.2f)\nRay Direction: (%.2f, %.2f, %.2f)",
-					rayOrigin.x, rayOrigin.y, rayOrigin.z, rayDir.x, rayDir.y, rayDir.z);
-				MessageBoxA(nullptr, message, "No", MB_OK);
+				//char message[256];
+				//sprintf_s(message, "Ray Origin: (%.2f, %.2f, %.2f)\nRay Direction: (%.2f, %.2f, %.2f)",
+				//	rayOrigin.x, rayOrigin.y, rayOrigin.z, rayDir.x, rayDir.y, rayDir.z);
+				//MessageBoxA(nullptr, message, "No", MB_OK);
 			}
 		}
 	}

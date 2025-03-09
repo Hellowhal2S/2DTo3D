@@ -1,5 +1,6 @@
 #include "CameraComponent.h"
-
+#include "JungleMath.h"
+#include "World.h"
 UCameraComponent::UCameraComponent()
 {
 }
@@ -17,6 +18,10 @@ void UCameraComponent::Initialize(UWorld* _World)
 void UCameraComponent::Update(double deltaTime)
 {
 	Input();
+	zAxis = (m_Location + GetForwardVector() - m_Location).Normalize();
+	FVector X = FVector(0.0f, 0.0f, 1.0f);
+	xAxis = (JungleMath::FVectorRotate(X,m_Rotation).Cross(zAxis)).Normalize();
+	yAxis = zAxis.Cross(xAxis);
 }
 
 void UCameraComponent::Release()
@@ -87,6 +92,18 @@ void UCameraComponent::Input()
 	{
 		RotateYaw(1.f);
 	}
+	if (GetAsyncKeyState('I') & 0x8000)
+	{
+		RotatePitch(-1.f);
+	}
+	if (GetAsyncKeyState('K') & 0x8000)
+	{
+		RotatePitch(1.f);
+	}
+	if (GetAsyncKeyState('Z') & 0x8000)
+	{
+		GetWorld()->GetPickingObj()->SetLocation(GetWorld()->GetPickingObj()->GetLocation() + GetWorld()->GetPickingObj()->GetRightVector());
+	}
 }
 
 void UCameraComponent::MoveForward(float _Value)
@@ -112,5 +129,12 @@ void UCameraComponent::RotateYaw(float _Value)
 void UCameraComponent::RotatePitch(float _Value)
 {
 	m_Rotation.x -= _Value;
+}
+
+FVector UCameraComponent::GetCameraRightVector()
+{
+	FVector Right = FVector(1.f, 0.f, 0.0f);
+	Right = JungleMath::FVectorRotateCamera(Right, m_Rotation);
+	return Right;
 }
 

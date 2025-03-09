@@ -43,6 +43,12 @@
     <Filter Include="소스 파일\Util">
       <UniqueIdentifier>{75b1f0dc-2372-4f5f-8e47-e6e1b29dc08f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\UI">
+      <UniqueIdentifier>{9e19a3fa-ee01-44d1-beb9-f1942785d830}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\UI">
+      <UniqueIdentifier>{dbcf0b5e-7180-413d-a40f-fc63ac311a8d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -113,6 +119,9 @@
     </ClCompile>
     <ClCompile Include="ObjectFactory.cpp">
       <Filter>소스 파일\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Console.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -198,6 +207,9 @@
     </ClInclude>
     <ClInclude Include="LocalGizmoComponent.h">
       <Filter>헤더 파일\UObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Console.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

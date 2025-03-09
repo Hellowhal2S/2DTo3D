@@ -16,7 +16,7 @@
 #include "Sphere.h"
 #include "Cube.h"
 #include "Gizmo.h"
-
+#include "Console.h"
 UGraphicsDevice graphicDevice;
 HWND hWnd;
 FMatrix View;
@@ -91,6 +91,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	LARGE_INTEGER startTime, endTime;
 	double elapsedTime = 1.0;
+	
+	UE_LOG(LogLevel::Display,"Hello Jungle");
 	while (bIsExit == false)
 	{
 		QueryPerformanceCounter(&startTime);
@@ -181,19 +183,26 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				renderer.RenderPrimitive(vertexBufferCube, numVerticesCube);
 			}
 		}
+
+
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
+
+		Console::GetInstance().Draw();
+	
 		// 이후 ImGui UI 컨트롤 추가는 ImGui::NewFrame()과 ImGui::Render() 사이인 여기에 위치합니다.
 		ImGui::Begin("Jungle Control Panel");
 		ImGui::Text("Hello Jungle World!");
 		double fps = 1000.0 / elapsedTime;
 		ImGui::Text("FPS %.2f (%.2fms)", fps, elapsedTime);
-		if(World->GetPickingObj())
-			ImGui::Text("%f %.2f %.2f)", World->GetPickingObj()->GetRightVector().x, World->GetPickingObj()->GetRightVector().y, World->GetPickingObj()->GetRightVector().z);
-		if (World->GetPickingObj())
-			ImGui::Text("%f %.2f %.2f)", World->GetPickingGizmo()->GetScale().x, World->GetPickingGizmo()->GetScale().y, World->GetPickingGizmo()->GetScale().z);
+		//if(World->GetPickingObj())
+		//	ImGui::Text("%.2f %.2f %.2f)", World->GetPickingObj()->GetRightVector().x, World->GetPickingObj()->GetRightVector().y, World->GetPickingObj()->GetRightVector().z);
+		//if (World->GetPickingObj())
+		//	ImGui::Text("%f %.2f %.2f)", World->GetPickingGizmo()->GetScale().x, World->GetPickingGizmo()->GetScale().y, World->GetPickingGizmo()->GetScale().z);
+		
+		ImGui::Text("%f %.2f %.2f)", Camera->GetRightVector().x, Camera->GetRightVector().y, Camera->GetRightVector().z);
 		ImGui::Separator();
 		static int primitiveType = 0;
 		const char* primitives[] = { "Sphere", "Cube", "Triangle"};
@@ -230,6 +239,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		float cameraRotation[3] = { Camera->GetRotation().x, Camera->GetRotation().y, Camera->GetRotation().z};
 		ImGui::InputFloat3("Camera Rotation", cameraRotation);
+
+		World->GetCamera()->SetLocation(FVector(cameraLocation[0], cameraLocation[1], cameraLocation[2]));
+		World->GetCamera()->SetRotation(FVector(cameraRotation[0], cameraRotation[1], cameraRotation[2]));
 
 		ImGui::End();
 		ImGui::Begin("Jungle Property Panel");

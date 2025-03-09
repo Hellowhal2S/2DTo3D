@@ -4,14 +4,18 @@
 #include <list>
 #include <vector>
 #include <DirectXMath.h>
-
+#include <string>
 #define PI 3.141592
 #pragma once
 
 #define TArray std::vector
 #define TDoubleLinkedList std::list
-
+#define FString std::string
+#define UE_LOG Console::GetInstance().AddLog
 #define Super __super
+
+#include "Console.h"
+
 struct FVertexSimple
 {
 	float x, y, z;    // Position

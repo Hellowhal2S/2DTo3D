@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CameraComponent.cpp" />
+    <ClCompile Include="Console.cpp" />
     <ClCompile Include="CubeComp.cpp" />
     <ClCompile Include="Define.cpp" />
     <ClCompile Include="GizmoComponent.cpp" />
@@ -163,6 +164,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraComponent.h" />
+    <ClInclude Include="Console.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="CubeComp.h" />
     <ClInclude Include="Define.h" />
