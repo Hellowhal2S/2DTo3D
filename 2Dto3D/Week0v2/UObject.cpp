@@ -9,13 +9,6 @@ UObject::UObject() {
 }
 
 UObject::~UObject() {}
-
-FVector UObject::GetForwardVector()
-{
-	FVector Forward = FVector(0.f, 0.f, 1.0f);
-	//Forward = JungleMath::FVectorRotate(Forward, m_Rotation);
-	return Forward;
-}
 //template <typename T>
 //UObject* UObject::NewObject() {
 //

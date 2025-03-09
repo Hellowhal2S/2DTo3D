@@ -6,9 +6,13 @@ class USceneComponent : public UObject
 public:
 	USceneComponent() {};
 	virtual ~USceneComponent() {};
+	
 	FVector RelativeLocation;
 	FVector RelativeRotation;
 	FVector RelativeScale3D;
+
+	FVector GetForwardVector();
+	FVector GetRightVector();
 };
 
 class UPrimitiveComponent : public USceneComponent
