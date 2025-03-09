@@ -4,13 +4,11 @@
 #include "GraphicDevice.h"
 #include "Renderer.h"
 #include "ImguiManager.h"
-#include "Object.h"
+#include "Save.h"
 #include "Input.h"
 #include "Camera.h"
 #include "Model.h"
 
-
-#include <vector> // STL 벡터 사용
 
 class UWorld
 {
@@ -24,9 +22,9 @@ public:
 
     void AddObject(UObject* NewObject);
     void RemoveObject(UObject* ObjectToRemove);
-	void SpawnCube();
-	void SpawnSphere();
-	void CreateGizmo();
+    void SpawnCube();
+    void SpawnSphere();
+    void CreateGizmo();
     void SelectObjectWithMouse();
     bool RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDir, USceneComponent* obj, float& hitDistance);
 
@@ -37,22 +35,23 @@ private:
 
 private:
     HWND hWnd;
-    std::vector<UObject*> ObjectList; // 객체 리스트 관리
+    std::vector<UObject*> ObjectList;
     UGraphicsDevice graphicDevice;
     URenderer renderer;
     UImGuiManager imguiManager;
     ID3D11Buffer* vertexBufferSphere = nullptr;
-	ID3D11Buffer* vertexBufferCube = nullptr;
+    ID3D11Buffer* vertexBufferCube = nullptr;
     ID3D11Buffer* vertexBufferGizmo = nullptr;
-    InputClass InputHandler; // InputClass 추가
+    ID3D11Buffer* vertexBufferArrow = nullptr;
+    InputClass InputHandler;
     UCamera Camera;
     USceneComponent* currentObject;
+    USaveManager SaveManager; // 멤버 변수로 이동
     EObjectType Type;
+
     bool bIsExit = false;
 
 private:
     FVector lastRayOrigin;
     FVector lastRayDirection;
-
 };
-

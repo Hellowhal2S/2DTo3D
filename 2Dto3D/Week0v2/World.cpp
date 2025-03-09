@@ -1,6 +1,7 @@
 #include "World.h"
 #include "Cube.h"
 #include "Sphere.h"
+#include "Arrow.h"
 
 float ndcX;
 float ndcY;
@@ -166,51 +167,86 @@ void UWorld::Update()
 	Camera.SetProjection(1024.0f / 1024.0f, 0.1f, 1000.0f); 
 }
 
+
 void UWorld::Render()
 {
     renderer.Prepare();
     renderer.PrepareShader();
 
-    // 기존 큐브와 스피어 렌더링
+    // 기존 오브젝트 렌더링
     for (auto& Object : ObjectList)
     {
         USceneComponent* sceneComp = dynamic_cast<USceneComponent*>(Object);
-        FMatrix translationMatrix = FMatrix::Identity;
-        translationMatrix.M[3][0] = sceneComp->RelativeLocation.x;
-        translationMatrix.M[3][1] = sceneComp->RelativeLocation.y;
-        translationMatrix.M[3][2] = sceneComp->RelativeLocation.z;
+        if (!sceneComp) continue;
 
-        // 회전 행렬 적용 (Yaw, Pitch, Roll)
-        FMatrix rotationMatrix = FMatrix::CreateRotation(sceneComp->RelativeRotation.x,  // Roll
-            sceneComp->RelativeRotation.y,  // Pitch
-            sceneComp->RelativeRotation.z); // Yaw
-
-        // 스케일 행렬 적용
+        FMatrix translationMatrix = FMatrix::CreateTranslationMatrix(sceneComp->RelativeLocation);
+        FMatrix rotationMatrix = FMatrix::CreateRotation(sceneComp->RelativeRotation.x,
+            sceneComp->RelativeRotation.y,
+            sceneComp->RelativeRotation.z);
         FMatrix scaleMatrix = FMatrix::CreateScale(sceneComp->RelativeScale3D.x,
             sceneComp->RelativeScale3D.y,
             sceneComp->RelativeScale3D.z);
 
-        // 최종 변환 행렬 (S * R * T)
+        // 변환 순서: S * R * T
         FMatrix worldMatrix = scaleMatrix * rotationMatrix * translationMatrix;
-        if (UCubeComp* Cube = dynamic_cast<UCubeComp*>(Object))
-        {
-            FMatrix worldMatrix = scaleMatrix * rotationMatrix * translationMatrix;
 
-            renderer.UpdateConstant(worldMatrix, Camera.GetViewMatrix(), Camera.GetProjectionMatrix());
+        if (UCubeComp* Cube = dynamic_cast<UCubeComp*>(Object))
+        {   
+            if(currentObject == sceneComp)
+                renderer.UpdateConstant(worldMatrix, Camera.GetViewMatrix(), Camera.GetProjectionMatrix(), 4);
+            else
+            renderer.UpdateConstant(worldMatrix, Camera.GetViewMatrix(), Camera.GetProjectionMatrix(),0);
             renderer.RenderPrimitive(vertexBufferCube, sizeof(cube_vertices) / sizeof(FVertexSimple));
         }
 
         if (USphereComp* Sphere = dynamic_cast<USphereComp*>(Object))
         {
-            renderer.UpdateConstant(worldMatrix, Camera.GetViewMatrix(), Camera.GetProjectionMatrix());
+            if (currentObject == sceneComp)
+                renderer.UpdateConstant(worldMatrix, Camera.GetViewMatrix(), Camera.GetProjectionMatrix(), 4);
+            else
+            renderer.UpdateConstant(worldMatrix, Camera.GetViewMatrix(), Camera.GetProjectionMatrix(),0);
             renderer.RenderPrimitive(vertexBufferSphere, sizeof(sphere_vertices) / sizeof(FVertexSimple));
         }
     }
 
-    // 기즈모 렌더링
+   
+    if (currentObject)
+    {
+        FVector location = currentObject->RelativeLocation;
+        FVector scale = currentObject->RelativeScale3D;
+
+        // 개체의 원점에서 변환
+        
+        FMatrix objectTransform = FMatrix::CreateTranslationMatrix(location);
+        FMatrix objectRotation = FMatrix::CreateRotation(currentObject->RelativeRotation.x,
+            currentObject->RelativeRotation.y,
+            currentObject->RelativeRotation.z);
+
+        // X축 기즈모 (빨강)
+        FMatrix scaleMatrix = FMatrix::CreateScale(max(scale.x * 2, 1), 1, 1);
+        FMatrix gizmoX = scaleMatrix * objectRotation * objectTransform;
+        renderer.UpdateConstant(gizmoX, Camera.GetViewMatrix(), Camera.GetProjectionMatrix(),1);
+        renderer.RenderPrimitive(vertexBufferArrow, sizeof(arrow_vertices) / sizeof(FVertexSimple));
+
+        // Y축 기즈모 (초록) - X축 Arrow를 Y축 기준으로 90도 회전
+         scaleMatrix = FMatrix::CreateScale(1, max(1,scale.y * 2), 1);
+        FMatrix rotationY = FMatrix::CreateRotation(0, 0, -90);
+        FMatrix gizmoY = rotationY * scaleMatrix * objectRotation * objectTransform;
+        renderer.UpdateConstant(gizmoY, Camera.GetViewMatrix(), Camera.GetProjectionMatrix(),2);
+        renderer.RenderPrimitive(vertexBufferArrow, sizeof(arrow_vertices) / sizeof(FVertexSimple));
+
+        // Z축 기즈모 (파랑) - X축 Arrow를 Z축 기준으로 90도 회전
+        scaleMatrix = FMatrix::CreateScale(1, 1 , max(1, scale.z * 2));
+        FMatrix rotationZ = FMatrix::CreateRotation(0, 90, 0);
+        FMatrix gizmoZ = rotationZ * scaleMatrix * objectRotation * objectTransform;
+        renderer.UpdateConstant(gizmoZ, Camera.GetViewMatrix(), Camera.GetProjectionMatrix(),3);
+        renderer.RenderPrimitive(vertexBufferArrow, sizeof(arrow_vertices) / sizeof(FVertexSimple));
+    }
+
+    // 월드 기즈모 렌더링
     renderer.Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
     FMatrix gizmoWorldMatrix = FMatrix::Identity;
-    renderer.UpdateConstant(gizmoWorldMatrix, Camera.GetViewMatrix(), Camera.GetProjectionMatrix());
+    renderer.UpdateConstant(gizmoWorldMatrix, Camera.GetViewMatrix(), Camera.GetProjectionMatrix(),0);
     renderer.RenderPrimitive(vertexBufferGizmo, 6);
 
     imguiManager.BeginFrame();
@@ -259,6 +295,8 @@ void UWorld::Render()
             currentObject = newObject; 
         }
     }
+    ImGui::Separator();
+    SaveManager.RenderSceneManagerUI(ObjectList);
 
     ImGui::Checkbox("Orthgraphic", &Camera.bOrthographic);
     ImGui::SliderFloat("##FOV", &Camera.fovDegrees, 0.0f, 180.0f, "%.1f");
@@ -268,6 +306,8 @@ void UWorld::Render()
     float lookAt[3] = { Camera.GetForward().x, Camera.GetForward().y, Camera.GetForward().z };
     ImGui::InputFloat3("LookAt", lookAt, "%.2f", ImGuiInputTextFlags_ReadOnly);
     ImGui::End();
+
+    
 
     ImGui::Begin("Ray Info");
     ImGui::Text("Ray Origin: (%.2f, %.2f, %.2f)", lastRayOrigin.x, lastRayOrigin.y, lastRayOrigin.z);
@@ -288,6 +328,7 @@ void UWorld::Render()
     }
 	imguiManager.Render();
 }   
+
 
 
 void UWorld::Release()
@@ -330,25 +371,20 @@ void UWorld::SpawnSphere()
 
 void UWorld::CreateGizmo()
 {
-    // X (Red), Y (Green), Z (Blue) 축을 표현하는 선분 버텍스
+    // 기존 축 기즈모 생성 (X, Y, Z)
     FVertexSimple gizmoVertices[] =
     {
-        // X축 (빨강)
-   { 0.0f, 0.0f, 0.0f, 1, 0, 0, 1 }, // 원점
-   { 10.0f, 0.0f, 0.0f, 1, 0, 0, 1 }, // 끝점
-
-   // Y축 (초록)
-   { 0.0f, 0.0f, 0.0f, 0, 1, 0, 1 },
-   { 0.0f, 10.0f, 0.0f, 0, 1, 0, 1 },
-
-   // Z축 (파랑)
-   { 0.0f, 0.0f, 0.0f, 0, 0, 1, 1 },
-   { 0.0f, 0.0f, 10.0f, 0, 0, 1, 1 },
+        { 0.0f, 0.0f, 0.0f, 1, 0, 0, 1 }, { 100.0f, 0.0f, 0.0f, 1, 0, 0, 1 }, // X축
+        { 0.0f, 0.0f, 0.0f, 0, 1, 0, 1 }, { 0.0f, 100.0f, 0.0f, 0, 1, 0, 1 }, // Y축
+        { 0.0f, 0.0f, 0.0f, 0, 0, 1, 1 }, { 0.0f, 0.0f, 100.0f, 0, 0, 1, 1 }  // Z축
     };
 
-    // 기즈모 버퍼 생성
     vertexBufferGizmo = renderer.CreateVertexBuffer(gizmoVertices, sizeof(gizmoVertices));
+
+    //  Arrow용 버퍼 생성
+    vertexBufferArrow = renderer.CreateVertexBuffer(arrow_vertices, sizeof(arrow_vertices));
 }
+
 
 
 
@@ -422,7 +458,7 @@ bool UWorld::RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDir
     //AABB
 
     float tMin = (boxMin.x - rayOrigin.x) / (fabs(rayDir.x) < 1e-6 ? 1e-6 : rayDir.x);  // rayDir.x 가 0이면 0으로 나누는 문제 해결
-    float tMax = (boxMax.x - rayOrigin.x) / (fabs(rayDir.x) < 1e-6 ? 1e-6 : rayDir.x);
+    float tMax = (boxMax.x - rayOrigin.x) / (fabs(rayDir.x) < 1e-6 ? 1e-6 : rayDir.x); // 박스의 x축을 통과 하는 시간
     if (tMin > tMax) std::swap(tMin, tMax);
 
     float tyMin = (boxMin.y - rayOrigin.y) / (fabs(rayDir.y) < 1e-6 ? 1e-6 : rayDir.y);
@@ -430,11 +466,11 @@ bool UWorld::RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDir
     if (tyMin > tyMax) std::swap(tyMin, tyMax);
 
     if ((tMin > tyMax) || (tyMin > tMax)) return false;
-    if (tyMin > tMin) tMin = tyMin;
+    if (tyMin > tMin) tMin = tyMin;  // y축 통과 시간
     if (tyMax < tMax) tMax = tyMax;
 
     float tzMin = (boxMin.z - rayOrigin.z) / (fabs(rayDir.z) < 1e-6 ? 1e-6 : rayDir.z);
-    float tzMax = (boxMax.z - rayOrigin.z) / (fabs(rayDir.z) < 1e-6 ? 1e-6 : rayDir.z);
+    float tzMax = (boxMax.z - rayOrigin.z) / (fabs(rayDir.z) < 1e-6 ? 1e-6 : rayDir.z);  //z축 통과 시간
     if (tzMin > tzMax) std::swap(tzMin, tzMax);
 
     if ((tMin > tzMax) || (tzMin > tMax)) return false;

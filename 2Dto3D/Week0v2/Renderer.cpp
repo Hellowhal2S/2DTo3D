@@ -88,7 +88,9 @@ void URenderer::PrepareShader()
     if (ConstantBuffer)
     {
         Graphics->DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer);
+        Graphics->DeviceContext->PSSetConstantBuffers(0, 1, &ConstantBuffer); // 픽셀 셰이더에도 설정 추가
     }
+
 }
 void URenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices) {
     UINT offset = 0;
@@ -138,22 +140,23 @@ void URenderer::ReleaseConstantBuffer()
         ConstantBuffer = nullptr;
     }
 }
-void URenderer::UpdateConstant(const FMatrix& worldMatrix, const FMatrix& viewMatrix, const FMatrix& projectionMatrix)
+void URenderer::UpdateConstant(const FMatrix& worldMatrix, const FMatrix& viewMatrix, const FMatrix& projectionMatrix, int mode)
 {
     if (ConstantBuffer)
     {
         D3D11_MAPPED_SUBRESOURCE constantbufferMSR;
-
         Graphics->DeviceContext->Map(ConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantbufferMSR);
         FConstants* constants = (FConstants*)constantbufferMSR.pData;
         {
             constants->World = worldMatrix;
             constants->View = viewMatrix;
             constants->Projection = projectionMatrix;
+            constants->mode = mode;  // mode 값 업데이트
         }
         Graphics->DeviceContext->Unmap(ConstantBuffer, 0);
     }
 }
+
 
 void URenderer::CreateDepthBuffer()
 {

@@ -144,6 +144,7 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="PrimitiveComponent.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Save.cpp" />
     <ClCompile Include="SceneComponent.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
@@ -158,11 +159,13 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Arrow.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="ImguiManager.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="ImGUI\imconfig.h" />
     <ClInclude Include="ImGUI\imgui.h" />
@@ -174,6 +177,7 @@
     <ClInclude Include="ImGUI\imstb_truetype.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="PrimitiveComponent.h" />
+    <ClInclude Include="Save.h" />
     <ClInclude Include="SceneComponent.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="GraphicDevice.h" />

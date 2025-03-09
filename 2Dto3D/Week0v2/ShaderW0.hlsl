@@ -1,11 +1,14 @@
-// ShaderW0.hlsl
-
 // 상수 버퍼 정의 (b0 레지스터에 바인딩)
 cbuffer constants : register(b0)
 {
     float4x4 World;
     float4x4 View;
     float4x4 Projection;
+    int mode; // 모드 추가
+    int padding1;
+    int padding2;
+    int padding3;  //16바이트 포맷을 맞추기 위한 패딩들...
+    
 }
 
 // 정점 셰이더 입력 구조체
@@ -39,8 +42,27 @@ PS_INPUT mainVS(VS_INPUT input)
     return output;
 }
 
-// 픽셀 셰이더
+// 픽셀 셰이더 (mode 값에 따라 색상 변경)
 float4 mainPS(PS_INPUT input) : SV_TARGET
 {
-    return input.color; // 입력된 색상을 그대로 출력
+    float4 baseColor = input.color; // 기본 색상
+
+    if (mode == 1)
+    {
+        baseColor = float4(1, 0, 0, 1); // 빨강
+    }
+    else if (mode == 2)
+    {
+        baseColor = float4(0, 1, 0, 1); // 초록
+    }
+    else if (mode == 3)
+    {
+        baseColor = float4(0, 0, 1, 1); // 파랑
+    }
+    else if (mode == 4)
+    {
+        baseColor *= 2.0f; // 밝게 (강조 효과)
+    }
+
+    return baseColor;
 }

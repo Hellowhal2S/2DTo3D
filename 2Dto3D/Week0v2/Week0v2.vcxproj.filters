@@ -61,6 +61,12 @@
     <Filter Include="소스 파일\Model">
       <UniqueIdentifier>{472ab18e-67cc-4731-8ffd-afc80ad3f449}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\JSON">
+      <UniqueIdentifier>{e1b1192c-6de3-4016-a637-72d0d2ce4c73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Json">
+      <UniqueIdentifier>{2bd0814e-493e-4c2f-b885-2f960d07a35d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -119,6 +125,9 @@
     </ClCompile>
     <ClCompile Include="Model.cpp">
       <Filter>소스 파일\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Save.cpp">
+      <Filter>소스 파일\Json</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -192,6 +201,15 @@
     </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>헤더 파일\Modle</Filter>
+    </ClInclude>
+    <ClInclude Include="Arrow.h">
+      <Filter>헤더 파일\Modle</Filter>
+    </ClInclude>
+    <ClInclude Include="json.hpp">
+      <Filter>헤더 파일\JSON</Filter>
+    </ClInclude>
+    <ClInclude Include="Save.h">
+      <Filter>헤더 파일\JSON</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -9,5 +9,7 @@ public:
 	virtual void		Initialize();
 	virtual void		Update();
 	virtual void		Release();
+	uint32 UUID;
+	uint32 InternalIndex;
 };	
 

@@ -205,6 +205,18 @@ FMatrix FMatrix::CreateRotation(float roll, float pitch, float yaw)
      return result;
  }
 
+ FMatrix FMatrix::CreateTranslationMatrix(const FVector& position)
+ {
+     FMatrix translationMatrix = FMatrix::Identity;
+     translationMatrix.M[3][0] = position.x;
+     translationMatrix.M[3][1] = position.y;
+     translationMatrix.M[3][2] = position.z;
+     return translationMatrix;
+ }
+
+
+
+
 
 
 
