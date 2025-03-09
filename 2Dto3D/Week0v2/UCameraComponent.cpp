@@ -18,9 +18,15 @@ UCameraComponent::UCameraComponent() {
 	up = FVector(0, 1, 0);
 	GetCursorPos(&lastMousePos);
 }
-void UCameraComponent::RotateCamera() {
 
+void UCameraComponent::MoveUp() {
+	RelativeLocation = RelativeLocation + GetUpVector() * velocity;
 }
+
+void UCameraComponent::MoveDown() {
+	RelativeLocation = RelativeLocation - GetUpVector() * velocity;
+}
+
 void UCameraComponent::MoveForward() {
 	RelativeLocation = RelativeLocation + GetForwardVector() * velocity;
 }
@@ -51,8 +57,8 @@ void UCameraComponent::OnMouseMove(float deltaX, float deltaY, float deltaZ) {
 void UCameraComponent::AdjustRotation(float x, float y, float z) {
 	float sensitivity = 0.1f;
 	FVector rot;
-	rot.y = - x * sensitivity;		//yaw y축 회전
-	rot.x = - y * sensitivity;	// pitch x축 회전
+	rot.y =  x * sensitivity;		//yaw y축 회전
+	rot.x = y * sensitivity;	// pitch x축 회전
 	rot.z = z * sensitivity;	// roll z축 회전
 
 	forward = Utils::FVectorRotate(forward, rot);
@@ -103,23 +109,28 @@ void UCameraComponent::Input() {
 	POINT curMousePos;
 	GetCursorPos(&curMousePos);
 
-	if (GetAsyncKeyState(VK_UP) & 0x8000) { // ↑ 방향키
-		//MessageBox(EngineLoop::hWnd, L"앞", L"알림", MB_OK);
+	if (GetAsyncKeyState(0x51) & 0x8000) { // Q
 		MoveForward();
 	}
-	if (GetAsyncKeyState(VK_DOWN) & 0x8000) { // ↓ 방향키
+	if (GetAsyncKeyState(0x45) & 0x8000) { // E
 		MoveBack();
-		//MessageBox(EngineLoop::hWnd, L"뒤", L"알림", MB_OK);
 	}
-	if (GetAsyncKeyState(VK_RIGHT) & 0x8000) { // → 방향키
+	if (GetAsyncKeyState(0x57) & 0x8000) { // W
+		MoveUp();
+		
+	}
+	if (GetAsyncKeyState(0x53) & 0x8000) { // S
+		MoveDown();
+	}
+	if (GetAsyncKeyState(0x44) & 0x8000) { // A
 		MoveRight();
 		//MessageBox(EngineLoop::hWnd, L"오른", L"알림", MB_OK);
 	}
-	if (GetAsyncKeyState(VK_LEFT) & 0x8000) { // ← 방향키
+	if (GetAsyncKeyState(0x41) & 0x8000) { // D
 		MoveLeft();
 		//MessageBox(EngineLoop::hWnd, L"왼", L"알림", MB_OK);
 	}
-	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
+	if (GetAsyncKeyState(VK_RBUTTON) & 0x8000) {	// 우클릭	
 		if (curMousePos.x != lastMousePos.x || curMousePos.y != lastMousePos.y) {
 			OnMouseMove(curMousePos.x - lastMousePos.x, curMousePos.y - lastMousePos.y, 0);
 		}

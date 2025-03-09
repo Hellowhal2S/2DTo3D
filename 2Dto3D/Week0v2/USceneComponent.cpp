@@ -1,6 +1,11 @@
 #include "USceneComponent.h"
 #include "Define.h"
 
+FVector USceneComponent::GetUpVector() {
+	FVector Up = FVector(0.f, 1.0f, 0.f);
+	Up = Utils::FVectorRotate(Up, RelativeRotation);
+	return Up;
+}
 FVector USceneComponent::GetForwardVector()
 {
 	FVector Forward = FVector(0.f, 0.f, 1.0f);

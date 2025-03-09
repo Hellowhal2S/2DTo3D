@@ -33,6 +33,8 @@ public:
 
 	UCameraComponent();
 
+	void MoveUp();
+	void MoveDown();
 	void MoveForward();
 	void MoveBack();
 	void MoveRight();
@@ -43,6 +45,8 @@ public:
 	FVector GetEyePosition();
 	void SetEyePosition(FVector pos);
 	
+	
+
 	FVector GetLook();
 	void SetLook(FVector pos);
 

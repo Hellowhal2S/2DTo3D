@@ -11,6 +11,7 @@ public:
 	FVector RelativeRotation;
 	FVector RelativeScale3D;
 
+	FVector GetUpVector();
 	FVector GetForwardVector();
 	FVector GetRightVector();
 };
