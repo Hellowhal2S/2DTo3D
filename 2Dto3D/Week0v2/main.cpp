@@ -74,7 +74,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	LARGE_INTEGER startTime, endTime;
 	double elapsedTime = 1.0;
 	//EngineLoop::InitRenderer(renderer);
-	EngineLoop::InitEngineLoop(renderer);
+	EngineLoop::InitEngineLoop(renderer, hWnd);
 	while (EngineLoop::bIsExit == false)
 	{
 		QueryPerformanceCounter(&startTime);

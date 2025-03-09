@@ -1,5 +1,6 @@
 #include "UObject.h"
 
+
 TArray<UObject*> UObject::GUObjectArray;
 UObject::UObject() {
     static uint32_t NextUUID = 1;
@@ -9,6 +10,12 @@ UObject::UObject() {
 
 UObject::~UObject() {}
 
+FVector UObject::GetForwardVector()
+{
+	FVector Forward = FVector(0.f, 0.f, 1.0f);
+	//Forward = JungleMath::FVectorRotate(Forward, m_Rotation);
+	return Forward;
+}
 //template <typename T>
 //UObject* UObject::NewObject() {
 //

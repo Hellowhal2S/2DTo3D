@@ -23,13 +23,13 @@ void UWorld::InitWorld() {
 	USphereComp* sphere_comp = static_cast<USphereComp*>(sphere_obj);
 	sphere_comp->RelativeLocation = FVector(0, 0, 0);
 	sphere_comp->RelativeRotation = FVector(0, 0, 0);
-	sphere_comp->RelativeScale3D = FVector(0.5, 0.5, 0.5);
+	sphere_comp->RelativeScale3D = FVector(1, 1, 1);
 	PrimitiveList.push_back(sphere_obj);
 
 	mainCamera->Init(this);
 
 	//테스트용 초기화Set
-	mainCamera->SetEyePosition(FVector(0, 0, -10.f));
+	mainCamera->SetEyePosition(FVector(0, 0, -10.0));
 
 	ObjectLists[OBJ_CAMERA].push_back(mainCamera);
 }

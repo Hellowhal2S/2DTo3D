@@ -14,9 +14,11 @@ public:
 	static bool bIsExit;
 	static MSG msg;
 	static int numVerticesSphere;
+	// µð¹ö±ë¿ë
+	static HWND hWnd;
 public:
 	static void ReleaseVertexBuffer();
-	static void InitEngineLoop(URenderer& renderer);
+	static void InitEngineLoop(URenderer& renderer, HWND hwnd);
 	static void Run(URenderer& renderer);
 	//static void InitRenderer(URenderer& renderer);
 	static ID3D11Buffer* vertexBufferSphere;

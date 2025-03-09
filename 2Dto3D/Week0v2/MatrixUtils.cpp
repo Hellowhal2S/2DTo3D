@@ -47,6 +47,7 @@ FMatrix::FMatrix(FVector vec)
 // 행렬 덧셈
 FMatrix FMatrix::operator+(const FMatrix& Other) const {
     FMatrix Result;
+    memset(Result.M, 0, sizeof(Result.M));
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
             Result.M[i][j] = M[i][j] + Other.M[i][j];
@@ -56,6 +57,7 @@ FMatrix FMatrix::operator+(const FMatrix& Other) const {
 // 행렬 뺄셈
 FMatrix FMatrix::operator-(const FMatrix& Other) const {
     FMatrix Result;
+    memset(Result.M, 0, sizeof(Result.M));
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
             Result.M[i][j] = M[i][j] - Other.M[i][j];
@@ -65,6 +67,7 @@ FMatrix FMatrix::operator-(const FMatrix& Other) const {
 // 행렬 곱셈
 FMatrix FMatrix::operator*(const FMatrix& Other) const {
     FMatrix Result = {};
+    memset(Result.M, 0, sizeof(Result.M));
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
             for (int k = 0; k < 4; k++)
@@ -75,6 +78,7 @@ FMatrix FMatrix::operator*(const FMatrix& Other) const {
 // 스칼라 나눗셈
 FMatrix FMatrix::operator/(float Scalar) const {
     FMatrix Result;
+    memset(Result.M, 0, sizeof(Result.M));
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
             Result.M[i][j] = M[i][j] / Scalar;
@@ -210,42 +214,41 @@ bool FMatrix::IsOrthonormal() const
     return true;
 }
 
-FMatrix FMatrix::Lookat(FVector pos, FVector look, FVector up) {
-    FVector forward = (pos - look).Normalize();
-    FVector right = up.Cross(forward).Normalize();
-    FVector upDir = forward.Cross(right).Normalize();
+FMatrix FMatrix::Lookat(FVector eye, FVector target, FVector up) {
+    FVector zAxis = (target - eye).Normalize();  // DirectX는 LH이므로 -z가 아니라 +z 사용
+    FVector xAxis = (up.Cross(zAxis)).Normalize();
+    FVector yAxis = zAxis.Cross(xAxis);
 
-    FMatrix result;
-    result.Get(0, 0) = right.x;    result.Get(0, 1) = upDir.x;    result.Get(0, 2) = forward.x;    result.Get(0, 3) = 0.0f;
-    result.Get(1, 0) = right.y;    result.Get(1, 1) = upDir.y;    result.Get(1, 2) = forward.y;    result.Get(1, 3) = 0.0f;
-    result.Get(2, 0) = right.z;    result.Get(2, 1) = upDir.z;    result.Get(2, 2) = forward.z;    result.Get(2, 3) = 0.0f;
-    result.Get(3, 0) = -right.Dot(pos);
-    result.Get(3, 1) = -upDir.Dot(pos);
-    result.Get(3, 2) = -forward.Dot(pos);
-    result.Get(3, 3) = 1.0f;
-    return result;
+    FMatrix View;
+    View.M[0][0] = xAxis.x; View.M[0][1] = yAxis.x; View.M[0][2] = zAxis.x; View.M[0][3] = 0;
+    View.M[1][0] = xAxis.y; View.M[1][1] = yAxis.y; View.M[1][2] = zAxis.y; View.M[1][3] = 0;
+    View.M[2][0] = xAxis.z; View.M[2][1] = yAxis.z; View.M[2][2] = zAxis.z; View.M[2][3] = 0;
+    View.M[3][0] = -xAxis.Dot(eye);
+    View.M[3][1] = -yAxis.Dot(eye);
+    View.M[3][2] = -zAxis.Dot(eye);
+    View.M[3][3] = 1;
+
+    return View;;
 }
 
 float& FMatrix::Get(int row, int col) {
     return M[row][col];
 }
 
-FMatrix FMatrix::Perspective(float fov, float width, float height, float zNear, float zFar) {
-    FMatrix mat = FMatrix::Identity;
-    float aspectRatio = width / height;
-    float yScale = 1.0f / tanf(fov * 0.5f);  // Y축 스케일 (fov의 절반을 tan()으로 계산)
-    float xScale = yScale / aspectRatio;     // X축 스케일
-    float zRange = zFar - zNear;
+FMatrix FMatrix::Perspective(float fov, float aspect, float nearPlane, float farPlane) {
+    float rad = fov * (3.141592f / 180.0f);
+    float tanHalfFOV = tan(rad / 2.0f);
+    float depth = farPlane - nearPlane;
 
-    // 원근 투영 행렬 (Left-Handed, DirectX 스타일)
-    mat.Get(0, 0) = xScale;
-    mat.Get(1, 1) = yScale;
-    mat.Get(2, 2) = zFar / zRange;  // zFar / (zFar - zNear)
-    mat.Get(2, 3) = 1.0f;           // w 분리 (Perspective division)
-    mat.Get(3, 2) = (-zNear * zFar) / zRange; // -zNear * zFar / (zFar - zNear)
-    mat.Get(3, 3) = 0.0f;
+    FMatrix Projection = {};
+    Projection.M[0][0] = 1.0f / (aspect * tanHalfFOV);
+    Projection.M[1][1] = 1.0f / tanHalfFOV;
+    Projection.M[2][2] = farPlane / depth;  // 수정된 부분
+    Projection.M[2][3] = 1.0f;              // 수정된 부분 (RH는 -1.0f였음)
+    Projection.M[3][2] = -(nearPlane * farPlane) / depth;
+    Projection.M[3][3] = 1.0f;
 
-    return mat;
+    return Projection;
 }
 
 FMatrix FMatrix::GetModelMatrix(FVector translation, FVector rotation, FVector scale) {
@@ -272,7 +275,7 @@ FMatrix FMatrix::GetModelMatrix(FVector translation, FVector rotation, FVector s
     RotationZ.M[0][0] = cosZ; RotationZ.M[0][1] = -sinZ;
     RotationZ.M[1][0] = sinZ; RotationZ.M[1][1] = cosZ;
 
-    FMatrix Rotation = RotationZ * RotationY * RotationX;
+    FMatrix Rotation = RotationZ * RotationY * RotationX;;
 
     // 이동 행렬
     FMatrix Translation = FMatrix::Identity;

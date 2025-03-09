@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <type_traits>
 #include "ContainerDefs.h"
+#include "VectorUtils.h"
 
 //MOD
 class UWorld;
@@ -22,6 +23,7 @@ public:
 	virtual void Update(double deltaTime) {};
 	virtual void Release() {};
 
+	FVector GetForwardVector();
 	static TArray<UObject*> GUObjectArray;
 #pragma region  추후 구현 함수들
 	/*
