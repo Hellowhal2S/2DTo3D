@@ -11,6 +11,7 @@ UArrowComp::~UArrowComp()
 
 void UArrowComp::Initialize()
 {
+	Super::Initialize();
 }
 
 void UArrowComp::Update(double deltaTime)

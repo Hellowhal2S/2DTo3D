@@ -2,6 +2,8 @@
 #include "PrimitiveComponent.h"
 class UCubeComp : public UPrimitiveComponent
 {
+	DECLARE_CLASS(UCubeComp, UPrimitiveComponent)
+
 public:
 	UCubeComp();
 	~UCubeComp();

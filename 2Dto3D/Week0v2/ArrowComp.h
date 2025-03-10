@@ -2,6 +2,8 @@
 #include "PrimitiveComponent.h"
 class UArrowComp : public UPrimitiveComponent
 {
+	DECLARE_CLASS(UArrowComp, UPrimitiveComponent)
+
 public:
 	UArrowComp();
 	~UArrowComp();

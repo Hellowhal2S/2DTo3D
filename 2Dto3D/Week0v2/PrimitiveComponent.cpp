@@ -14,6 +14,7 @@ UPrimitiveComponent::~UPrimitiveComponent()
 
 void UPrimitiveComponent::Initialize()
 {
+	Super::Initialize();
 }
 
 void UPrimitiveComponent::Update(double deltaTime)

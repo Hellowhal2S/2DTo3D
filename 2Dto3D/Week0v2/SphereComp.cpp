@@ -11,6 +11,7 @@ USphereComp::~USphereComp()
 
 void USphereComp::Initialize()
 {
+	Super::Initialize();
 }
 
 void USphereComp::Update(double deltaTime)

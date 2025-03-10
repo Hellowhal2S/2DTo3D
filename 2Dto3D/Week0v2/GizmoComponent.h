@@ -2,6 +2,7 @@
 #include "SceneComponent.h"
 class UGizmoComponent : public USceneComponent
 {
+	DECLARE_CLASS(UGizmoComponent, USceneComponent)
 public:
 	UGizmoComponent();
 	~UGizmoComponent();

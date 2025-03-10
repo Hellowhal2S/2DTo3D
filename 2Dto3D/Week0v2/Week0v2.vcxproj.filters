@@ -147,6 +147,9 @@
     <ClCompile Include="EngineStatics.cpp">
       <Filter>소스 파일\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="UClass.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ShaderW0.hlsl">
@@ -264,6 +267,9 @@
     </ClInclude>
     <ClInclude Include="EngineStatics.h">
       <Filter>헤더 파일\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="UClass.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -62,7 +62,6 @@ void UPlayer::Input()
 	else
 	{
 		if (bLeftMouseDown) {
-				UE_LOG(LogLevel::Warning, "Up");
 				bLeftMouseDown = false; // 마우스 오른쪽 버튼을 떼면 상태 초기화
 				GetWorld()->SetPickingGizmo(nullptr);
 		}
@@ -110,7 +109,6 @@ void UPlayer::PickGzimo(FVector& rayOrigin, FVector& rayDir)
 				if (minDistance > Distance)
 				{
 					GetWorld()->SetPickingGizmo(GetWorld()->LocalGizmo[i]);
-					UE_LOG(LogLevel::Display, "%d", Arrow->GetDir());
 					minDistance = Distance;
 				}
 			}
@@ -124,8 +122,10 @@ void UPlayer::PickObj(FVector& rayOrigin, FVector& rayDir)
 
 	for (auto iter : GetWorld()->GetObjectArr())
 	{
-		UPrimitiveComponent* pObj = dynamic_cast<UPrimitiveComponent*>(iter);
-
+		UPrimitiveComponent* pObj = nullptr;
+		if (iter->IsA(UPrimitiveComponent::StaticClass())) {
+			 pObj = static_cast<UPrimitiveComponent*>(iter);
+		}
 		if (pObj && pObj->GetType() != "Arrow")
 		{
 			float minDistance = 10000000.0f;

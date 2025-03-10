@@ -15,6 +15,15 @@
 #define UE_LOG Console::GetInstance().AddLog
 #define Super __super
 #define TMap std::unordered_map
+
+#define DECLARE_CLASS(ClassName, ParentClassName) \
+public: \
+    static UClass* StaticClass() { \
+        static UClass ClassInfo(#ClassName, ParentClassName::StaticClass()); \
+        return &ClassInfo; \
+    } \
+    virtual UClass* GetClass() const override { return StaticClass(); }
+
 using int32 = int;
 using uint32 = unsigned int;
 #include "Console.h"

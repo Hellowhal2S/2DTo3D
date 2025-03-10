@@ -2,6 +2,8 @@
 #include "PrimitiveComponent.h"
 class USphereComp :public UPrimitiveComponent
 {
+	DECLARE_CLASS(USphereComp, UPrimitiveComponent)
+
 public:
 	USphereComp();
 	~USphereComp();

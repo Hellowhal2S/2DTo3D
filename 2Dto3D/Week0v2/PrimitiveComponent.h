@@ -2,6 +2,7 @@
 #include "SceneComponent.h"
 class UPrimitiveComponent : public USceneComponent
 {
+	DECLARE_CLASS(UPrimitiveComponent, USceneComponent)
 public:
 	UPrimitiveComponent();
 	UPrimitiveComponent(FString _Type);

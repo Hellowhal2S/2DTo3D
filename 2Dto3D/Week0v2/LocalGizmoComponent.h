@@ -2,6 +2,8 @@
 #include "SceneComponent.h"
 class LocalGizmoComponent : public USceneComponent
 {
+	DECLARE_CLASS(LocalGizmoComponent, USceneComponent)
+
 public:
 	LocalGizmoComponent();
 	virtual				~LocalGizmoComponent();

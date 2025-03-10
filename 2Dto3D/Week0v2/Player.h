@@ -3,6 +3,8 @@
 class UArrowComp;
 class UPlayer : public UObject
 {
+	DECLARE_CLASS(LocalGizmoComponent, UObject)
+
 public:
 	UPlayer();
 	virtual				~UPlayer();

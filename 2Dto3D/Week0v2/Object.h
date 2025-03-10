@@ -2,8 +2,11 @@
 #include "Define.h"
 #include "EngineLoop.h"
 #include "World.h"
+#include "UClass.h"
+
 extern FEngineLoop GEngineLoop;
 
+class UClass;
 class UWorld;
 class UObject
 {
@@ -53,6 +56,13 @@ public:
 	}
 	static void operator delete(void* ptr) {
 		std::free(ptr);
+	}
+	virtual UClass* GetClass() const = 0;
+
+	bool IsA(UClass* TargetClass) const; 
+	static UClass* StaticClass() {
+		static UClass ClassInfo("UObject", nullptr);
+		return &ClassInfo;
 	}
 };	
 

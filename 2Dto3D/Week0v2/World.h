@@ -10,7 +10,9 @@ public:
 	~UWorld();
 
 	void Initialize();
+	void CreateBaseObject();
 	void Tick(double deltaTime);
+	void UpdateLocalGizmo();
 	void Release();
 	void Render();
 	void Input();

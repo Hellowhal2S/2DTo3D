@@ -11,6 +11,7 @@ UCubeComp::~UCubeComp()
 
 void UCubeComp::Initialize()
 {
+	Super::Initialize();
 }
 
 void UCubeComp::Update(double deltaTime)

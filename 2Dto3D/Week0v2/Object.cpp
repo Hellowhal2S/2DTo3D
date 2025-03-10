@@ -1,7 +1,6 @@
 #include "Object.h"
 #include "JungleMath.h"
 
-
 UObject::UObject():m_Location(FVector(0.f,0.f,0.f)),m_Rotation(FVector(0.f,0.f,0.f)),m_Scale(FVector(1.f,1.f,1.f))
 {
 }
@@ -14,6 +13,7 @@ UObject::~UObject()
 
 void UObject::Initialize()
 {
+	InternalIndex = GetWorld()->GetObjectArr().size() - 1;
 }
 
 void UObject::Update(double deltaTime)
@@ -74,4 +74,15 @@ void UObject::AddRotation(FVector _added)
 void UObject::AddScale(FVector _added)
 {
 	m_Scale = m_Scale + _added;
+}
+
+bool UObject::IsA(UClass* TargetClass) const
+{
+	UClass* CurrentClass = GetClass();
+	while (CurrentClass) {
+		if (CurrentClass == TargetClass)
+			return true;
+		CurrentClass = CurrentClass->ParentClass;
+	}
+	return false;
 }
