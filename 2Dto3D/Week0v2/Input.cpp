@@ -162,8 +162,9 @@ void InputClass::GetMouseLocation(int& x, int& y)
 }
 
 bool InputClass::IsMousePressed()
-{
-    return (mouseState.rgbButtons[0] & 0x80) != 0;
+{   
+    return (mouseState.rgbButtons[0] & 0x80) != 0; //Å¬¸¯
+   
 }
 
 bool InputClass::IsRightMousePressed()

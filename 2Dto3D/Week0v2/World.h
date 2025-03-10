@@ -27,15 +27,19 @@ public:
     void CreateGizmo();
     void SelectObjectWithMouse();
     bool RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDir, USceneComponent* obj, float& hitDistance);
+    void UpdateGizmos();
+
 
 private:
     void CreateMainWindow(HINSTANCE hInstance);
     void Update();
     void Render();
 
+
 private:
     HWND hWnd;
     std::vector<UObject*> ObjectList;
+    std::vector<UGizmoComp*> GizmoList;
     UGraphicsDevice graphicDevice;
     URenderer renderer;
     UImGuiManager imguiManager;
@@ -46,12 +50,17 @@ private:
     InputClass InputHandler;
     UCamera Camera;
     USceneComponent* currentObject;
-    USaveManager SaveManager; // 멤버 변수로 이동
+    UGizmoComp* currentGizmo = nullptr;
+    USaveManager SaveManager; 
     EObjectType Type;
+
 
     bool bIsExit = false;
 
 private:
     FVector lastRayOrigin;
     FVector lastRayDirection;
+    bool isDraggingGizmo = false;
+    int lastMouseX = 0, lastMouseY = 0;
+
 };

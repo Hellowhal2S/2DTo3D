@@ -15,3 +15,11 @@ public:
     USphereComp();
      ~USphereComp();
 };
+
+class UGizmoComp : public UPrimitiveComponent
+{
+public:
+    UGizmoComp();
+    ~UGizmoComp();
+    void SetTransform(const FVector& Location, const FVector& Rotation, const FVector& Scale);
+};

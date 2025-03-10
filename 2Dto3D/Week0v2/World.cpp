@@ -103,6 +103,10 @@ void UWorld::Run()
     }
 }
 
+bool isSelected = false;
+
+
+
 void UWorld::Update()
 {
     if (!InputHandler.Frame()) {
@@ -124,15 +128,49 @@ void UWorld::Update()
         Camera.MoveRight(0.1f);
     }
 
+    int mouseX, mouseY;
+    InputHandler.GetMouseLocation(mouseX, mouseY);
+
     if (InputHandler.IsMousePressed())
     {
-        SelectObjectWithMouse();
+        if (!isDraggingGizmo)
+        {
+            SelectObjectWithMouse();
+            isDraggingGizmo = true;
+            lastMouseX = mouseX;
+            lastMouseY = mouseY;
+        }
+
+        if (isDraggingGizmo && currentGizmo)
+        {
+            // 마우스 이동 거리 계산
+            float deltaX = (mouseX - lastMouseX) * 0.01f;  // 이동 속도 조절
+            float deltaY = (mouseY - lastMouseY) * 0.01f;
+
+            FVector moveDirection = FVector(0, 0, 0);
+
+            // 선택된 기즈모에 따라 이동 방향 결정
+            if (currentGizmo == GizmoList[0])  // X 축 기즈모 (빨강)
+                moveDirection = FVector(deltaX, 0, 0);
+            else if (currentGizmo == GizmoList[1])  // Y 축 기즈모 (초록)
+                moveDirection = FVector(0, deltaX, 0);
+            else if (currentGizmo == GizmoList[2])  // Z 축 기즈모 (파랑)
+                moveDirection = FVector(0, 0, -deltaY);
+
+            // 객체 이동
+            currentObject->RelativeLocation = currentObject->RelativeLocation + moveDirection;
+
+            // 마우스 좌표 업데이트
+            lastMouseX = mouseX;
+            lastMouseY = mouseY;
+        }
     }
-
-
-    //  마우스 입력 처리 (우클릭 시 회전 가능)
-    static int lastMouseX = 0, lastMouseY = 0;
-    int mouseX, mouseY;
+    else
+    {
+        isDraggingGizmo = false; // 마우스 버튼이 해제되면 드래그 종료
+        currentGizmo = nullptr;
+    }
+    UpdateGizmos();
 
     InputHandler.GetMouseLocation(mouseX, mouseY);
 
@@ -164,7 +202,7 @@ void UWorld::Update()
         //  우클릭이 해제되면 firstClick 초기화
         firstClick = true;
     }
-	Camera.SetProjection(1024.0f / 1024.0f, 0.1f, 1000.0f); 
+    Camera.SetProjection(1024.0f / 1024.0f, 0.1f, 1000.0f);
 }
 
 
@@ -214,36 +252,28 @@ void UWorld::Render()
    
     if (currentObject)
     {
-        FVector location = currentObject->RelativeLocation;
-        FVector scale = currentObject->RelativeScale3D;
+        for (size_t i = 0; i < GizmoList.size(); ++i)
+        {
+            FMatrix translationMatrix = FMatrix::CreateTranslationMatrix(GizmoList[i]->RelativeLocation);
+            FMatrix rotationMatrix = FMatrix::CreateRotation(GizmoList[i]->RelativeRotation.x, GizmoList[i]->RelativeRotation.y, GizmoList[i]->RelativeRotation.z);
+            FMatrix scaleMatrix = FMatrix::CreateScale(GizmoList[i]->RelativeScale3D.x, GizmoList[i]->RelativeScale3D.y, GizmoList[i]->RelativeScale3D.z);
 
-        // 개체의 원점에서 변환
-        
-        FMatrix objectTransform = FMatrix::CreateTranslationMatrix(location);
-        FMatrix objectRotation = FMatrix::CreateRotation(currentObject->RelativeRotation.x,
-            currentObject->RelativeRotation.y,
-            currentObject->RelativeRotation.z);
+            FMatrix worldMatrix = scaleMatrix * rotationMatrix * translationMatrix;
+            FMatrix matrix = worldMatrix * Camera.GetViewMatrix() * Camera.GetProjectionMatrix();
 
-        // X축 기즈모 (빨강)
-        FMatrix scaleMatrix = FMatrix::CreateScale(max(scale.x * 2, 1), 1, 1);
-        FMatrix gizmoX = scaleMatrix * objectRotation * objectTransform;
-        FMatrix matrix =  Camera.GetViewMatrix() * Camera.GetProjectionMatrix();
-        renderer.UpdateConstant(gizmoX * matrix,1);
-        renderer.RenderPrimitive(vertexBufferArrow, sizeof(arrow_vertices) / sizeof(FVertexSimple));
+            if (currentGizmo == GizmoList[i])
+            {
+                renderer.UpdateConstant(matrix, 0); 
+            }
+            else
+            {
+                renderer.UpdateConstant(matrix, i + 1);
+            }
 
-        // Y축 기즈모 (초록) - X축 Arrow를 Z축 기준으로 90도 회전
-         scaleMatrix = FMatrix::CreateScale(1, max(1,scale.y * 2), 1);
-        FMatrix rotationY = FMatrix::CreateRotation(0, 0, 90);
-        FMatrix gizmoY = rotationY * scaleMatrix * objectRotation * objectTransform;
-        renderer.UpdateConstant(gizmoY* matrix,2);
-        renderer.RenderPrimitive(vertexBufferArrow, sizeof(arrow_vertices) / sizeof(FVertexSimple));
+            renderer.RenderPrimitive(vertexBufferArrow, sizeof(arrow_vertices) / sizeof(FVertexSimple));
+        }
 
-        // Z축 기즈모 (파랑) - X축 Arrow를 Z축 기준으로 90도 회전
-        scaleMatrix = FMatrix::CreateScale(1, 1 , max(1, scale.z * 2));
-        FMatrix rotationZ = FMatrix::CreateRotation(0, -90, 0);
-        FMatrix gizmoZ = rotationZ * scaleMatrix * objectRotation * objectTransform;
-        renderer.UpdateConstant(gizmoZ*matrix,3);
-        renderer.RenderPrimitive(vertexBufferArrow, sizeof(arrow_vertices) / sizeof(FVertexSimple));
+
     }
 
     // 월드 기즈모 렌더링
@@ -386,6 +416,11 @@ void UWorld::CreateGizmo()
 
     //  Arrow용 버퍼 생성
     vertexBufferArrow = renderer.CreateVertexBuffer(arrow_vertices, sizeof(arrow_vertices));
+    for (int i = 0; i < 3; i++)
+    {
+        UGizmoComp* NewGizmo = new UGizmoComp();
+        GizmoList.push_back(NewGizmo);
+    }
 }
 
 
@@ -394,18 +429,18 @@ void UWorld::CreateGizmo()
 void UWorld::SelectObjectWithMouse()
 {
     int mouseX, mouseY;
-    InputHandler.GetMouseAbsolutePosition(mouseX, mouseY); // 기존 InputHandler는 마우스 이동 값 누적 -> window input으로 변경
+    InputHandler.GetMouseAbsolutePosition(mouseX, mouseY);
 
     // NDC 좌표 계산
-    ndcX = (2.0f * mouseX) / 1024.0f - 1.0f; // X축: [-1, 1]
-    ndcY = 1.0f - (2.0f * mouseY) / 1024.0f; // Y축: [1, -1]
+    ndcX = (2.0f * mouseX) / 1024.0f - 1.0f;
+    ndcY = 1.0f - (2.0f * mouseY) / 1024.0f;
 
     // NDC에서 뷰 공간으로 변환
     FMatrix invProjection = FMatrix::Inverse(Camera.GetProjectionMatrix());
-    FVector4 rayClip(ndcX, ndcY, 1.0f, 1.0f); // Z = 1.0f (뷰 공간에서의 far plane)
+    FVector4 rayClip(ndcX, ndcY, 1.0f, 1.0f);
     FVector4 rayEye = FMatrix::TransformVector(rayClip, invProjection);
-    rayEye.z = 1.0f; // 뷰 공간에서의 방향 벡터 (Z = 1.0f)
-    rayEye.a = 0.0f; // 방향 벡터이므로 w = 0
+    rayEye.z = 1.0f;
+    rayEye.a = 0.0f;
 
     // 뷰 공간에서 월드 공간으로 변환
     FMatrix invView = FMatrix::Inverse(Camera.GetViewMatrix());
@@ -417,12 +452,30 @@ void UWorld::SelectObjectWithMouse()
     lastRayOrigin = Camera.RelativeLocation;
     lastRayDirection = rayWorld;
 
+    //  기즈모 선택 검사
+    float closestGizmoDistance = FLT_MAX;
+    UGizmoComp* selectedGizmo = nullptr;
+    for (auto& gizmo : GizmoList)
+    {
+        float hitDistance;
+        if (RayIntersectsObject(lastRayOrigin, lastRayDirection, gizmo, hitDistance))
+        {
+            if (hitDistance < closestGizmoDistance)
+            {
+                closestGizmoDistance = hitDistance;
+                selectedGizmo = gizmo;
+            }
+        }
+    }
 
+    if (selectedGizmo)
+    {
+        currentGizmo = selectedGizmo;
 
-    // 충돌 검사
-    float closestDistance = FLT_MAX;
+    }
+    //  기존 객체 선택 검사
+    float closestObjectDistance = FLT_MAX;
     USceneComponent* selectedObject = nullptr;
-
     for (auto& Object : ObjectList)
     {
         USceneComponent* sceneComp = dynamic_cast<USceneComponent*>(Object);
@@ -431,21 +484,22 @@ void UWorld::SelectObjectWithMouse()
             float hitDistance;
             if (RayIntersectsObject(lastRayOrigin, lastRayDirection, sceneComp, hitDistance))
             {
-                if (hitDistance < closestDistance)
+                if (hitDistance < closestObjectDistance && hitDistance < closestGizmoDistance)
                 {
-                    closestDistance = hitDistance;
+                    closestObjectDistance = hitDistance;
                     selectedObject = sceneComp;
                 }
             }
         }
     }
 
-    // 가장 가까운 오브젝트를 선택
     if (selectedObject)
     {
         currentObject = selectedObject;
+        currentGizmo = nullptr;  // 오브젝트를 선택했으므로 기존 기즈모 선택 해제
     }
 }
+
 
 
 
@@ -461,16 +515,24 @@ bool UWorld::RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDir
 
     FMatrix translationMatrix = FMatrix::CreateTranslationMatrix(obj->RelativeLocation);
 
-    // 최종 변환 행렬 (Scale은 나중에 생각)
+    // 최종 변환 행렬
     FMatrix worldMatrix = rotationMatrix * translationMatrix;
 
-    //OBB의 로컬 X, Y, Z 방향
+    // OBB의 로컬 X, Y, Z 축 가져오기
     FVector axisX(worldMatrix.M[0][0], worldMatrix.M[0][1], worldMatrix.M[0][2]);
     FVector axisY(worldMatrix.M[1][0], worldMatrix.M[1][1], worldMatrix.M[1][2]);
     FVector axisZ(worldMatrix.M[2][0], worldMatrix.M[2][1], worldMatrix.M[2][2]);
 
-    // OBB의 반 크기 적용 (각 축별 크기 반영)
+    // 기즈모인지 확인
+    bool isGizmo = (dynamic_cast<UGizmoComp*>(obj) != nullptr);
+
+    // OBB의 반 크기 적용 (기즈모의 경우 Y,Z 스케일을 0.2로 조정)
     FVector halfSize = obj->RelativeScale3D;
+    if (isGizmo)
+    {
+        halfSize.y = 0.2f;
+        halfSize.z = 0.2f;
+    }
 
     FVector p = obj->RelativeLocation - rayOrigin; // 레이 원점에서 OBB 중심까지의 벡터
     FVector d = rayDir.Normalize(); // 레이 방향 정규화
@@ -479,21 +541,21 @@ bool UWorld::RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDir
 
     // 각 축(X, Y, Z)에 대해 레이와의 충돌 검사 수행
     FVector axes[3] = { axisX, axisY, axisZ };
-    float halfSizes[3] = { halfSize.x, halfSize.y,halfSize.z}; // scale 고려
+    float halfSizes[3] = { halfSize.x, halfSize.y, halfSize.z };
 
     for (int i = 0; i < 3; i++)
     {
         float e = axes[i].Dot(p);  // 원점에서 타겟까지의 거리를 해당 축으로 투영
-        float f = axes[i].Dot(d);  // ray를 투영
+        float f = axes[i].Dot(d);  // 레이를 투영
 
-        if (fabs(f) > 1e-6)  // 방향 벡터가 0이면 나눗셈 방지
+        if (fabs(f) > 1e-6)  // 방향 벡터가 0이면 큰일남
         {
             float t1 = (e - halfSizes[i]) / f;
             float t2 = (e + halfSizes[i]) / f;
 
             if (t1 > t2) std::swap(t1, t2); // t1이 항상 작은 값이 되도록 설정
 
-            tMin = max(tMin, t1);
+            tMin = max(tMin, t1);  // 범위를 계속 줄여나감
             tMax = min(tMax, t2);
 
             if (tMin > tMax) return false; // 충돌 없음
@@ -509,6 +571,30 @@ bool UWorld::RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDir
 }
 
 
+void UWorld::UpdateGizmos()
+{
+    if (!currentObject) return;
+
+    FVector location = currentObject->RelativeLocation;
+    FVector scale = currentObject->RelativeScale3D;
+    FVector rotation = currentObject->RelativeRotation;
+
+    if (GizmoList.size() < 3) return;
+
+    // X축 기즈모 (빨강)
+    FVector xScale = FVector(max(scale.x * 2, 1), 1, 1);
+    GizmoList[0]->SetTransform(location, rotation, xScale);
+
+    // Y축 기즈모 (초록) - X축 Arrow를 Z축 기준으로 90도 회전
+    FVector yScale = FVector(max(1, scale.y * 2), 1, 1);
+    FVector yRotation = FVector(rotation.x, rotation.y, rotation.z + 90);
+    GizmoList[1]->SetTransform(location, yRotation, yScale);
+
+    // Z축 기즈모 (파랑) - X축 Arrow를 Y축 기준으로 -90도 회전
+    FVector zScale = FVector(max(1, scale.z * 2), 1,1);
+    FVector zRotation = FVector(rotation.x, rotation.y - 90, rotation.z);
+    GizmoList[2]->SetTransform(location, zRotation, zScale);
+}
 
 
 
