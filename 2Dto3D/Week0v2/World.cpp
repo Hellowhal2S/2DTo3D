@@ -663,14 +663,49 @@ void UWorld::HandleTranslation(float deltaX, float deltaY)
 
 void UWorld::HandleRotation(float deltaX, float deltaY)
 {
-    FVector rotationChange = FVector(0, 0, 0);
+    if (!currentObject || !currentGizmo) return;
 
-    if (currentGizmo == GizmoList[0]) rotationChange = FVector(deltaX * 10.0f, 0, 0);
-    else if (currentGizmo == GizmoList[1]) rotationChange = FVector(0, deltaX * 10.0f, 0);
-    else if (currentGizmo == GizmoList[2]) rotationChange = FVector(0, 0, deltaY * 10.0f);
+    // 현재 오브젝트의 로컬 회전 행렬 가져오기
+    FMatrix objectRotationMatrix = FMatrix::CreateRotation(
+        currentObject->RelativeRotation.x,
+        currentObject->RelativeRotation.y,
+        currentObject->RelativeRotation.z
+    );
 
-    currentObject->RelativeRotation = currentObject->RelativeRotation + rotationChange;
+    // 기즈모의 로컬 축을 정의 (X, Y, Z 중 선택)
+    FVector localRotationAxis(0, 0, 0);
+    if (currentGizmo == GizmoList[0]) localRotationAxis = FVector(1, 0, 0); // X축
+    else if (currentGizmo == GizmoList[1]) localRotationAxis = FVector(0, 1, 0); // Y축
+    else if (currentGizmo == GizmoList[2]) localRotationAxis = FVector(0, 0, 1); // Z축
+
+    // 기즈모의 로컬 회전 축을 오브젝트의 로컬 좌표계로 변환
+    FVector worldRotationAxis = FMatrix::TransformVector(localRotationAxis, objectRotationMatrix).Normalize();
+
+    // 카메라 뷰 행렬 가져오기
+    FMatrix viewMatrix = Camera.GetViewMatrix();
+    FVector viewRotationAxis = FMatrix::TransformVector(worldRotationAxis, viewMatrix).Normalize();
+
+    // 마우스 이동 벡터 (스크린 공간 기준, 정규화)
+    FVector mouseMoveDirection(deltaX, -deltaY, 0);
+    mouseMoveDirection = mouseMoveDirection.Normalize();
+
+    // 마우스 이동 벡터와 기즈모 회전 벡터의 내적을 이용한 방향 보정
+    float alignment = mouseMoveDirection.Dot(FVector(viewRotationAxis.x, viewRotationAxis.y, 0));
+    float sign = (alignment < 0) ? -1.0f : 1.0f; // 방향 반전
+
+    // 마우스 이동량을 회전 값으로 변환
+    float rotationAngle = sign * sqrt(deltaX * deltaX + deltaY * deltaY) * 10.0f;
+
+    // **로컬 회전을 적용하는 방식으로 Quaternion 회전 적용**
+    FQuat rotationQuat = FQuat::FromAxisAngle(worldRotationAxis, rotationAngle);
+    FQuat currentRotationQuat = FQuat::FromEuler(currentObject->RelativeRotation);
+    FQuat newRotationQuat = currentRotationQuat * rotationQuat; // 로컬 회전 적용
+
+    // 결과를 Euler 각도로 변환하여 적용
+    currentObject->RelativeRotation = newRotationQuat.ToEuler();
 }
+
+
 
 void UWorld::HandleScaling(float deltaX, float deltaY)
 {

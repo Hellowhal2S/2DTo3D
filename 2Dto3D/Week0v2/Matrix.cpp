@@ -166,7 +166,7 @@ FMatrix FMatrix::CreateRotation(float roll, float pitch, float yaw)
     } };
 
     // DirectX 표준 순서: Z(Yaw) → Y(Pitch) → X(Roll)  
-    return rotationX * rotationY * rotationZ;  // 이렇게 하면  오른쪽 부터 적용됨
+    return rotationZ * rotationY * rotationX;  // 이렇게 하면  오른쪽 부터 적용됨
 }
 
 

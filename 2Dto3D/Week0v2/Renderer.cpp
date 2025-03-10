@@ -25,12 +25,6 @@ void URenderer::Prepare()
     Graphics->DeviceContext->RSSetViewports(1, &Graphics->ViewportInfo);
     Graphics->DeviceContext->RSSetState(Graphics->RasterizerState);
 
-    // 깊이 버퍼가 존재하지 않으면 다시 생성
-    if (!DepthStencilView)
-    {
-        CreateDepthBuffer();
-    }
-
     // 깊이 버퍼를 정상적으로 적용
     Graphics->DeviceContext->OMSetRenderTargets(1, &Graphics->FrameBufferRTV, DepthStencilView);
     Graphics->DeviceContext->OMSetDepthStencilState(DepthStencilState, 1);
