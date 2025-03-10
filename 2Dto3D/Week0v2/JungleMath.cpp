@@ -1,11 +1,21 @@
-#include "JungleMath.h"
+Ôªø#include "JungleMath.h"
 
 /*
-*   @TODO: FVectorRotateCamera¿« DrirectXMath.h∏¶ ¡¶∞≈
+*   @TODO: FVectorRotateCameraÏùò DrirectXMath.hÎ•º Ï†úÍ±∞
 */
 #include <DirectXMath.h>
 
 using namespace DirectX;
+
+float JungleMath::RadToDeg(float radian)
+{
+    return radian * (180.0f / PI);
+}
+
+float JungleMath::DegToRad(float degree)
+{
+    return degree * (PI / 180.0f);
+}
 
 FVector4 JungleMath::ConvertV3ToV4(FVector vec3)
 {
@@ -18,13 +28,13 @@ FVector4 JungleMath::ConvertV3ToV4(FVector vec3)
 
 FMatrix JungleMath::CreateModelMatrix(FVector translation, FVector rotation, FVector scale)
 {
-    // Ω∫ƒ…¿œ «‡∑ƒ
+    // Ïä§ÏºÄÏùº ÌñâÎ†¨
     FMatrix Scale = FMatrix::Identity;
     Scale.M[0][0] = scale.x;
     Scale.M[1][1] = scale.y;
     Scale.M[2][2] = scale.z;
 
-    // »∏¿¸ «‡∑ƒ (Yaw-Pitch-Roll)
+    // ÌöåÏ†Ñ ÌñâÎ†¨ (Yaw-Pitch-Roll)
     float x = DegToRad(rotation.x);
     float y = DegToRad(rotation.y);
     float z = DegToRad(rotation.z);
@@ -50,20 +60,20 @@ FMatrix JungleMath::CreateModelMatrix(FVector translation, FVector rotation, FVe
 
     FMatrix Rotation = RotationZ * RotationY * RotationX;
 
-    // ¿Ãµø «‡∑ƒ
+    // Ïù¥Îèô ÌñâÎ†¨
     FMatrix Translation = FMatrix::Identity;
     Translation.M[3][0] = translation.x;
     Translation.M[3][1] = translation.y;
     Translation.M[3][2] = translation.z;
     Translation.M[3][3] = 1.0f;
 
-    // √÷¡æ ∏µ® «‡∑ƒ = ¿Ãµø * »∏¿¸ * Ω∫ƒ…¿œ
+    // ÏµúÏ¢Ö Î™®Îç∏ ÌñâÎ†¨ = Ïù¥Îèô * ÌöåÏ†Ñ * Ïä§ÏºÄÏùº
     return Scale * Rotation * Translation;
 }
 
 FMatrix JungleMath::CreateViewMatrix(FVector eye, FVector target, FVector up)
 {
-    FVector zAxis = (target - eye).Normalize();  // DirectX¥¬ LH¿Ãπ«∑Œ -z∞° æ∆¥œ∂Û +z ªÁøÎ
+    FVector zAxis = (target - eye).Normalize();  // DirectXÎäî LHÏù¥ÎØÄÎ°ú -zÍ∞Ä ÏïÑÎãàÎùº +z ÏÇ¨Ïö©
     FVector xAxis = (up.Cross(zAxis)).Normalize();
     FVector yAxis = zAxis.Cross(xAxis);
 
@@ -87,102 +97,83 @@ FMatrix JungleMath::CreateProjectionMatrix(float fov, float aspect, float nearPl
     FMatrix Projection = {};
     Projection.M[0][0] = 1.0f / (aspect * tanHalfFOV);
     Projection.M[1][1] = 1.0f / tanHalfFOV;
-    Projection.M[2][2] = farPlane / depth;  // ºˆ¡§µ» ∫Œ∫–
-    Projection.M[2][3] = 1.0f;              // ºˆ¡§µ» ∫Œ∫– (RH¥¬ -1.0fø¥¿Ω)
+    Projection.M[2][2] = farPlane / depth;  // ÏàòÏ†ïÎêú Î∂ÄÎ∂Ñ
+    Projection.M[2][3] = 1.0f;              // ÏàòÏ†ïÎêú Î∂ÄÎ∂Ñ (RHÎäî -1.0fÏòÄÏùå)
     Projection.M[3][2] = -(nearPlane * farPlane) / depth;
     Projection.M[3][3] = 1.0f;
 
     return Projection;
 }
 
+// @TODO: ÏßêÎ≤åÎùΩ Ìï¥Í≤∞ Ï†ÑÍπåÏßÄÎäî Î¥âÏù∏
+FVector JungleMath::FVectorRotate(FVector& origin, const FVector& rotation)
+{
+    // ÌöåÏ†Ñ Í∞í (degree -> radian Î≥ÄÌôò)
+    float pitch = DegToRad(rotation.y);  // YÏ∂ï
+    float yaw = DegToRad(rotation.z); // ZÏ∂ï
+    float roll = DegToRad(rotation.x); // XÏ∂ï
+
+    // ÏÇºÍ∞ÅÌï®Ïàò Í∞í ÎØ∏Î¶¨ Í≥ÑÏÇ∞
+    float cosPitch = cosf(pitch), sinPitch = sinf(pitch);
+    float cosYaw = cosf(yaw), sinYaw = sinf(yaw);
+    float cosRoll = cosf(roll), sinRoll = sinf(roll);
+
+    //// Îã§Ïù¥Î†âÌä∏X Ï¢åÌëúÍ≥Ñ Í∏∞Ï§Ä (Yaw-Pitch-Roll ÏàúÏÑú Ï†ÅÏö©)
+    //FVector rotated;
+    //rotated.x = origin.x * (cosYaw * cosRoll + sinYaw * sinPitch * sinRoll) +
+    //    origin.y * (sinRoll * cosPitch) +
+    //    origin.z * (-sinYaw * cosRoll + cosYaw * sinPitch * sinRoll);
+
+    //rotated.y = origin.x * (-cosYaw * sinRoll + sinYaw * sinPitch * cosRoll) +
+    //    origin.y * (cosRoll * cosPitch) +
+    //    origin.z * (sinYaw * sinRoll + cosYaw * sinPitch * cosRoll);
+
+    //rotated.z = origin.x * (sinYaw * cosPitch) +
+    //    origin.y * (-sinPitch) +
+    //    origin.z * (cosYaw * cosPitch);
+
+    FVector rotated = origin;
+
+    // Yaw (ZÏ∂ï Í∏∞Ï§Ä ÌöåÏ†Ñ)
+    rotated = FVector(
+        rotated.x * cosYaw - rotated.y * sinYaw,
+        rotated.x * sinYaw + rotated.y * cosYaw,
+        rotated.z
+    );
+
+    // Pitch (YÏ∂ï Í∏∞Ï§Ä ÌöåÏ†Ñ)
+    rotated = FVector(
+        rotated.x * cosPitch + rotated.z * sinPitch,
+        rotated.y,
+        -rotated.x * sinPitch + rotated.z * cosPitch
+    );
+
+    // Roll (XÏ∂ï Í∏∞Ï§Ä ÌöåÏ†Ñ)
+    rotated = FVector(
+        rotated.x,
+        rotated.y * cosRoll - rotated.z * sinRoll,
+        rotated.y * sinRoll + rotated.z * cosRoll
+    );
+
+    return rotated;
+}
+
 FVector JungleMath::FVectorRotateCamera(FVector& origin, const FVector& rotation)
 {
-    float pitch = XMConvertToRadians(rotation.x);  // Pitch (X√‡ »∏¿¸)
-    float yaw = XMConvertToRadians(rotation.y);    // Yaw (Y√‡ »∏¿¸)
-    float roll = XMConvertToRadians(rotation.z);   // Roll (Z√‡ »∏¿¸)
+    float pitch = XMConvertToRadians(rotation.x);  // Pitch
+    float yaw = XMConvertToRadians(rotation.y);    // Yaw
+    float roll = XMConvertToRadians(rotation.z);   // Roll
 
-    //float pitch = rotation.x;  // Pitch (X√‡ »∏¿¸)
-    //float yaw = rotation.y;   // Yaw (Y√‡ »∏¿¸)
-    //    float roll = rotation.z;   // Roll (Z√‡ »∏¿¸)
     XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
 
-    // «ˆ¿Á ∫§≈Õ∏¶ XMMATRIXøÕ ∞·«’«œø© »∏¿¸µ» ∫§≈Õ ±∏«œ±‚
-    XMVECTOR vec = XMVectorSet(origin.x, origin.y, origin.z, 0.0f); // ∫§≈Õ∏¶ XMVECTOR∑Œ ∫Ø»Ø
-    XMVECTOR rotatedVec = XMVector3TransformNormal(vec, rotationMatrix); // »∏¿¸ ∫Ø»Ø
+    XMVECTOR vec = XMVectorSet(origin.x, origin.y, origin.z, 0.0f);
+    XMVECTOR rotatedVec = XMVector3TransformNormal(vec, rotationMatrix);
 
-    // ∞·∞˙ ∫§≈Õ∏¶ FVector∑Œ ∫Ø»Ø«œø© π›»Ø
     XMFLOAT3 result;
     XMStoreFloat3(&result, rotatedVec);
 
     return FVector(result.x, result.y, result.z);
 }
-//FVector JungleMath::FVectorRotate(FVector& origin, const FVector& rotation)
-//{
-//    // »∏¿¸ ∞™ (degree -> radian ∫Ø»Ø)
-//    float pitch = rotation.x * XM_PI / 180.0f;
-//    float yaw = rotation.y * XM_PI / 180.0f;
-//    float roll = rotation.z * XM_PI / 180.0f;
-//
-//    // ªÔ∞¢«‘ºˆ ∞™ πÃ∏Æ ∞ËªÍ
-//    float cosPitch = cosf(pitch), sinPitch = sinf(pitch);
-//    float cosYaw = cosf(yaw), sinYaw = sinf(yaw);
-//    float cosRoll = cosf(roll), sinRoll = sinf(roll);
-//
-//    // »∏¿¸ «‡∑ƒ¿ª ¡˜¡¢ ¿˚øÎ«œø© ªı ¿ßƒ° ∞ËªÍ
-//    FVector rotated;
-//    rotated.x = origin.x * (cosYaw * cosRoll) +
-//        origin.y * (cosYaw * sinRoll) +
-//        origin.z * (-sinYaw);
-//
-//    rotated.y = origin.x * (sinPitch * sinYaw * cosRoll - cosPitch * sinRoll) +
-//        origin.y * (sinPitch * sinYaw * sinRoll + cosPitch * cosRoll) +
-//        origin.z * (sinPitch * cosYaw);
-//
-//    rotated.z = origin.x * (cosPitch * sinYaw * cosRoll + sinPitch * sinRoll) +
-//        origin.y * (cosPitch * sinYaw * sinRoll - sinPitch * cosRoll) +
-//        origin.z * (cosPitch * cosYaw);
-//
-//    return rotated;
-//}
 
-FVector JungleMath::FVectorRotate(FVector& origin, const FVector& rotation)
-{
-    // »∏¿¸ ∞™ (degree -> radian ∫Ø»Ø)
-    float pitch = rotation.x * XM_PI / 180.0f; // X√‡ (Pitch)
-    float yaw = rotation.y * XM_PI / 180.0f; // Y√‡ (Yaw)
-    float roll = rotation.z * XM_PI / 180.0f; // Z√‡ (Roll)
-
-    // ªÔ∞¢«‘ºˆ ∞™ πÃ∏Æ ∞ËªÍ
-    float cosPitch = cosf(pitch), sinPitch = sinf(pitch);
-    float cosYaw = cosf(yaw), sinYaw = sinf(yaw);
-    float cosRoll = cosf(roll), sinRoll = sinf(roll);
-
-    // ¥Ÿ¿Ã∑∫∆ÆX ¡¬«•∞Ë ±‚¡ÿ (Yaw-Pitch-Roll º¯º≠ ¿˚øÎ)
-    FVector rotated;
-    rotated.x = origin.x * (cosYaw * cosRoll + sinYaw * sinPitch * sinRoll) +
-        origin.y * (sinRoll * cosPitch) +
-        origin.z * (-sinYaw * cosRoll + cosYaw * sinPitch * sinRoll);
-
-    rotated.y = origin.x * (-cosYaw * sinRoll + sinYaw * sinPitch * cosRoll) +
-        origin.y * (cosRoll * cosPitch) +
-        origin.z * (sinYaw * sinRoll + cosYaw * sinPitch * cosRoll);
-
-    rotated.z = origin.x * (sinYaw * cosPitch) +
-        origin.y * (-sinPitch) +
-        origin.z * (cosYaw * cosPitch);
-
-    rotated.z *= -1;
-    return rotated;
-}
-
-float JungleMath::RadToDeg(float radian)
-{
-    return radian * (180.0f / PI);
-}
-
-float JungleMath::DegToRad(float degree)
-{
-    return degree * (PI / 180.0f);
-}
 
 

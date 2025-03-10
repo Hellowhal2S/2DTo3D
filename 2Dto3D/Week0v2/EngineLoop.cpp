@@ -119,7 +119,7 @@ void FEngineLoop::Tick()
 
 		// 카메라에 의한 VP Matrix 갱신
 		UCameraComponent* Camera = static_cast<UCameraComponent*>(GWorld->GetCamera());
-		View = JungleMath::CreateViewMatrix(Camera->GetLocation(), Camera->GetLocation() + Camera->GetForwardVector(), { 0, 1, 0 });
+		View = JungleMath::CreateViewMatrix(Camera->GetLocation(), Camera->GetLocation() + Camera->GetForwardVector(), { 0, 0, 1 });
 		Projection = JungleMath::CreateProjectionMatrix(Camera->GetFov() * (PI / 180.0f), aspectRatio, 0.1f, 1000.0f);
 
 		graphicDevice.Prepare();

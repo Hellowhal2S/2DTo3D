@@ -24,7 +24,7 @@ PS_INPUT mainVS(VS_INPUT input)
     PS_INPUT output = input;
     
     float4x4 modelViewProjection = MVP; // MVP 행렬을 그대로 사용
-    output.position = mul(float4(input.position.xyz, 1.0f), modelViewProjection);
+    output.position = mul(input.position, modelViewProjection);
 
     // Pass the color to the pixel shader
     output.color = input.color;

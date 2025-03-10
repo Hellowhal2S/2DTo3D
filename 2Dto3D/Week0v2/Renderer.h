@@ -4,12 +4,6 @@
 
 #include "GraphicDevice.h"
 
-struct FConstants
-{
-    FMatrix MVP;
-    float   Flag;
-};
-
 class FRenderer {
 public:
     FGraphicsDevice* Graphics;

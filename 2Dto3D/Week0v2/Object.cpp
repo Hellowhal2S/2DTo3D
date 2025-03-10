@@ -28,29 +28,34 @@ void UObject::Render()
 
 FVector UObject::GetForwardVector()
 {
-    float pitch = JungleMath::DegToRad(m_Rotation.x);
-    float yaw = JungleMath::DegToRad(m_Rotation.y);
-    //float pitch = m_Rotation.x;
-    //float yaw = m_Rotation.y;
+    FVector Forward = FVector(1.f, 0.f, 0.f);
+    Forward = JungleMath::FVectorRotateCamera(Forward, m_Rotation);
+    return Forward;
+    //float pitch = JungleMath::DegToRad(m_Rotation.y);
+    //float yaw = JungleMath::DegToRad(m_Rotation.z);
 
-    return FVector(
-        cosf(pitch) * sinf(yaw),
-        sinf(pitch),
-        cosf(pitch) * cosf(yaw)
-    ).Normalize();
+    //return FVector(
+    //    cosf(pitch) * cosf(yaw),
+    //    cosf(pitch) * sinf(yaw),
+    //    sinf(pitch)
+    //).Normalize();
 }
 
 FVector UObject::GetRightVector()
 {
-    float yaw = JungleMath::DegToRad(m_Rotation.y);
-    return FVector(
-        cosf(yaw), 0, -sinf(yaw)
-    ).Normalize();
+	FVector Right = FVector(0.f, 1.f, 0.f);
+	Right = JungleMath::FVectorRotateCamera(Right, m_Rotation);
+    return Right;
+  //  float yaw = JungleMath::DegToRad(m_Rotation.z);
+
+  //  return FVector(
+		//cosf(yaw), sinf(yaw), 0.f
+  //  ).Normalize();
 }
 
 FVector UObject::GetUpVector()
 {
-    FVector Up = FVector(0.f, 1.f, 0.0f);
-    Up = JungleMath::FVectorRotate(Up, m_Rotation);
+    FVector Up = FVector(0.f, 0.f, 1.0f);
+    Up = JungleMath::FVectorRotateCamera(Up, m_Rotation);
     return Up;
 }

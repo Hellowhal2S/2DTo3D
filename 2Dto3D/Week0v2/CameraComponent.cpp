@@ -12,17 +12,17 @@ UCameraComponent::~UCameraComponent()
 void UCameraComponent::Initialize()
 {
 	Super::Initialize();
-	m_Location = FVector(0.0f, 0.0f, 0.5f);
+	m_Location = FVector(-10.0f, 0.0f, 0.0f);
 	fov = 60.f;
 }
 
 void UCameraComponent::Update(double deltaTime)
 {
 	Input();
-	zAxis = (m_Location + GetForwardVector() - m_Location).Normalize();
-	FVector X = FVector(0.0f, 0.0f, 1.0f);
-	xAxis = (JungleMath::FVectorRotate(X, m_Rotation).Cross(zAxis)).Normalize();
-	yAxis = zAxis.Cross(xAxis);
+	xAxis = (m_Location + GetForwardVector() - m_Location).Normalize();
+	FVector Z = FVector(0.0f, 0.0f, 1.0f);
+	yAxis = (JungleMath::FVectorRotateCamera(Z, m_Rotation).Cross(xAxis)).Normalize();
+	zAxis = xAxis.Cross(yAxis);
 }
 
 void UCameraComponent::Release()
@@ -61,21 +61,21 @@ void UCameraComponent::Input()
 	{
 		bRightMouseDown = false; // 마우스 오른쪽 버튼을 떼면 상태 초기화
 	}
-	if (GetAsyncKeyState('A') & 0x8000)
-	{
-		MoveRight(-1.f);
-	}
-	if (GetAsyncKeyState('D') & 0x8000)
-	{
-		MoveRight(1.f);
-	}
 	if (GetAsyncKeyState('W') & 0x8000)
 	{
 		MoveForward(1.f);
 	}
+	if (GetAsyncKeyState('A') & 0x8000)
+	{
+		MoveRight(-1.f);
+	}
 	if (GetAsyncKeyState('S') & 0x8000)
 	{
 		MoveForward(-1.f);
+	}
+	if (GetAsyncKeyState('D') & 0x8000)
+	{
+		MoveRight(1.f);
 	}
 	if (GetAsyncKeyState('E') & 0x8000)
 	{
@@ -85,6 +85,7 @@ void UCameraComponent::Input()
 	{
 		MoveUp(-1.f);
 	}
+
 	if (GetAsyncKeyState('J') & 0x8000)
 	{
 		RotateYaw(-1.f);
@@ -101,9 +102,11 @@ void UCameraComponent::Input()
 	{
 		RotatePitch(1.f);
 	}
+
 	if (GetAsyncKeyState('Z') & 0x8000)
 	{
-		GetWorld()->GetPickingObj()->SetLocation(GetWorld()->GetPickingObj()->GetLocation() + GetWorld()->GetPickingObj()->GetRightVector());
+		if (GetWorld()->GetPickingObj())
+			GetWorld()->GetPickingObj()->SetLocation(GetWorld()->GetPickingObj()->GetLocation() + GetWorld()->GetPickingObj()->GetRightVector());
 	}
 }
 
@@ -119,22 +122,22 @@ void UCameraComponent::MoveRight(float _Value)
 
 void UCameraComponent::MoveUp(float _Value)
 {
-	m_Location.y += _Value * 0.5f;
+	m_Location.z += _Value * 0.5f;
 }
 
 void UCameraComponent::RotateYaw(float _Value)
 {
-	m_Rotation.y += _Value;
+	m_Rotation.z += _Value;
 }
 
 void UCameraComponent::RotatePitch(float _Value)
 {
-	m_Rotation.x -= _Value;
+	m_Rotation.y += _Value;
 }
 
 FVector UCameraComponent::GetCameraRightVector()
 {
-	FVector Right = FVector(1.f, 0.f, 0.0f);
+	FVector Right = FVector(0.f, 1.f, 0.0f);
 	Right = JungleMath::FVectorRotateCamera(Right, m_Rotation);
 	return Right;
 }

@@ -27,7 +27,7 @@ void UWorld::Initialize()
 	GUObjectArray.push_back(player);
 
 	UObject* Camera = FObjectFactory::ConstructObject<UCameraComponent>();
-	Camera->SetLocation(FVector(0, 0, -10.f));
+	Camera->SetLocation(FVector(-10.0f, 0.0f, 0.f));
 	GUObjectArray.push_back(Camera);
 	camera = Camera;
 

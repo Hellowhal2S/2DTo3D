@@ -31,12 +31,6 @@ using uint32 = unsigned int;
 
 #include "Console.h"
 
-struct FVertexSimple
-{
-	float x, y, z;    // Position
-	float r, g, b, a; // Color
-};
-
 struct FVector
 {
 	float x, y, z;
@@ -64,6 +58,7 @@ struct FVector
 		float mag = Magnitude();
 		return (mag > 0) ? FVector(x / mag, y / mag, z / mag) : FVector(0, 0, 0);
 	}
+
 	FVector Cross(const FVector& Other) const
 	{
 		return FVector{
@@ -72,6 +67,7 @@ struct FVector
 			x * Other.y - y * Other.x
 		};
 	}
+
 	// ½ºÄ®¶ó °ö¼À
 	FVector operator*(float scalar) const {
 		return FVector(x * scalar, y * scalar, z * scalar);
@@ -84,10 +80,6 @@ struct FVector
 	float Distance(const FVector& other) const {
 		// µÎ º¤ÅÍÀÇ Â÷ º¤ÅÍÀÇ Å©±â¸¦ °è»ê
 		return ((*this - other).Magnitude());
-	}
-	DirectX::XMFLOAT3 ToXMFLOAT3() const
-	{
-		return DirectX::XMFLOAT3(x, y, z);
 	}
 };
 
@@ -149,6 +141,18 @@ struct FMatrix
 		float w = M[0][3] * vector.x + M[1][3] * vector.y + M[2][3] * vector.z + M[3][3];
 		return w != 0.0f ? FVector{ x / w, y / w, z / w } : FVector{ x, y, z };
 	}
+};
+
+struct FVertexSimple
+{
+	float x, y, z;    // Position
+	float r, g, b, a; // Color
+};
+
+struct FConstants
+{
+	FMatrix MVP;
+	float   Flag;
 };
 
 enum OBJECTS
