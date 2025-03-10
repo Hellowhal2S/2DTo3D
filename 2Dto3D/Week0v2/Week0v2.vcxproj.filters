@@ -19,6 +19,36 @@
     <Filter Include="ImGUI">
       <UniqueIdentifier>{539eb603-241a-4414-83f5-7bc69d8400b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Engine">
+      <UniqueIdentifier>{37e45c02-dc42-45df-8932-1c4b50e00b38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\UI">
+      <UniqueIdentifier>{2fe37f58-bb63-4116-a77f-85565461436c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Util">
+      <UniqueIdentifier>{5635e777-6892-423e-9cc9-1a90cf1f849a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\UObject">
+      <UniqueIdentifier>{dd5ad368-7370-4d57-a1cc-3c9d8ae760e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\UWorld">
+      <UniqueIdentifier>{00b81433-b43c-4652-aa8e-019c05dddf06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Engine">
+      <UniqueIdentifier>{739c1bf2-e7ba-4c3e-8632-a87abeb556bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\UWorld">
+      <UniqueIdentifier>{a95456ba-bf83-4321-b782-33ace1c5ab12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\UObject">
+      <UniqueIdentifier>{e03fbe86-9690-434b-99a1-641ed124f519}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Util">
+      <UniqueIdentifier>{16d27057-7b62-4ff5-bc16-8de883779e59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\UI">
+      <UniqueIdentifier>{a0fc579c-d27f-4acf-a930-6cb2178bd3ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -45,23 +75,23 @@
     <ClCompile Include="ImGUI\imgui_widgets.cpp">
       <Filter>ImGUI</Filter>
     </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="World.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="Device.cpp">
+      <Filter>소스 파일\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Graphics.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="System.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Input.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Device.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="Object.cpp">
+      <Filter>소스 파일\UObject</Filter>
+    </ClCompile>
+    <ClCompile Include="System.cpp">
+      <Filter>소스 파일\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>소스 파일\UWorld</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -94,35 +124,35 @@
     <ClInclude Include="ImGUI\imstb_truetype.h">
       <Filter>ImGUI</Filter>
     </ClInclude>
-    <ClInclude Include="Sphere.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="UEContainerAliases.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="World.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Define.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneComponent.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="System.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Util</Filter>
     </ClInclude>
     <ClInclude Include="Device.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics.h">
+      <Filter>헤더 파일\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>헤더 파일\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>헤더 파일\UObject</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneComponent.h">
+      <Filter>헤더 파일\UObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>리소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="System.h">
+      <Filter>헤더 파일\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="UEContainerAliases.h">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>헤더 파일\UWorld</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
