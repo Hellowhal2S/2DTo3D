@@ -220,7 +220,7 @@ void FGraphicsDevice::CreateRasterizerState(HWND hWindow)
 {
 	D3D11_RASTERIZER_DESC rasterizerdesc = {};
 	rasterizerdesc.FillMode = D3D11_FILL_SOLID;
-	rasterizerdesc.CullMode = D3D11_CULL_BACK;
+	rasterizerdesc.CullMode = D3D11_CULL_FRONT;
 	HRESULT hr = Device->CreateRasterizerState(&rasterizerdesc, &RasterizerState);
 	if (FAILED(hr)) {
 		MessageBox(hWindow, L"Failed to create rasterizer state!", L"Error", MB_ICONERROR | MB_OK);
@@ -252,7 +252,6 @@ void FGraphicsDevice::Prepare()
     DeviceContext->RSSetState(RasterizerState); //레스터 라이저 상태 설정
 
     DeviceContext->OMSetDepthStencilState(DepthStencilState, 0);
-
     DeviceContext->OMSetRenderTargets(1, &FrameBufferRTV, DepthStencilView); // 렌더 타겟 설정(백버퍼를 가르킴)
     DeviceContext->OMSetBlendState(nullptr, nullptr, 0xffffffff); // 블렌뎅 상태 설정, 기본블렌딩 상태임
 }

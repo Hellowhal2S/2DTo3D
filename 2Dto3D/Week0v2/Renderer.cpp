@@ -103,6 +103,7 @@ void FRenderer::PrepareShader()
     if (ConstantBuffer)
     {
         Graphics->DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer);
+        Graphics->DeviceContext->PSSetConstantBuffers(0, 1, &ConstantBuffer);
     }
 }
 
