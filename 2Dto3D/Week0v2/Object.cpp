@@ -32,14 +32,14 @@ void UObject::Render()
 FVector UObject::GetForwardVector()
 {
 	FVector Forward = FVector(0.f,0.f,1.0f);
-	Forward = JungleMath::FVectorRotate(Forward, m_Rotation * -1);
+	Forward = JungleMath::FVectorRotate(Forward, m_Rotation);
 	return Forward;
 }
 
 FVector UObject::GetRightVector()
 {
 	FVector Right = FVector(1.f, 0.f, 0.0f);
-	Right = JungleMath::FVectorRotate(Right, m_Rotation * -1);
+	Right = JungleMath::FVectorRotate(Right, m_Rotation);
 	return Right;
 }
 
@@ -77,4 +77,19 @@ void UObject::SetLocation(FVector _newLoc)
     FVector newLoc = _newLoc;
     newLoc.z *= -1;
     m_Location = _newLoc;
+}
+
+void UObject::AddLocation(FVector _added)
+{
+	m_Location = m_Location + _added;
+}
+
+void UObject::AddRotation(FVector _added)
+{
+	m_Rotation = m_Rotation + _added;
+}
+
+void UObject::AddScale(FVector _added)
+{
+	m_Scale = m_Scale + _added;
 }

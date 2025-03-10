@@ -150,6 +150,14 @@ enum OBJECTS
 	OBJ_END
 };
 
+enum ARROW_DIR
+{
+	AD_X,
+	AD_Y,
+	AD_Z,
+	AD_END
+};
+
 struct FQuat
 {
 	float w, x, y, z;

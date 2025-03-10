@@ -128,12 +128,12 @@ void UCameraComponent::MoveUp(float _Value)
 
 void UCameraComponent::RotateYaw(float _Value)
 {
-	m_Rotation.y -= _Value;
+	m_Rotation.y += _Value;
 }
 
 void UCameraComponent::RotatePitch(float _Value)
 {
-	m_Rotation.x -= _Value;
+	m_Rotation.x += _Value;
 }
 
 

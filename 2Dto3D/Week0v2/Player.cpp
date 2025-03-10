@@ -5,6 +5,11 @@
 #include "Define.h"
 #include "EngineLoop.h"
 #include "PrimitiveComponent.h"
+#include "JungleMath.h"
+#include <DirectXMath.h>
+#include "ArrowComp.h"
+using namespace DirectX;
+
 UPlayer::UPlayer()
 {
 }
@@ -29,82 +34,206 @@ void UPlayer::Release()
 
 void UPlayer::Input()
 {
-	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+
+	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000 )
 	{
-		POINT mousePos;
-		GetCursorPos(&mousePos);
-		ScreenToClient(GEngineLoop.hWnd, &mousePos);
+		if (!bLeftMouseDown) {
+			bLeftMouseDown = true;
 
-		FVector rayOrigin;
-		FVector rayDir;
-		ScreenToRay(mousePos.x, mousePos.y, GEngineLoop.View, GEngineLoop.Projection, rayOrigin, rayDir);
-		UObject* Possible = nullptr;
-#pragma region MyRegion
-		//UE_LOG(LogLevel::Warning, "%f %f %f", rayOrigin.x, rayOrigin.y, rayOrigin.z);
-//for (auto iter = GetWorld()->GetSphreList().begin(); iter != GetWorld()->GetSphreList().end();++iter)
-//{
-//	if (RayIntersectsSphere(rayOrigin, rayDir, (*iter)->GetLocation(), (*iter)->GetScale().x))
-//	{
-//		if (!Possible)
-//			Possible = (*iter);
-//		else if (Possible->GetLocation().Distance(rayOrigin) > ((*iter)->GetLocation().Distance(rayOrigin)))
-//			Possible = (*iter);
-//	}
-//}
+			UE_LOG(LogLevel::Warning, "Down");
 
-//for (auto iter = GetWorld()->GetCubeList().begin(); iter != GetWorld()->GetCubeList().end();++iter)
-//{
-//	if (RayIntersectsSphere(rayOrigin, rayDir, (*iter)->GetLocation(), (*iter)->GetScale().x))
-//	{
-//		if (!Possible)
-//			Possible = (*iter);
-//		else if (Possible->GetLocation().Distance(rayOrigin) > ((*iter)->GetLocation().Distance(rayOrigin)))
-//			Possible = (*iter);
-//	}
-//}
-#pragma endregion
+			POINT mousePos;
+			GetCursorPos(&mousePos);
+			GetCursorPos(&m_LastMousePos);
 
 
-		for (auto iter : GetWorld()->GetObjectArr())
-		{
-			UPrimitiveComponent* pObj = dynamic_cast<UPrimitiveComponent*>(iter);
-			if(pObj)
+			ScreenToClient(GEngineLoop.hWnd, &mousePos);
+
+			FVector rayOrigin;
+			FVector rayDir;
+			ScreenToRay(mousePos.x, mousePos.y, GEngineLoop.View, GEngineLoop.Projection, rayOrigin, rayDir);
+			UObject* Possible = nullptr;
+			//for (auto iter : GetWorld()->GetObjectArr())
+			//{
+			//	UPrimitiveComponent* pObj = dynamic_cast<UPrimitiveComponent*>(iter);
+			//	if (pObj)
+			//	{
+			//		FVector BoxMin, BoxMax;
+			//		GetBoxMinMax(pObj->GetLocation(), pObj->GetScale(), pObj->GetRotation(), BoxMin, BoxMax);
+			//		if (RayIntersectsBox(rayOrigin, rayDir, BoxMin, BoxMax, pObj->GetRotation()))
+			//		{
+			//			if (!Possible)
+			//				Possible = pObj;
+			//			else if (Possible->GetLocation().Distance(rayOrigin) > (pObj->GetLocation().Distance(rayOrigin)))
+			//				Possible = pObj;
+			//		}
+			//	}
+			//};
+			//if (Possible)
+			//	GetWorld()->SetPickingObj(Possible);
+
+			for (auto iter : GetWorld()->GetObjectArr())
 			{
-				if (RayIntersectsSphere(rayOrigin, rayDir, pObj->GetLocation(), pObj->GetScale().x))
+				UPrimitiveComponent* pObj = dynamic_cast<UPrimitiveComponent*>(iter);
+
+				if (pObj && pObj->GetType() != "Arrow")
 				{
-					if (!Possible)
-						Possible = pObj;
-					else if (Possible->GetLocation().Distance(rayOrigin) > (pObj->GetLocation().Distance(rayOrigin)))
-						Possible = pObj;
+					FVector BoxMin, BoxMax;
+					float MaxScale = max(max(pObj->GetScale().x, pObj->GetScale().y), pObj->GetScale().z);
+					if (RayIntersectsSphere(rayOrigin, rayDir, pObj->GetLocation(), MaxScale))
+					{
+						if (!Possible)
+							Possible = pObj;
+						else if (Possible->GetLocation().Distance(rayOrigin) > (pObj->GetLocation().Distance(rayOrigin)))
+							Possible = pObj;
+					}
 				}
 			}
+			if (Possible)
+				GetWorld()->SetPickingObj(Possible);
+			if (GetWorld()->GetPickingObj()) {
+				for (int i = 0;i < 3;++i)
+				{
+					UArrowComp* Arrow = static_cast<UArrowComp*>(GetWorld()->LocalGizmo[i]);
+					float Scale = 0.0f;
+					FVector DetectLoc;
+					if (i == 0) {
+						Scale = GetWorld()->LocalGizmo[0]->GetScale().x;
+						DetectLoc = Arrow->GetLocation() + GetWorld()->GetPickingObj()->GetRightVector();
+					}
+					else if (i == 1) {
+						Scale = GetWorld()->LocalGizmo[1]->GetScale().y;
+						DetectLoc = Arrow->GetLocation() + GetWorld()->GetPickingObj()->GetUpVector();
+					}
+					else if (i == 2) {
+						Scale = GetWorld()->LocalGizmo[2]->GetScale().z;
+						DetectLoc = Arrow->GetLocation() + GetWorld()->GetPickingObj()->GetForwardVector();
+					}
+					if (RayIntersectsSphere(rayOrigin, rayDir, DetectLoc, 0.5f))
+					{
+						GetWorld()->SetPickingGizmo(GetWorld()->LocalGizmo[i]);
+						UE_LOG(LogLevel::Display, "%d", Arrow->GetDir());
+					}
+				}
+			}	
 		}
-		if (Possible)
-			GetWorld()->SetPickingObj(Possible);
-
-		for (int i =0;i<3;++i)
+		else
 		{
-			float Scale =0.0f;
-			if (i == 0)
-				Scale = GetWorld()->LocalGizmo[0]->GetScale().x;
-			else if (i == 1)
-				Scale = GetWorld()->LocalGizmo[1]->GetScale().y;
-			else if (i == 2)
-				Scale = GetWorld()->LocalGizmo[2]->GetScale().z;
-			if (RayIntersectsSphere(rayOrigin, rayDir, GetWorld()->LocalGizmo[i]->GetLocation(), 1.0f))
-			{
-				GetWorld()->SetPickingGizmo(GetWorld()->LocalGizmo[i]);
-			}
-			else
-			{
-				//char message[256];
-				//sprintf_s(message, "Ray Origin: (%.2f, %.2f, %.2f)\nRay Direction: (%.2f, %.2f, %.2f)",
-				//	rayOrigin.x, rayOrigin.y, rayOrigin.z, rayDir.x, rayDir.y, rayDir.z);
-				//MessageBoxA(nullptr, message, "No", MB_OK);
+			// 마우스 이동량 계산
+			if (GetWorld()->GetPickingObj() && GetWorld()->GetPickingGizmo()) {
+				POINT currentMousePos;
+				GetCursorPos(&currentMousePos);
+				UObject* pObj = GetWorld()->GetPickingObj();
+				// 마우스 이동 차이 계산
+				int32 deltaX = currentMousePos.x - m_LastMousePos.x;
+				int32 deltaY = currentMousePos.y - m_LastMousePos.y;
+				UArrowComp* Arrow = static_cast<UArrowComp*>(GetWorld()->GetPickingGizmo());
+				switch (Arrow->GetDir())
+				{
+				case AD_X:
+					pObj->AddLocation(pObj->GetRightVector() * deltaX * 0.01f);
+					break;
+				case AD_Y:
+					pObj->AddLocation((pObj->GetUpVector() * deltaY * 0.01f) * -1 );
+					break;
+				case AD_Z:
+					pObj->AddLocation(pObj->GetForwardVector() * deltaX*0.01f);
+					break;
+				default:
+					break;
+				}
+
+				// 새로운 마우스 위치 저장
+				m_LastMousePos = currentMousePos;
 			}
 		}
 	}
+	else
+	{
+		if (bLeftMouseDown) {
+				UE_LOG(LogLevel::Warning, "Up");
+				bLeftMouseDown = false; // 마우스 오른쪽 버튼을 떼면 상태 초기화
+				GetWorld()->SetPickingGizmo(nullptr);
+			
+		}
+	}
 }
+
+
+bool UPlayer::RayIntersectsBox(const FVector& rayOrigin, const FVector& rayDir, const FVector& boxMin, const FVector& boxMax, const FVector& boxRotation)
+{
+	// 1. 회전 행렬 생성 (FVector로 주어진 회전값을 roll, pitch, yaw로 해석하여 회전 행렬을 생성)
+	XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYaw(boxRotation.x, boxRotation.y, boxRotation.z);
+
+	// 2. 레이의 원점과 방향을 로컬 좌표계로 변환
+	XMVECTOR rayOriginVec = XMVectorSet(rayOrigin.x, rayOrigin.y, rayOrigin.z, 1.0f);
+	XMVECTOR rayDirVec = XMVectorSet(rayDir.x, rayDir.y, rayDir.z, 0.0f);
+
+	// 회전 행렬을 사용하여 레이를 로컬 좌표계로 변환
+	XMMATRIX inverseRotationMatrix = XMMatrixInverse(nullptr, rotationMatrix);
+	rayOriginVec = XMVector3TransformCoord(rayOriginVec, inverseRotationMatrix);
+	rayDirVec = XMVector3TransformNormal(rayDirVec, inverseRotationMatrix);
+
+	// 3. 로컬 좌표계에서 레이의 원점과 방향을 FVector로 변환
+	FVector localRayOrigin(XMVectorGetX(rayOriginVec), XMVectorGetY(rayOriginVec), XMVectorGetZ(rayOriginVec));
+	FVector localRayDir(XMVectorGetX(rayDirVec), XMVectorGetY(rayDirVec), XMVectorGetZ(rayDirVec));
+
+	// 4. 박스의 교차 여부를 계산 (AABB 교차 검사)
+	float tmin = (boxMin.x - localRayOrigin.x) / localRayDir.x;
+	float tmax = (boxMax.x - localRayOrigin.x) / localRayDir.x;
+
+	if (tmin > tmax) std::swap(tmin, tmax);
+
+	float tymin = (boxMin.y - localRayOrigin.y) / localRayDir.y;
+	float tymax = (boxMax.y - localRayOrigin.y) / localRayDir.y;
+
+	if (tymin > tymax) std::swap(tymin, tymax);
+
+	if (tmin > tymax || tymin > tmax)
+		return false;
+
+	if (tymin > tmin) tmin = tymin;
+	if (tymax < tmax) tmax = tymax;
+
+	float tzmin = (boxMin.z - localRayOrigin.z) / localRayDir.z;
+	float tzmax = (boxMax.z - localRayOrigin.z) / localRayDir.z;
+
+	if (tzmin > tzmax) std::swap(tzmin, tzmax);
+
+	if (tmin > tzmax || tzmin > tmax)
+		return false;
+
+	if (tzmin > tmin) tmin = tzmin;
+	if (tzmax < tmax) tmax = tzmax;
+
+	// 5. 레이가 직육면체와 교차하면 true 반환
+	return true;
+}
+
+void UPlayer::GetBoxMinMax(const FVector& boxLocation, const FVector& boxScale, const FVector& boxRotation, FVector& boxMin, FVector& boxMax)
+{
+	// 1. 박스 크기의 반쪽 (half-extents) 계산
+	FVector halfExtents = boxScale * 0.5f;
+
+	// 2. 회전 행렬을 생성 (FVector를 회전 행렬로 변환)
+	XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYaw(boxRotation.x, boxRotation.y, boxRotation.z);
+
+	// 3. 박스의 반쪽 크기를 회전시킴
+	XMVECTOR halfExtentsVec = XMVectorSet(halfExtents.x, halfExtents.y, halfExtents.z, 0.0f);
+	XMVECTOR rotatedHalfExtentsVec = XMVector3TransformNormal(halfExtentsVec, rotationMatrix);
+
+	// 4. 회전된 반쪽 크기 값을 FVector로 변환
+	FVector rotatedHalfExtents(
+		XMVectorGetX(rotatedHalfExtentsVec),
+		XMVectorGetY(rotatedHalfExtentsVec),
+		XMVectorGetZ(rotatedHalfExtentsVec)
+	);
+
+	// 5. Box의 min, max 값 계산
+	boxMin = boxLocation - rotatedHalfExtents;
+	boxMax = boxLocation + rotatedHalfExtents;
+}
+
 
 void UPlayer::ScreenToRay(float screenX, float screenY, const FMatrix& viewMatrix, const FMatrix& projectionMatrix, FVector& rayOrigin, FVector& rayDir)
 {
@@ -188,25 +317,3 @@ bool UPlayer::RayIntersectsAABB(const FVector& rayOrigin, const FVector& rayDir,
 	return true;
 }
 
-//bool UPlayer::RayIntersectsScaledSphere(const FVector& rayOrigin, const FVector& rayDir, const FVector& sphereCenter, const FVector& scale)
-//{
-//	// 1. 스케일을 반전하여 '구' 형태로 변환
-//	FVector invScale(1.0f / scale.x, 1.0f / scale.y, 1.0f / scale.z);
-//
-//	// 2. 레이의 원점과 방향을 변환된 공간으로 이동
-//	FVector newOrigin = (rayOrigin - sphereCenter) * invScale;
-//	FVector newDir = rayDir * invScale;
-//
-//	// 3. 정규화
-//	float length = sqrt(newDir.x * newDir.x + newDir.y * newDir.y + newDir.z * newDir.z);
-//	newDir.x /= length;
-//	newDir.y /= length;
-//	newDir.z /= length;
-//
-//	// 4. 기존 Sphere 충돌 판정 알고리즘 사용 (반지름 = 1)
-//	float b = 2.0f * (newDir.x * newOrigin.x + newDir.y * newOrigin.y + newDir.z * newOrigin.z);
-//	float c = (newOrigin.x * newOrigin.x + newOrigin.y * newOrigin.y + newOrigin.z * newOrigin.z) - 1.0f;
-//	float discriminant = b * b - 4.0f * c;
-//
-//	return discriminant > 0;
-//}

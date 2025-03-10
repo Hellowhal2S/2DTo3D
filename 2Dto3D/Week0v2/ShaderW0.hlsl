@@ -30,7 +30,7 @@ PS_INPUT mainVS(VS_INPUT input)
     
     output.color = input.color;
     if(Flag == 1.0f){
-        output.color.rgb *= 1.5f;
+        output.color.rgb *= 0.5f;
     }
     return output;
 }

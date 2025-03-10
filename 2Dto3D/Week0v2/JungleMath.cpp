@@ -12,45 +12,79 @@ FVector4 JungleMath::ConvertV3ToV4(FVector vec3)
 }
 
 
+//FMatrix JungleMath::CreateModelMatrix(FVector translation, FVector rotation, FVector scale)
+//{
+//    // 1. 스케일 행렬
+//    FMatrix Scale = FMatrix::Identity;
+//    Scale.M[0][0] = scale.x;
+//    Scale.M[1][1] = scale.y;
+//    Scale.M[2][2] = scale.z;
+//
+//    // 2. 회전 행렬 (Yaw-Pitch-Roll 순서, LH 좌표계)
+//    float x = DegToRad(rotation.x);
+//    float y = DegToRad(rotation.y);
+//    float z = DegToRad(rotation.z);
+//
+//    float cosX = cos(x), sinX = sin(x);
+//    float cosY = cos(y), sinY = sin(y);
+//    float cosZ = cos(z), sinZ = sin(z);
+//
+//    FMatrix RotationX = FMatrix::Identity;
+//    RotationX.M[1][1] = cosX; RotationX.M[1][2] = -sinX;
+//    RotationX.M[2][1] = sinX; RotationX.M[2][2] = cosX;
+//
+//    FMatrix RotationY = FMatrix::Identity;
+//    RotationY.M[0][0] = cosY; RotationY.M[0][2] = sinY;
+//    RotationY.M[2][0] = -sinY; RotationY.M[2][2] = cosY;
+//
+//    FMatrix RotationZ = FMatrix::Identity;
+//    RotationZ.M[0][0] = cosZ; RotationZ.M[0][1] = -sinZ;
+//    RotationZ.M[1][0] = sinZ; RotationZ.M[1][1] = cosZ;
+//
+//    // Yaw-Pitch-Roll 적용 순서 -> Z * Y * X
+//    FMatrix Rotation = RotationZ * RotationY * RotationX;
+//
+//    // 3. 이동 행렬
+//    FMatrix Translation = FMatrix::Identity;
+//    Translation.M[3][0] = translation.x;
+//    Translation.M[3][1] = translation.y;
+//    Translation.M[3][2] = translation.z;
+//
+//    return Scale * Rotation * Translation;
+//}
 FMatrix JungleMath::CreateModelMatrix(FVector translation, FVector rotation, FVector scale)
 {
     // 1. 스케일 행렬
-    FMatrix Scale = FMatrix::Identity;
-    Scale.M[0][0] = scale.x;
-    Scale.M[1][1] = scale.y;
-    Scale.M[2][2] = scale.z;
+    XMMATRIX scaleMatrix = XMMatrixScaling(scale.x, scale.y, scale.z);
 
-    // 2. 회전 행렬 (Yaw-Pitch-Roll 순서, LH 좌표계)
-    float x = DegToRad(rotation.x);
-    float y = DegToRad(rotation.y);
-    float z = DegToRad(rotation.z);
+    // 2. 회전 행렬 (쿼터니언 사용)
+    XMVECTOR quatX = XMQuaternionRotationAxis(XMVectorSet(1, 0, 0, 0), DegToRad(rotation.x));
+    XMVECTOR quatY = XMQuaternionRotationAxis(XMVectorSet(0, 1, 0, 0), DegToRad(rotation.y));
+    XMVECTOR quatZ = XMQuaternionRotationAxis(XMVectorSet(0, 0, 1, 0), DegToRad(rotation.z));
 
-    float cosX = cos(x), sinX = sin(x);
-    float cosY = cos(y), sinY = sin(y);
-    float cosZ = cos(z), sinZ = sin(z);
+    XMVECTOR rotationQuat = XMQuaternionMultiply(quatZ, XMQuaternionMultiply(quatY, quatX));
+    rotationQuat = XMQuaternionNormalize(rotationQuat);  // 정규화 필수
 
-    FMatrix RotationX = FMatrix::Identity;
-    RotationX.M[1][1] = cosX; RotationX.M[1][2] = -sinX;
-    RotationX.M[2][1] = sinX; RotationX.M[2][2] = cosX;
-
-    FMatrix RotationY = FMatrix::Identity;
-    RotationY.M[0][0] = cosY; RotationY.M[0][2] = sinY;
-    RotationY.M[2][0] = -sinY; RotationY.M[2][2] = cosY;
-
-    FMatrix RotationZ = FMatrix::Identity;
-    RotationZ.M[0][0] = cosZ; RotationZ.M[0][1] = -sinZ;
-    RotationZ.M[1][0] = sinZ; RotationZ.M[1][1] = cosZ;
-
-    // Yaw-Pitch-Roll 적용 순서 -> Z * Y * X
-    FMatrix Rotation = RotationZ * RotationY * RotationX;
+    XMMATRIX rotationMatrix = XMMatrixRotationQuaternion(rotationQuat);
 
     // 3. 이동 행렬
-    FMatrix Translation = FMatrix::Identity;
-    Translation.M[3][0] = translation.x;
-    Translation.M[3][1] = translation.y;
-    Translation.M[3][2] = translation.z;
+    XMMATRIX translationMatrix = XMMatrixTranslation(translation.x, translation.y, translation.z);
 
-    return Scale * Rotation * Translation;
+    // 최종 변환 행렬 (회전 -> 스케일 -> 이동 순서)
+    XMMATRIX finalMatrix = XMMatrixMultiply(XMMatrixMultiply(scaleMatrix,rotationMatrix), translationMatrix);
+
+    // XMMATRIX -> FMatrix 변환
+    FMatrix result = FMatrix::Identity;  // 기본값 설정 (단위 행렬)
+
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            result.M[i][j] = finalMatrix.r[i].m128_f32[j];  // XMMATRIX에서 FMatrix로 값 복사
+        }
+    }
+
+    return result;
 }
 
 FMatrix JungleMath::CreateViewMatrix(FVector eye, FVector target, FVector up)

@@ -22,6 +22,10 @@ public:
 	FVector				GetUpVector();
 	FVector				GetLocation();
 	void				SetLocation(FVector _newLoc);
+	void				AddLocation(FVector _added);
+	void				AddRotation(FVector _added);
+	void				AddScale(FVector _added);
+
 protected:
 	FVector				m_Location;
 	FVector				m_Rotation;
@@ -33,7 +37,6 @@ public:
 	inline FVector				GetScale()    {	return m_Scale;    }
 	inline void					SetRotation(FVector _newRot) { m_Rotation = _newRot; }
 	inline void					SetScale(FVector _newScale) { m_Scale = _newScale; }
-
 	inline UWorld*				GetWorld() { return GEngineLoop.GetWorld(); }
 	inline FEngineLoop&			GetEngine() { return GEngineLoop; }
 

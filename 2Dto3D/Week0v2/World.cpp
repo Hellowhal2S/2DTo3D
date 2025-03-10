@@ -39,79 +39,29 @@ void UWorld::Initialize()
 	GUObjectArray.push_back(gizmo);
 
 	UObject* localGizmo = FObjectFactory::ConstructObject<UArrowComp>();
+	static_cast<UArrowComp*>(localGizmo)->SetDir(ARROW_DIR::AD_X);
 	LocalGizmo[0] = localGizmo;
 	GUObjectArray.push_back(localGizmo);
+
+	localGizmo = nullptr;
 	localGizmo = FObjectFactory::ConstructObject<UArrowComp>();
+	static_cast<UArrowComp*>(localGizmo)->SetDir(ARROW_DIR::AD_Y);
 	LocalGizmo[1] = localGizmo;
-	localGizmo->SetRotation(FVector(0.0f, 90.0f, 0.0));
 	GUObjectArray.push_back(localGizmo);
+
+	localGizmo = nullptr;
 	localGizmo = FObjectFactory::ConstructObject<UArrowComp>();
-	localGizmo->SetRotation(FVector(0.0f, 0.0f, -90.f));
+	static_cast<UArrowComp*>(localGizmo)->SetDir(ARROW_DIR::AD_Z);
 	LocalGizmo[2] = localGizmo;
 	GUObjectArray.push_back(localGizmo);
 
-#pragma region MyRegion
-	// 
-	//for (int32 i = 0;i < OBJ_END;++i)
-	//{
-	//	m_pObjectList.push_back(TDoubleLinkedList<UObject*>());
-	//}
-	//UObject* player = FObjectFactory::ConstructObject<UPlayer>();
-	//player->Initialize();
-	//m_pObjectList[OBJ_PLAYER].push_back(player);
-
-	//UObject* Camera = new UCameraComponent;
-	//Camera->Initialize();
-	//Camera->SetLocation(FVector(0, 0, -10.f));
-	//m_pObjectList[OBJ_CAMERA].push_back(Camera);
-
-
-	//UObject* Sphere = new USphereComp;
-	//Sphere->Initialize();
-
-	//m_pObjectList[OBJ_SPHERE].push_back(Sphere);
-	//UObject* Cube = new UCubeComp;
-	//Cube->Initialize();
-	//Cube->SetLocation(FVector(10.f, 0.0f, 0.f));
-	//m_pObjectList[OBJ_CUBE].push_back(Cube);
-
-	//UObject* gizmo = new UGizmoComponent;
-	//gizmo->Initialize();
-	////gizmo->SetLocation(FVector(0.f, 0.0f, 0.f));
-
-	//UObject* localGizmo = new UCubeComp;
-	//localGizmo->Initialize();
-	////localGizmo->SetLocation(FVector(1.f, 0.0f, 0.0f));
-	//localGizmo->SetScale(FVector(2.0f, .1f, 0.1f));
-	//LocalGizmo[0] = localGizmo;
-	//localGizmo = new UCubeComp;
-	//localGizmo->Initialize();
-	////localGizmo->SetLocation(FVector(0.0f, 1.f, 0.0f));
-	//localGizmo->SetScale(FVector(.1f, 2.0f, .1f));
-	//LocalGizmo[1] = localGizmo;
-	//localGizmo = new UCubeComp;
-	//localGizmo->Initialize();
-	////localGizmo->SetLocation(FVector(0.0f, 0.0f, 1.f));
-	//localGizmo->SetScale(FVector(.1f, .1f, 2.0f));
-	//LocalGizmo[2] = localGizmo;
-	//gizmo->Initialize();
-
-#pragma endregion
-
-	
 
 }
 
 void UWorld::Tick(double deltaTime)
 {
 	Input();
-	//for (int32 i = 0;i < m_pObjectList.size();i++)
-	//{
-	//	for (auto iter = m_pObjectList[i].begin();iter != m_pObjectList[i].end();++iter)
-	//	{
-	//		(*iter)->Update(deltaTime);
-	//	}
-	//}
+
 	for (auto iter : GUObjectArray)
 	{
 		iter->Update(deltaTime);
@@ -119,11 +69,16 @@ void UWorld::Tick(double deltaTime)
 	if (pickingObj)
 	{
 		LocalGizmo[0]->SetLocation(pickingObj->GetLocation());
-		LocalGizmo[0]->SetRotation(FVector(0.0f,0.0f,0.f) + pickingObj->GetRotation());
+		LocalGizmo[0]->SetRotation(pickingObj->GetRotation());
+		LocalGizmo[0]->SetScale(FVector(pickingObj->GetScale().x,1.0f,1.0f));
 		LocalGizmo[1]->SetLocation(pickingObj->GetLocation());
-		LocalGizmo[1]->SetRotation(FVector(0.0f, 90.0f, 0.f) + pickingObj->GetRotation());
+		LocalGizmo[1]->SetRotation(pickingObj->GetRotation());
+		LocalGizmo[1]->SetScale(FVector(1.0f, pickingObj->GetScale().y, 1.0f));
+
 		LocalGizmo[2]->SetLocation(pickingObj->GetLocation());
-		LocalGizmo[2]->SetRotation(FVector(0.0f, 0.0f, -90.f) + pickingObj->GetRotation());
+		LocalGizmo[2]->SetRotation(pickingObj->GetRotation());
+		LocalGizmo[2]->SetScale(FVector(1.0f, 1.0f, pickingObj->GetScale().z));
+
 	}
 }
 
