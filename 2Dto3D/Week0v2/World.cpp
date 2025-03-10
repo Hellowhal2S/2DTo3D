@@ -228,16 +228,16 @@ void UWorld::Render()
         renderer.UpdateConstant(gizmoX, Camera.GetViewMatrix(), Camera.GetProjectionMatrix(),1);
         renderer.RenderPrimitive(vertexBufferArrow, sizeof(arrow_vertices) / sizeof(FVertexSimple));
 
-        // Y축 기즈모 (초록) - X축 Arrow를 Y축 기준으로 90도 회전
+        // Y축 기즈모 (초록) - X축 Arrow를 Z축 기준으로 90도 회전
          scaleMatrix = FMatrix::CreateScale(1, max(1,scale.y * 2), 1);
-        FMatrix rotationY = FMatrix::CreateRotation(0, 0, -90);
+        FMatrix rotationY = FMatrix::CreateRotation(0, 0, 90);
         FMatrix gizmoY = rotationY * scaleMatrix * objectRotation * objectTransform;
         renderer.UpdateConstant(gizmoY, Camera.GetViewMatrix(), Camera.GetProjectionMatrix(),2);
         renderer.RenderPrimitive(vertexBufferArrow, sizeof(arrow_vertices) / sizeof(FVertexSimple));
 
         // Z축 기즈모 (파랑) - X축 Arrow를 Z축 기준으로 90도 회전
         scaleMatrix = FMatrix::CreateScale(1, 1 , max(1, scale.z * 2));
-        FMatrix rotationZ = FMatrix::CreateRotation(0, 90, 0);
+        FMatrix rotationZ = FMatrix::CreateRotation(0, -90, 0);
         FMatrix gizmoZ = rotationZ * scaleMatrix * objectRotation * objectTransform;
         renderer.UpdateConstant(gizmoZ, Camera.GetViewMatrix(), Camera.GetProjectionMatrix(),3);
         renderer.RenderPrimitive(vertexBufferArrow, sizeof(arrow_vertices) / sizeof(FVertexSimple));

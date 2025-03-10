@@ -143,30 +143,30 @@ FMatrix FMatrix::CreateRotation(float roll, float pitch, float yaw)
 
     // Z축 (Yaw) 회전
     FMatrix rotationZ = { {
-        { cosYaw, -sinYaw, 0, 0 },
-        { sinYaw, cosYaw, 0, 0 },
+        { cosYaw, sinYaw, 0, 0 },
+        { -sinYaw, cosYaw, 0, 0 },
         { 0, 0, 1, 0 },
         { 0, 0, 0, 1 }
     } };
 
     // Y축 (Pitch) 회전
     FMatrix rotationY = { {
-        { cosPitch, 0, sinPitch, 0 },
+        { cosPitch, 0, -sinPitch, 0 },
         { 0, 1, 0, 0 },
-        { -sinPitch, 0, cosPitch, 0 },
+        { sinPitch, 0, cosPitch, 0 },
         { 0, 0, 0, 1 }
     } };
 
     // X축 (Roll) 회전
     FMatrix rotationX = { {
         { 1, 0, 0, 0 },
-        { 0, cosRoll, -sinRoll, 0 },
-        { 0, sinRoll, cosRoll, 0 },
+        { 0, cosRoll, sinRoll, 0 },
+        { 0, -sinRoll, cosRoll, 0 },
         { 0, 0, 0, 1 }
     } };
 
-    // DirectX 표준 순서: Z(Yaw) → Y(Pitch) → X(Roll)
-    return rotationX * rotationY * rotationZ;
+    // DirectX 표준 순서: Z(Yaw) → Y(Pitch) → X(Roll)  
+    return rotationX * rotationY * rotationZ;  // 이렇게 하면  오른쪽 부터 적용됨
 }
 
 
@@ -181,6 +181,15 @@ FMatrix FMatrix::CreateRotation(float roll, float pitch, float yaw)
         } };
     }
 
+ FMatrix FMatrix::CreateTranslationMatrix(const FVector& position)
+ {
+     FMatrix translationMatrix = FMatrix::Identity;
+     translationMatrix.M[3][0] = position.x;
+     translationMatrix.M[3][1] = position.y;
+     translationMatrix.M[3][2] = position.z;
+     return translationMatrix;
+ }
+
  FVector FMatrix::TransformVector(const FVector& v, const FMatrix& m)
  {
      FVector result;
@@ -190,11 +199,11 @@ FMatrix FMatrix::CreateRotation(float roll, float pitch, float yaw)
      result.y = v.x * m.M[0][1] + v.y * m.M[1][1] + v.z * m.M[2][1] + 0.0f * m.M[3][1];
      result.z = v.x * m.M[0][2] + v.y * m.M[1][2] + v.z * m.M[2][2] + 0.0f * m.M[3][2];
 
-     // 정규화는 호출자에게 맡김 (필요한 경우 호출자가 정규화 수행)
+ 
      return result;
  }
 
- // FVector4를 변환하는 함수 (추가)
+ // FVector4를 변환하는 함수
  FVector4 FMatrix::TransformVector(const FVector4& v, const FMatrix& m)
  {
      FVector4 result;
@@ -205,14 +214,6 @@ FMatrix FMatrix::CreateRotation(float roll, float pitch, float yaw)
      return result;
  }
 
- FMatrix FMatrix::CreateTranslationMatrix(const FVector& position)
- {
-     FMatrix translationMatrix = FMatrix::Identity;
-     translationMatrix.M[3][0] = position.x;
-     translationMatrix.M[3][1] = position.y;
-     translationMatrix.M[3][2] = position.z;
-     return translationMatrix;
- }
 
 
 
@@ -220,3 +221,4 @@ FMatrix FMatrix::CreateRotation(float roll, float pitch, float yaw)
 
 
 
+ 

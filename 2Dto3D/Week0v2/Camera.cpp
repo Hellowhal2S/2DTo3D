@@ -115,10 +115,8 @@ FMatrix UCamera::GetViewMatrix() const
         { xAxis.z, yAxis.z, zAxis.z, 0 },
         { -xAxis.Dot(RelativeLocation), -yAxis.Dot(RelativeLocation), -zAxis.Dot(RelativeLocation), 1 }
     } };
-    printf("zAxis: (%f, %f, %f)\n", zAxis.x, zAxis.y, zAxis.z);
-    printf("Forward: (%f, %f, %f)\n", Forward.x, Forward.y, Forward.z);
-
 }
+
 
 FMatrix UCamera::GetProjectionMatrix() const
 {

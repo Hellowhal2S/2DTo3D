@@ -35,6 +35,7 @@ PS_INPUT mainVS(VS_INPUT input)
     float4 viewPos = mul(View, worldPos);
     float4 projPos = mul(Projection, viewPos);
 
+
     // 변환된 좌표 전달
     output.position = projPos;
     output.color = input.color;
