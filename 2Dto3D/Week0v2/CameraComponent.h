@@ -20,7 +20,6 @@ public:
 	void				RotateYaw(float _Value);
 	void				RotatePitch(float _Value);
 
-	FVector				GetCameraRightVector();
 private:
 	float m_mouseSpeed = 0.25f;
 	POINT m_LastMousePos;

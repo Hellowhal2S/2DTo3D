@@ -105,6 +105,10 @@ void UCameraComponent::Input()
 	{
 		GetWorld()->GetPickingObj()->SetLocation(GetWorld()->GetPickingObj()->GetLocation() + GetWorld()->GetPickingObj()->GetRightVector());
 	}
+	if (GetAsyncKeyState('X') & 0x8000)
+	{
+		GetWorld()->GetPickingObj()->SetLocation(GetWorld()->GetPickingObj()->GetLocation() + GetWorld()->GetPickingObj()->GetForwardVector());
+	}
 }
 
 void UCameraComponent::MoveForward(float _Value)
@@ -124,7 +128,7 @@ void UCameraComponent::MoveUp(float _Value)
 
 void UCameraComponent::RotateYaw(float _Value)
 {
-	m_Rotation.y += _Value;
+	m_Rotation.y -= _Value;
 }
 
 void UCameraComponent::RotatePitch(float _Value)
@@ -132,10 +136,5 @@ void UCameraComponent::RotatePitch(float _Value)
 	m_Rotation.x -= _Value;
 }
 
-FVector UCameraComponent::GetCameraRightVector()
-{
-	FVector Right = FVector(1.f, 0.f, 0.0f);
-	Right = JungleMath::FVectorRotateCamera(Right, m_Rotation);
-	return Right;
-}
+
 

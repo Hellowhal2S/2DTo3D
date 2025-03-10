@@ -17,7 +17,11 @@ public:
 	virtual void		Render();
 	FVector				GetForwardVector();
 	FVector				GetRightVector();
+	FVector				GetCameraForwardVector();
+	FVector				GetCameraRightVector();
 	FVector				GetUpVector();
+	FVector				GetLocation();
+	void				SetLocation(FVector _newLoc);
 protected:
 	FVector				m_Location;
 	FVector				m_Rotation;
@@ -25,10 +29,8 @@ protected:
 
 	UWorld*				m_World;
 public:
-	inline FVector				GetLocation() { return m_Location; }
 	inline FVector				GetRotation() { return m_Rotation; }
 	inline FVector				GetScale()    {	return m_Scale;    }
-	inline void					SetLocation(FVector _newLoc) { m_Location = _newLoc; }
 	inline void					SetRotation(FVector _newRot) { m_Rotation = _newRot; }
 	inline void					SetScale(FVector _newScale) { m_Scale = _newScale; }
 
