@@ -17,8 +17,6 @@ public:
 	virtual void		Render();
 	FVector				GetForwardVector();
 	FVector				GetRightVector();
-	FVector				GetCameraForwardVector();
-	FVector				GetCameraRightVector();
 	FVector				GetUpVector();
 	FVector				GetLocation();
 	void				SetLocation(FVector _newLoc);
@@ -40,5 +38,8 @@ public:
 	inline UWorld*				GetWorld() { return GEngineLoop.GetWorld(); }
 	inline FEngineLoop&			GetEngine() { return GEngineLoop; }
 
+public:
+	uint32 UUID;
+	uint32 InternalIndex; // Index of GUObjectArray
 };	
 

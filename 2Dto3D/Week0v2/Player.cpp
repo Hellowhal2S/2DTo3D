@@ -78,15 +78,6 @@ void UPlayer::Input()
 
 				if (pObj && pObj->GetType() != "Arrow")
 				{
-					//FVector BoxMin, BoxMax;
-					//float MaxScale = max(max(pObj->GetScale().x, pObj->GetScale().y), pObj->GetScale().z);
-					//if (RayIntersectsSphere(rayOrigin, rayDir, pObj->GetLocation(), MaxScale))
-					//{
-					//	if (!Possible)
-					//		Possible = pObj;
-					//	else if (Possible->GetLocation().Distance(rayOrigin) > (pObj->GetLocation().Distance(rayOrigin)))
-					//		Possible = pObj;
-					//}
 					float minDistance = 10000000.0f;
 					float Distance = 0.0f;
 					if (RayIntersectsObject(rayOrigin, rayDir, pObj, Distance))
@@ -96,10 +87,6 @@ void UPlayer::Input()
 							Possible = pObj;
 							minDistance = Distance;
 						}
-			/*			if (!Possible)
-							Possible = pObj;
-						else if (Possible->GetLocation().Distance(rayOrigin) > (pObj->GetLocation().Distance(rayOrigin)))
-							Possible = pObj;*/
 					}
 				}
 			}
@@ -148,22 +135,29 @@ void UPlayer::Input()
 				int32 deltaX = currentMousePos.x - m_LastMousePos.x;
 				int32 deltaY = currentMousePos.y - m_LastMousePos.y;
 				UArrowComp* Arrow = static_cast<UArrowComp*>(GetWorld()->GetPickingGizmo());
+				float xdir = pObj->GetRightVector().x >= 0 ? 1.0 : -1.0;
+				float zdir = pObj->GetForwardVector().z >= 0 ? 1.0 : -1.0;
+
 				switch (Arrow->GetDir())
 				{
 				case AD_X:
 					if (GetWorld()->GetCamera()->GetForwardVector().z >= 0)
-						pObj->AddLocation(pObj->GetRightVector() * deltaX * 0.01f);
+						pObj->AddLocation(pObj->GetRightVector() * deltaX * 0.01f * xdir);
 					else
-						pObj->AddLocation(pObj->GetRightVector()* deltaX * -0.01f);
+						pObj->AddLocation(pObj->GetRightVector()* deltaX * -0.01f * xdir);
 					break;
 				case AD_Y:
-					pObj->AddLocation((pObj->GetUpVector() * deltaY * 0.01f) * -1 );
+					if(pObj->GetUpVector().y >= 0 )
+						pObj->AddLocation((pObj->GetUpVector() * deltaY * 0.01f) * -1 );
+					else 
+						pObj->AddLocation((pObj->GetUpVector()* deltaY * 0.01f));
 					break;
 				case AD_Z:
+
 					if(GetWorld()->GetCamera()->GetForwardVector().x <= 0)
-						pObj->AddLocation(pObj->GetForwardVector() * deltaX*0.01f);
+						pObj->AddLocation(pObj->GetForwardVector() * deltaX*0.01f* zdir);
 					else
-						pObj->AddLocation(pObj->GetForwardVector()* deltaX * -0.01f);
+						pObj->AddLocation(pObj->GetForwardVector()* deltaX * -0.01f * zdir);
 					break;
 				default:
 					break;
@@ -186,80 +180,7 @@ void UPlayer::Input()
 }
 
 
-bool UPlayer::RayIntersectsBox(const FVector& rayOrigin, const FVector& rayDir, const FVector& boxMin, const FVector& boxMax, const FVector& boxRotation)
-{
-	// 1. 회전 행렬 생성 (FVector로 주어진 회전값을 roll, pitch, yaw로 해석하여 회전 행렬을 생성)
-	XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYaw(boxRotation.x, boxRotation.y, boxRotation.z);
 
-	// 2. 레이의 원점과 방향을 로컬 좌표계로 변환
-	XMVECTOR rayOriginVec = XMVectorSet(rayOrigin.x, rayOrigin.y, rayOrigin.z, 1.0f);
-	XMVECTOR rayDirVec = XMVectorSet(rayDir.x, rayDir.y, rayDir.z, 0.0f);
-
-	// 회전 행렬을 사용하여 레이를 로컬 좌표계로 변환
-	XMMATRIX inverseRotationMatrix = XMMatrixInverse(nullptr, rotationMatrix);
-	rayOriginVec = XMVector3TransformCoord(rayOriginVec, inverseRotationMatrix);
-	rayDirVec = XMVector3TransformNormal(rayDirVec, inverseRotationMatrix);
-
-	// 3. 로컬 좌표계에서 레이의 원점과 방향을 FVector로 변환
-	FVector localRayOrigin(XMVectorGetX(rayOriginVec), XMVectorGetY(rayOriginVec), XMVectorGetZ(rayOriginVec));
-	FVector localRayDir(XMVectorGetX(rayDirVec), XMVectorGetY(rayDirVec), XMVectorGetZ(rayDirVec));
-
-	// 4. 박스의 교차 여부를 계산 (AABB 교차 검사)
-	float tmin = (boxMin.x - localRayOrigin.x) / localRayDir.x;
-	float tmax = (boxMax.x - localRayOrigin.x) / localRayDir.x;
-
-	if (tmin > tmax) std::swap(tmin, tmax);
-
-	float tymin = (boxMin.y - localRayOrigin.y) / localRayDir.y;
-	float tymax = (boxMax.y - localRayOrigin.y) / localRayDir.y;
-
-	if (tymin > tymax) std::swap(tymin, tymax);
-
-	if (tmin > tymax || tymin > tmax)
-		return false;
-
-	if (tymin > tmin) tmin = tymin;
-	if (tymax < tmax) tmax = tymax;
-
-	float tzmin = (boxMin.z - localRayOrigin.z) / localRayDir.z;
-	float tzmax = (boxMax.z - localRayOrigin.z) / localRayDir.z;
-
-	if (tzmin > tzmax) std::swap(tzmin, tzmax);
-
-	if (tmin > tzmax || tzmin > tmax)
-		return false;
-
-	if (tzmin > tmin) tmin = tzmin;
-	if (tzmax < tmax) tmax = tzmax;
-
-	// 5. 레이가 직육면체와 교차하면 true 반환
-	return true;
-}
-
-
-void UPlayer::GetBoxMinMax(const FVector& boxLocation, const FVector& boxScale, const FVector& boxRotation, FVector& boxMin, FVector& boxMax)
-{
-	// 1. 박스 크기의 반쪽 (half-extents) 계산
-	FVector halfExtents = boxScale * 0.5f;
-
-	// 2. 회전 행렬을 생성 (FVector를 회전 행렬로 변환)
-	XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYaw(boxRotation.x, boxRotation.y, boxRotation.z);
-
-	// 3. 박스의 반쪽 크기를 회전시킴
-	XMVECTOR halfExtentsVec = XMVectorSet(halfExtents.x, halfExtents.y, halfExtents.z, 0.0f);
-	XMVECTOR rotatedHalfExtentsVec = XMVector3TransformNormal(halfExtentsVec, rotationMatrix);
-
-	// 4. 회전된 반쪽 크기 값을 FVector로 변환
-	FVector rotatedHalfExtents(
-		XMVectorGetX(rotatedHalfExtentsVec),
-		XMVectorGetY(rotatedHalfExtentsVec),
-		XMVectorGetZ(rotatedHalfExtentsVec)
-	);
-
-	// 5. Box의 min, max 값 계산
-	boxMin = boxLocation - rotatedHalfExtents;
-	boxMax = boxLocation + rotatedHalfExtents;
-}
 
 
 void UPlayer::ScreenToRay(float screenX, float screenY, const FMatrix& viewMatrix, const FMatrix& projectionMatrix, FVector& rayOrigin, FVector& rayDir)
@@ -312,36 +233,6 @@ bool UPlayer::RayIntersectsSphere(const FVector& rayOrigin, const FVector& rayDi
 
 	float discriminant = b * b - 4.0f * c;
 	return discriminant > 0;
-}
-bool UPlayer::RayIntersectsAABB(const FVector& rayOrigin, const FVector& rayDir, const FVector& boxMin, const FVector& boxMax)
-{
-	float tMin = (boxMin.x - rayOrigin.x) / rayDir.x;
-	float tMax = (boxMax.x - rayOrigin.x) / rayDir.x;
-
-	if (tMin > tMax) std::swap(tMin, tMax);
-
-	float tyMin = (boxMin.y - rayOrigin.y) / rayDir.y;
-	float tyMax = (boxMax.y - rayOrigin.y) / rayDir.y;
-
-	if (tyMin > tyMax) std::swap(tyMin, tyMax);
-
-	if ((tMin > tyMax) || (tyMin > tMax))
-		return false;
-
-	if (tyMin > tMin)
-		tMin = tyMin;
-	if (tyMax < tMax)
-		tMax = tyMax;
-
-	float tzMin = (boxMin.z - rayOrigin.z) / rayDir.z;
-	float tzMax = (boxMax.z - rayOrigin.z) / rayDir.z;
-
-	if (tzMin > tzMax) std::swap(tzMin, tzMax);
-
-	if ((tMin > tzMax) || (tzMin > tMax))
-		return false;
-
-	return true;
 }
 
 //OBB로 수정

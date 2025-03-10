@@ -28,12 +28,6 @@ void UWorld::Initialize()
 	GUObjectArray.push_back(Camera);
 	camera = Camera;
 
-	UObject* Sphere = FObjectFactory::ConstructObject<USphereComp>();
-	GUObjectArray.push_back(Sphere);
-
-	UObject* Cube = FObjectFactory::ConstructObject<UCubeComp>();
-	Cube->SetLocation(FVector(10.f, 0.0f, 0.f));
-	GUObjectArray.push_back(Cube);
 	UObject* gizmo = FObjectFactory::ConstructObject<UGizmoComponent>();
 	gizmo->SetScale(FVector(100000.0f, 100000.0f, 100000.0f));
 	GUObjectArray.push_back(gizmo);
@@ -74,14 +68,14 @@ void UWorld::Tick(double deltaTime)
 	{
 		LocalGizmo[0]->SetLocation(pickingObj->GetLocation());
 		LocalGizmo[0]->SetRotation(pickingObj->GetRotation());
-		LocalGizmo[0]->AddScale(FVector(pickingObj->GetScale().x,0.0f,0.0f));
+		LocalGizmo[0]->SetScale(FVector(pickingObj->GetScale().x+2.0f,1.0f,1.0f));
 		LocalGizmo[1]->SetLocation(pickingObj->GetLocation());
 		LocalGizmo[1]->SetRotation(pickingObj->GetRotation());
-		LocalGizmo[1]->AddScale(FVector(0.0f, pickingObj->GetScale().y, 0.0f));
+		LocalGizmo[1]->SetScale(FVector(1.0f, pickingObj->GetScale().y+2.0f, 1.0f));
 
 		LocalGizmo[2]->SetLocation(pickingObj->GetLocation());
 		LocalGizmo[2]->SetRotation(pickingObj->GetRotation());
-		LocalGizmo[2]->AddScale(FVector(0.0f, 0.0f, pickingObj->GetScale().z));
+		LocalGizmo[2]->SetScale(FVector(1.0f, 1.0f, pickingObj->GetScale().z+ 2.0f));
 
 	}
 }
@@ -138,19 +132,21 @@ void UWorld::SpawnObject(OBJECTS _Obj)
 
 void UWorld::LoadData(SceneData& _Data)
 {
-	for (auto iter = GUObjectArray.begin(); iter != GUObjectArray.end();)
-	{
-		UPrimitiveComponent* Primitive = dynamic_cast<UPrimitiveComponent*>(*iter);
-		if (Primitive)
-		{
-			delete (*iter);
-			iter = GUObjectArray.erase(iter);
-		}
-		else
-		{
-			++iter;
-		}
-	}
+	Release();
+	Initialize();
+	//for (auto iter = GUObjectArray.begin(); iter != GUObjectArray.end();)
+	//{
+	//	UPrimitiveComponent* Primitive = dynamic_cast<UPrimitiveComponent*>(*iter);
+	//	if (Primitive)
+	//	{
+	//		delete (*iter);
+	//		iter = GUObjectArray.erase(iter);
+	//	}
+	//	else
+	//	{
+	//		++iter;
+	//	}
+	//}
 	for (auto iter : _Data.Primitives)
 	{
 		GUObjectArray.push_back(iter.second);
@@ -164,7 +160,7 @@ SceneData UWorld::SaveData()
 	for (auto iter : GUObjectArray)
 	{
 		UPrimitiveComponent* Primitive = dynamic_cast<UPrimitiveComponent*>(iter);
-		if (Primitive)
+		if (Primitive && Primitive->GetType() != "Arrow")
 		{
 			Save.Primitives[Count] = iter;
 			Count++;

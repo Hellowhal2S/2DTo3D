@@ -25,12 +25,11 @@ void ControlPanel::Draw(UWorld* world, double elapsedTime )
 	const char* primitives[] = { "Sphere", "Cube", "Triangle" };
 	ImGui::Combo("Primitive", &primitiveType, primitives, IM_ARRAYSIZE(primitives));
 
-	static int32 spawnCount = 2;
-	ImGui::InputInt("Number of Spawn", &spawnCount, 0, 0);
+	int32 SpawnCount = world->GetObjectArr().size();
+	ImGui::InputInt("Number of Spawn", &SpawnCount, 0, 0);
 	if (ImGui::Button("Spawn"))
 	{
 		world->SpawnObject(static_cast<OBJECTS>(primitiveType));
-		spawnCount++;
 	}
 
 	static char sceneName[64] = "Default";

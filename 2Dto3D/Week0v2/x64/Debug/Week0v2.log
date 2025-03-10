@@ -1,9 +1,30 @@
-﻿  Player.cpp
+﻿  ArrowComp.cpp
+  CameraComponent.cpp
+  ControlPaner.cpp
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\ControlPaner.cpp(28,19): warning C4267: '초기화 중': 'size_t'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CubeComp.cpp
+  EngineLoop.cpp
+  GizmoComponent.cpp
+  LocalGizmoComponent.cpp
+  Object.cpp
+  ObjectFactory.cpp
+  Player.cpp
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(54,36): warning C4244: '인수': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(54,24): warning C4244: '인수': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(155,50): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(157,49): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(160,47): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(164,52): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(166,51): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(138,16): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(139,16): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(145,50): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(147,49): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(151,48): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(153,47): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(158,52): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(160,51): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  PrimitiveComponent.cpp
+  PropertyPanel.cpp
+  SceneComponent.cpp
+  SceneMgr.cpp
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\SceneMgr.cpp(80,34): warning C4101: 'e' :참조되지 않은 지역 변수입니다.
+  SphereComp.cpp
+  World.cpp
+  코드를 생성하고 있습니다...
   Week0v2.vcxproj -> C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\x64\Debug\Week0v2.exe

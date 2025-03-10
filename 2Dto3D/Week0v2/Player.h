@@ -17,11 +17,6 @@ private:
 		FVector& rayOrigin, FVector& rayDir);
 	bool RayIntersectsSphere(const FVector& rayOrigin, const FVector& rayDir,
 		const FVector& sphereCenter, float sphereRadius);
-	bool RayIntersectsAABB(const FVector& rayOrigin, const FVector& rayDir, const FVector& boxMin, const FVector& boxMax);
-	bool RayIntersectsScaledSphere(const FVector& rayOrigin, const FVector& rayDir, const FVector& sphereCenter, const FVector& scale);
-	//bool RayIntersectsBox(const FVector& rayOrigin, const FVector& rayDir, const FVector& boxMin, const FVector& boxMax, const FMatrix& boxRotation);
-	void GetBoxMinMax(const FVector& boxLocation, const FVector& boxScale, const FVector& boxRotation, FVector& boxMin, FVector& boxMax);
-	bool RayIntersectsBox(const FVector& rayOrigin, const FVector& rayDir, const FVector& boxMin, const FVector& boxMax, const FVector& boxRotation);
 	bool RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDir, UObject* obj, float& hitDistance);
 
 	bool bLeftMouseDown = false;
