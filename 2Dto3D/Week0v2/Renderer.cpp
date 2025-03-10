@@ -140,7 +140,7 @@ void URenderer::ReleaseConstantBuffer()
         ConstantBuffer = nullptr;
     }
 }
-void URenderer::UpdateConstant(const FMatrix& worldMatrix, const FMatrix& viewMatrix, const FMatrix& projectionMatrix, int mode)
+void URenderer::UpdateConstant(const FMatrix& matrix, int mode)
 {
     if (ConstantBuffer)
     {
@@ -148,9 +148,7 @@ void URenderer::UpdateConstant(const FMatrix& worldMatrix, const FMatrix& viewMa
         Graphics->DeviceContext->Map(ConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantbufferMSR);
         FConstants* constants = (FConstants*)constantbufferMSR.pData;
         {
-            constants->World = worldMatrix;
-            constants->View = viewMatrix;
-            constants->Projection = projectionMatrix;
+            constants->Mat = matrix;
             constants->mode = mode;  // mode 값 업데이트
         }
         Graphics->DeviceContext->Unmap(ConstantBuffer, 0);

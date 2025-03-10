@@ -35,15 +35,13 @@ public:
     ID3D11Buffer* CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth);
     void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
     void ReleaseConstantBuffer();
-    void UpdateConstant(const FMatrix& worldMatrix, const FMatrix& viewMatrix, const FMatrix& projectionMatrix,int mode);
+    void UpdateConstant(const FMatrix& Mat, int mode);
     void CreateDepthBuffer();
     void ReleaseDepthBuffer();
 
     struct FConstants
     {
-        FMatrix World;
-        FMatrix View;
-        FMatrix Projection;
+        FMatrix Mat;
         int mode;
         int padding1;
         int padding2;

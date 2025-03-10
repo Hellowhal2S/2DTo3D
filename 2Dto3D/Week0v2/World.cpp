@@ -190,21 +190,22 @@ void UWorld::Render()
         // 변환 순서: S * R * T
         FMatrix worldMatrix = scaleMatrix * rotationMatrix * translationMatrix;
 
+        FMatrix matrix = worldMatrix * Camera.GetViewMatrix() * Camera.GetProjectionMatrix();
         if (UCubeComp* Cube = dynamic_cast<UCubeComp*>(Object))
         {   
             if(currentObject == sceneComp)
-                renderer.UpdateConstant(worldMatrix, Camera.GetViewMatrix(), Camera.GetProjectionMatrix(), 4);
+                renderer.UpdateConstant(matrix, 4);
             else
-            renderer.UpdateConstant(worldMatrix, Camera.GetViewMatrix(), Camera.GetProjectionMatrix(),0);
+                renderer.UpdateConstant(matrix, 0);
             renderer.RenderPrimitive(vertexBufferCube, sizeof(cube_vertices) / sizeof(FVertexSimple));
         }
 
         if (USphereComp* Sphere = dynamic_cast<USphereComp*>(Object))
         {
             if (currentObject == sceneComp)
-                renderer.UpdateConstant(worldMatrix, Camera.GetViewMatrix(), Camera.GetProjectionMatrix(), 4);
+                renderer.UpdateConstant(matrix, 4);
             else
-            renderer.UpdateConstant(worldMatrix, Camera.GetViewMatrix(), Camera.GetProjectionMatrix(),0);
+                renderer.UpdateConstant(matrix, 0);
             renderer.RenderPrimitive(vertexBufferSphere, sizeof(sphere_vertices) / sizeof(FVertexSimple));
         }
     }
@@ -225,28 +226,29 @@ void UWorld::Render()
         // X축 기즈모 (빨강)
         FMatrix scaleMatrix = FMatrix::CreateScale(max(scale.x * 2, 1), 1, 1);
         FMatrix gizmoX = scaleMatrix * objectRotation * objectTransform;
-        renderer.UpdateConstant(gizmoX, Camera.GetViewMatrix(), Camera.GetProjectionMatrix(),1);
+        FMatrix matrix =  Camera.GetViewMatrix() * Camera.GetProjectionMatrix();
+        renderer.UpdateConstant(gizmoX * matrix,1);
         renderer.RenderPrimitive(vertexBufferArrow, sizeof(arrow_vertices) / sizeof(FVertexSimple));
 
         // Y축 기즈모 (초록) - X축 Arrow를 Z축 기준으로 90도 회전
          scaleMatrix = FMatrix::CreateScale(1, max(1,scale.y * 2), 1);
         FMatrix rotationY = FMatrix::CreateRotation(0, 0, 90);
         FMatrix gizmoY = rotationY * scaleMatrix * objectRotation * objectTransform;
-        renderer.UpdateConstant(gizmoY, Camera.GetViewMatrix(), Camera.GetProjectionMatrix(),2);
+        renderer.UpdateConstant(gizmoY* matrix,2);
         renderer.RenderPrimitive(vertexBufferArrow, sizeof(arrow_vertices) / sizeof(FVertexSimple));
 
         // Z축 기즈모 (파랑) - X축 Arrow를 Z축 기준으로 90도 회전
         scaleMatrix = FMatrix::CreateScale(1, 1 , max(1, scale.z * 2));
         FMatrix rotationZ = FMatrix::CreateRotation(0, -90, 0);
         FMatrix gizmoZ = rotationZ * scaleMatrix * objectRotation * objectTransform;
-        renderer.UpdateConstant(gizmoZ, Camera.GetViewMatrix(), Camera.GetProjectionMatrix(),3);
+        renderer.UpdateConstant(gizmoZ*matrix,3);
         renderer.RenderPrimitive(vertexBufferArrow, sizeof(arrow_vertices) / sizeof(FVertexSimple));
     }
 
     // 월드 기즈모 렌더링
     renderer.Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
     FMatrix gizmoWorldMatrix = FMatrix::Identity;
-    renderer.UpdateConstant(gizmoWorldMatrix, Camera.GetViewMatrix(), Camera.GetProjectionMatrix(),0);
+    renderer.UpdateConstant(gizmoWorldMatrix* Camera.GetViewMatrix() * Camera.GetProjectionMatrix(),0);
     renderer.RenderPrimitive(vertexBufferGizmo, 6);
 
     imguiManager.BeginFrame();
