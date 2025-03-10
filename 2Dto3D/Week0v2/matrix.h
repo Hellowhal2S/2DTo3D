@@ -96,6 +96,110 @@ struct FMatrix
 
 };
 
+struct FQuat {
+    float x, y, z, w;
+
+    FQuat() : x(0), y(0), z(0), w(1) {}
+    FQuat(float _x, float _y, float _z, float _w) : x(_x), y(_y), z(_z), w(_w) {}
+
+    // Axis-Angle -> Quaternion 변환
+    static FQuat FromAxisAngle(const FVector& axis, float angleDeg) {
+        float angleRad = angleDeg * (3.14159265359f / 180.0f);
+        float halfAngle = angleRad * 0.5f;
+        float sinHalfAngle = sin(halfAngle);
+
+        return FQuat(
+            axis.x * sinHalfAngle,
+            axis.y * sinHalfAngle,
+            axis.z * sinHalfAngle,
+            cos(halfAngle)
+        );
+    }
+
+    // Quaternion 곱셈
+    FQuat operator*(const FQuat& q) const {
+        return FQuat(
+            w * q.x + x * q.w + y * q.z - z * q.y,
+            w * q.y - x * q.z + y * q.w + z * q.x,
+            w * q.z + x * q.y - y * q.x + z * q.w,
+            w * q.w - x * q.x - y * q.y - z * q.z
+        );
+    }
+
+    // Quaternion을 회전 행렬로 변환
+    FMatrix ToMatrix() const {
+        FMatrix result = FMatrix::Identity;
+        float xx = x * x, yy = y * y, zz = z * z;
+        float xy = x * y, xz = x * z, yz = y * z;
+        float wx = w * x, wy = w * y, wz = w * z;
+
+        result.M[0][0] = 1.0f - 2.0f * (yy + zz);
+        result.M[0][1] = 2.0f * (xy - wz);
+        result.M[0][2] = 2.0f * (xz + wy);
+
+        result.M[1][0] = 2.0f * (xy + wz);
+        result.M[1][1] = 1.0f - 2.0f * (xx + zz);
+        result.M[1][2] = 2.0f * (yz - wx);
+
+        result.M[2][0] = 2.0f * (xz - wy);
+        result.M[2][1] = 2.0f * (yz + wx);
+        result.M[2][2] = 1.0f - 2.0f * (xx + yy);
+
+        return result;
+    }
+
+    // 벡터 회전
+    FVector RotateVector(const FVector& v) const {
+        FQuat qv(v.x, v.y, v.z, 0);
+        FQuat qInv(-x, -y, -z, w); // Quaternion 역함수
+        FQuat rotatedQ = (*this) * qv * qInv;
+
+        return FVector(rotatedQ.x, rotatedQ.y, rotatedQ.z);
+    }
+
+    // Quaternion을 Euler 각도로 변환
+    FVector ToEuler() const {
+        FVector euler;
+        float sinr_cosp = 2 * (w * x + y * z);
+        float cosr_cosp = 1 - 2 * (x * x + y * y);
+        euler.x = atan2(sinr_cosp, cosr_cosp) * (180.0f / 3.14159265359f);
+
+        float sinp = 2 * (w * y - z * x);
+        if (fabs(sinp) >= 1)
+            euler.y = copysign(90.0f, sinp); // Clamping
+        else
+            euler.y = asin(sinp) * (180.0f / 3.14159265359f);
+
+        float siny_cosp = 2 * (w * z + x * y);
+        float cosy_cosp = 1 - 2 * (y * y + z * z);
+        euler.z = atan2(siny_cosp, cosy_cosp) * (180.0f / 3.14159265359f);
+
+        return euler;
+    }
+
+    // Euler 각도로부터 Quaternion 변환
+    static FQuat FromEuler(const FVector& euler) {
+        float roll = euler.x * (3.14159265359f / 180.0f);
+        float pitch = euler.y * (3.14159265359f / 180.0f);
+        float yaw = euler.z * (3.14159265359f / 180.0f);
+
+        float cy = cos(yaw * 0.5f);
+        float sy = sin(yaw * 0.5f);
+        float cp = cos(pitch * 0.5f);
+        float sp = sin(pitch * 0.5f);
+        float cr = cos(roll * 0.5f);
+        float sr = sin(roll * 0.5f);
+
+        return FQuat(
+            sr * cp * cy - cr * sp * sy,
+            cr * sp * cy + sr * cp * sy,
+            cr * cp * sy - sr * sp * cy,
+            cr * cp * cy + sr * sp * sy
+        );
+    }
+};
+
+
 
 
 

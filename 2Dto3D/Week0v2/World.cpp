@@ -104,7 +104,7 @@ void UWorld::Run()
 }
 
 bool isSelected = false;
-
+bool istoggled = false;
 
 
 void UWorld::Update()
@@ -127,6 +127,15 @@ void UWorld::Update()
     if (InputHandler.IsKeyPressed(DIK_D)) {
         Camera.MoveRight(0.1f);
     }
+    if (InputHandler.IsKeyPressed(DIK_SPACE)) {
+        if (!istoggled)
+            ToggleGizmoMode(); 
+        istoggled = true;
+    }
+    else
+    {
+        istoggled = false;
+    }
 
     int mouseX, mouseY;
     InputHandler.GetMouseLocation(mouseX, mouseY);
@@ -143,27 +152,27 @@ void UWorld::Update()
 
         if (isDraggingGizmo && currentGizmo)
         {
-            // 마우스 이동 거리 계산
-            float deltaX = (mouseX - lastMouseX) * 0.01f;  // 이동 속도 조절
+            float deltaX = (mouseX - lastMouseX) * 0.01f;
             float deltaY = (mouseY - lastMouseY) * 0.01f;
 
-            FVector moveDirection = FVector(0, 0, 0);
+            switch (GizmoMode)
+            {
+            case EGizmoMode::Translate:
+                HandleTranslation(deltaX, deltaY);
+                break;
+            case EGizmoMode::Rotate:
+                HandleRotation(deltaX, deltaY);
+                break;
+            case EGizmoMode::Scale:
+                HandleScaling(deltaX, deltaY);
+                break;
+            }
 
-            // 선택된 기즈모에 따라 이동 방향 결정
-            if (currentGizmo == GizmoList[0])  // X 축 기즈모 (빨강)
-                moveDirection = FVector(deltaX, 0, 0);
-            else if (currentGizmo == GizmoList[1])  // Y 축 기즈모 (초록)
-                moveDirection = FVector(0, deltaX, 0);
-            else if (currentGizmo == GizmoList[2])  // Z 축 기즈모 (파랑)
-                moveDirection = FVector(0, 0, -deltaY);
-
-            // 객체 이동
-            currentObject->RelativeLocation = currentObject->RelativeLocation + moveDirection;
-
-            // 마우스 좌표 업데이트
             lastMouseX = mouseX;
             lastMouseY = mouseY;
         }
+
+
     }
     else
     {
@@ -269,8 +278,7 @@ void UWorld::Render()
             {
                 renderer.UpdateConstant(matrix, i + 1);
             }
-
-            renderer.RenderPrimitive(vertexBufferArrow, sizeof(arrow_vertices) / sizeof(FVertexSimple));
+            renderer.RenderPrimitive(vertexBufferCube, sizeof(cube_vertices) / sizeof(FVertexSimple));
         }
 
 
@@ -415,7 +423,10 @@ void UWorld::CreateGizmo()
     vertexBufferGizmo = renderer.CreateVertexBuffer(gizmoVertices, sizeof(gizmoVertices));
 
     //  Arrow용 버퍼 생성
-    vertexBufferArrow = renderer.CreateVertexBuffer(arrow_vertices, sizeof(arrow_vertices));
+    
+    //vertexBufferArrow[0] = renderer.CreateVertexBuffer(arrow_x_vertices, sizeof(arrow_x_vertices));
+    //vertexBufferArrow[1] = renderer.CreateVertexBuffer(arrow_y_vertices, sizeof(arrow_y_vertices));
+    //vertexBufferArrow[2] = renderer.CreateVertexBuffer(arrow_z_vertices, sizeof(arrow_z_vertices));
     for (int i = 0; i < 3; i++)
     {
         UGizmoComp* NewGizmo = new UGizmoComp();
@@ -528,11 +539,6 @@ bool UWorld::RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDir
 
     // OBB의 반 크기 적용 (기즈모의 경우 Y,Z 스케일을 0.2로 조정)
     FVector halfSize = obj->RelativeScale3D;
-    if (isGizmo)
-    {
-        halfSize.y = 0.2f;
-        halfSize.z = 0.2f;
-    }
 
     FVector p = obj->RelativeLocation - rayOrigin; // 레이 원점에서 OBB 중심까지의 벡터
     FVector d = rayDir.Normalize(); // 레이 방향 정규화
@@ -582,21 +588,102 @@ void UWorld::UpdateGizmos()
     if (GizmoList.size() < 3) return;
 
     // X축 기즈모 (빨강)
-    FVector xScale = FVector(max(scale.x * 2, 1), 1, 1);
+    FVector xScale = FVector(max(scale.x * 1.5, 1), 0.2, 0.2);
     GizmoList[0]->SetTransform(location, rotation, xScale);
 
     // Y축 기즈모 (초록) - X축 Arrow를 Z축 기준으로 90도 회전
-    FVector yScale = FVector(max(1, scale.y * 2), 1, 1);
-    FVector yRotation = FVector(rotation.x, rotation.y, rotation.z + 90);
+    FVector yScale = FVector(0.2, max(1, scale.y * 1.5), 0.2);
+    FVector yRotation = FVector(rotation.x, rotation.y, rotation.z);
     GizmoList[1]->SetTransform(location, yRotation, yScale);
 
     // Z축 기즈모 (파랑) - X축 Arrow를 Y축 기준으로 -90도 회전
-    FVector zScale = FVector(max(1, scale.z * 2), 1,1);
-    FVector zRotation = FVector(rotation.x, rotation.y - 90, rotation.z);
+    FVector zScale = FVector(0.2, 0.2, max(1, scale.z * 1.5));
+    FVector zRotation = FVector(rotation.x, rotation.y, rotation.z);
     GizmoList[2]->SetTransform(location, zRotation, zScale);
 }
 
+void UWorld::ToggleGizmoMode()
+{
+    switch (GizmoMode)
+    {
+    case EGizmoMode::Translate:
+        GizmoMode = EGizmoMode::Rotate;
+        break;
+    case EGizmoMode::Rotate:
+        GizmoMode = EGizmoMode::Scale;
+        break;
+    case EGizmoMode::Scale:
+        GizmoMode = EGizmoMode::Translate;
+        break;
+    }
+}
 
+
+void UWorld::HandleTranslation(float deltaX, float deltaY)
+{
+    FVector moveDirection = FVector(0, 0, 0);
+
+    // 기즈모의 로컬 이동 방향 설정 (X, Y, Z 축)
+    FVector localMoveDirection(0, 0, 0);
+    if (currentGizmo == GizmoList[0]) localMoveDirection = FVector(1, 0, 0);
+    else if (currentGizmo == GizmoList[1]) localMoveDirection = FVector(0, 1, 0);
+    else if (currentGizmo == GizmoList[2]) localMoveDirection = FVector(0, 0, 1);
+
+    // 기즈모의 로컬 회전 행렬 가져오기
+    FMatrix gizmoRotationMatrix = FMatrix::CreateRotation(
+        currentGizmo->RelativeRotation.x,
+        currentGizmo->RelativeRotation.y,
+        currentGizmo->RelativeRotation.z
+    );
+
+    // 로컬 이동 벡터를 월드 공간으로 변환
+    FVector worldMoveDirection = FMatrix::TransformVector(localMoveDirection, gizmoRotationMatrix);
+    worldMoveDirection = worldMoveDirection.Normalize();
+
+    // 카메라 뷰 행렬 가져오기
+    FMatrix viewMatrix = Camera.GetViewMatrix();
+
+    // 기즈모 이동 방향을 뷰 공간으로 변환
+    FVector viewMoveDirection = FMatrix::TransformVector(worldMoveDirection, viewMatrix);
+    viewMoveDirection = viewMoveDirection.Normalize();
+
+    // 마우스 이동 벡터 (스크린 공간 기준, 정규화)
+    FVector mouseMoveDirection(deltaX, -deltaY, 0);
+    mouseMoveDirection = mouseMoveDirection.Normalize();
+
+    // 마우스 이동 벡터와 기즈모 이동 벡터의 내적을 이용한 방향 보정
+    float alignment = mouseMoveDirection.Dot(FVector(viewMoveDirection.x, viewMoveDirection.y, 0));
+    float sign = (alignment < 0) ? -1.0f : 1.0f; // 방향 반전
+
+    // 보정된 이동 적용
+    FVector moveAmount = worldMoveDirection * (sign * sqrt(deltaX * deltaX + deltaY * deltaY));
+    currentObject->RelativeLocation = currentObject->RelativeLocation + moveAmount;
+}
+
+
+void UWorld::HandleRotation(float deltaX, float deltaY)
+{
+    FVector rotationChange = FVector(0, 0, 0);
+
+    if (currentGizmo == GizmoList[0]) rotationChange = FVector(deltaX * 10.0f, 0, 0);
+    else if (currentGizmo == GizmoList[1]) rotationChange = FVector(0, deltaX * 10.0f, 0);
+    else if (currentGizmo == GizmoList[2]) rotationChange = FVector(0, 0, deltaY * 10.0f);
+
+    currentObject->RelativeRotation = currentObject->RelativeRotation + rotationChange;
+}
+
+void UWorld::HandleScaling(float deltaX, float deltaY)
+{
+    FVector scaleChange = FVector(1, 1, 1);
+
+    if (currentGizmo == GizmoList[0]) scaleChange = FVector(1.0f + deltaX, 1, 1);
+    else if (currentGizmo == GizmoList[1]) scaleChange = FVector(1, 1.0f + deltaX, 1);
+    else if (currentGizmo == GizmoList[2]) scaleChange = FVector(1, 1, 1.0f - deltaY);
+
+    currentObject->RelativeScale3D.x *= scaleChange.x;
+    currentObject->RelativeScale3D.y *= scaleChange.y;
+    currentObject->RelativeScale3D.z *= scaleChange.z;
+}
 
 
 

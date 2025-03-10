@@ -121,7 +121,7 @@ void USaveManager::LoadScene(const std::string& FilePath, std::vector<UObject*>&
 
 void USaveManager::RenderSceneManagerUI(std::vector<UObject*>& ObjectList)
 {
-    char buffer[256];  // 충분한 크기의 버퍼
+    char buffer[256]; 
     strncpy_s(buffer, filename.c_str(), sizeof(buffer));
     buffer[sizeof(buffer) - 1] = '\0'; 
 
