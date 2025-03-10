@@ -190,6 +190,7 @@ void UWorld::Render()
         // 변환 순서: S * R * T
         FMatrix worldMatrix = scaleMatrix * rotationMatrix * translationMatrix;
 
+        //M V P
         FMatrix matrix = worldMatrix * Camera.GetViewMatrix() * Camera.GetProjectionMatrix();
         if (UCubeComp* Cube = dynamic_cast<UCubeComp*>(Object))
         {   

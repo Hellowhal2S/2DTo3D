@@ -103,9 +103,7 @@ void UCamera::UpdateVectors()
 
 FMatrix UCamera::GetViewMatrix() const
 {
-    FVector target = RelativeLocation + Forward;
-
-    FVector zAxis = (target- RelativeLocation).Normalize();
+    FVector zAxis = Forward.Normalize();
     FVector xAxis = Up.Cross(zAxis).Normalize();
     FVector yAxis = zAxis.Cross(xAxis);
 
