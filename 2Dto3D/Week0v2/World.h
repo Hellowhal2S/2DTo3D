@@ -26,13 +26,13 @@ private:
 	UObject* pickingGizmo = nullptr;
 	UObject* worldGizmo = nullptr;
 	UObject* camera = nullptr;
+	UObject* localPlayer = nullptr;
 public:
 	UObject* LocalGizmo[3] = { nullptr, nullptr, nullptr };
-	//UObject* GetCamera() { return m_pObjectList[OBJ_CAMERA].front(); }
 	UObject* GetCamera() { return camera; }
+	UObject* GetPlayer() { return localPlayer; }
 
-	//TDoubleLinkedList<UObject*>& GetSphreList() { return m_pObjectList[OBJ_SPHERE]; }
-	//TDoubleLinkedList<UObject*>& GetCubeList() { return m_pObjectList[OBJ_CUBE]; }
+
 	TArray<UObject*> GetObjectArr() { return GUObjectArray; }
 	UObject* GetPickingObj() { return pickingObj; }
 	void	SetPickingObj(UObject* _Obj) { pickingObj = _Obj; };

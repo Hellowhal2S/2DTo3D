@@ -2,6 +2,7 @@
 #include "World.h"
 #include "ImGuiManager.h"
 #include "Object.h"
+#include "Player.h"
 PropertyPanel::PropertyPanel()
 {
 }
@@ -13,7 +14,18 @@ PropertyPanel::~PropertyPanel()
 void PropertyPanel::Draw(UWorld* world)
 {
 	ImGui::Begin("Jungle Property Panel");
-	ImGui::Text("Hello Jungle World!");
+
+	UPlayer* player = static_cast<UPlayer*>(world->GetPlayer());
+	std::string buttonLabel;
+	if(player->GetMode() == ControlMode::CM_TRANSLATION)
+	  buttonLabel = "Translation";
+	else if (player->GetMode() == ControlMode::CM_ROTATION)
+		buttonLabel = "Rotation";
+	else if (player->GetMode() == ControlMode::CM_SCALE)
+		buttonLabel = "Scale";
+	if (ImGui::Button(buttonLabel.c_str())) {
+		player->AddMode();
+	}
 	UObject* PickObj = world->GetPickingObj();
 	if (PickObj) {
 		float pickObjLoc[3] = { PickObj->GetLocation().x,PickObj->GetLocation().y ,PickObj->GetLocation().z };

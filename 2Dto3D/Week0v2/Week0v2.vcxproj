@@ -134,6 +134,7 @@
     <ClCompile Include="CubeComp.cpp" />
     <ClCompile Include="Define.cpp" />
     <ClCompile Include="EngineLoop.cpp" />
+    <ClCompile Include="EngineStatics.cpp" />
     <ClCompile Include="GizmoComponent.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="ImGUI\imgui.cpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="CubeComp.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="EngineLoop.h" />
+    <ClInclude Include="EngineStatics.h" />
     <ClInclude Include="Gizmo.h" />
     <ClInclude Include="GizmoComponent.h" />
     <ClInclude Include="ImGuiManager.h" />

@@ -144,6 +144,9 @@
     <ClCompile Include="ArrowComp.cpp">
       <Filter>소스 파일\UObject</Filter>
     </ClCompile>
+    <ClCompile Include="EngineStatics.cpp">
+      <Filter>소스 파일\Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ShaderW0.hlsl">
@@ -258,6 +261,9 @@
     </ClInclude>
     <ClInclude Include="ArrowComp.h">
       <Filter>헤더 파일\UObject</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineStatics.h">
+      <Filter>헤더 파일\Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

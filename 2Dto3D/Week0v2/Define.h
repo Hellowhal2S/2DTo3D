@@ -163,6 +163,13 @@ enum ARROW_DIR
 	AD_Z,
 	AD_END
 };
+enum ControlMode
+{
+	CM_TRANSLATION,
+	CM_SCALE,
+	CM_ROTATION,
+	CM_END
+};
 
 struct FQuat
 {

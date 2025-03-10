@@ -1,5 +1,6 @@
 #pragma once
 #include "Object.h"
+#include "EngineStatics.h"
 class FObjectFactory
 {
 public:
@@ -8,7 +9,10 @@ public:
 	{
 		UObject* obj = new T;
 		obj->Initialize();
+		obj->UUID = UEngineStatics::GenUUID();
+
 		return obj;
 	}
+
 };
 

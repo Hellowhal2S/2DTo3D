@@ -22,6 +22,7 @@ void UWorld::Initialize()
 
 	UObject* player = FObjectFactory::ConstructObject<UPlayer>();
 	GUObjectArray.push_back(player);
+	localPlayer = player;
 
 	UObject* Camera = FObjectFactory::ConstructObject<UCameraComponent>();
 	Camera->SetLocation(FVector(0, 0, -10.f));

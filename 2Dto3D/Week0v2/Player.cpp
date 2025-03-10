@@ -40,8 +40,6 @@ void UPlayer::Input()
 		if (!bLeftMouseDown) {
 			bLeftMouseDown = true;
 
-			UE_LOG(LogLevel::Warning, "Down");
-
 			POINT mousePos;
 			GetCursorPos(&mousePos);
 			GetCursorPos(&m_LastMousePos);
@@ -51,121 +49,14 @@ void UPlayer::Input()
 
 			FVector rayOrigin;
 			FVector rayDir;
+
 			ScreenToRay(mousePos.x, mousePos.y, GEngineLoop.View, GEngineLoop.Projection, rayOrigin, rayDir);
-			UObject* Possible = nullptr;
-			//for (auto iter : GetWorld()->GetObjectArr())
-			//{
-			//	UPrimitiveComponent* pObj = dynamic_cast<UPrimitiveComponent*>(iter);
-			//	if (pObj)
-			//	{
-			//		FVector BoxMin, BoxMax;
-			//		GetBoxMinMax(pObj->GetLocation(), pObj->GetScale(), pObj->GetRotation(), BoxMin, BoxMax);
-			//		if (RayIntersectsBox(rayOrigin, rayDir, BoxMin, BoxMax, pObj->GetRotation()))
-			//		{
-			//			if (!Possible)
-			//				Possible = pObj;
-			//			else if (Possible->GetLocation().Distance(rayOrigin) > (pObj->GetLocation().Distance(rayOrigin)))
-			//				Possible = pObj;
-			//		}
-			//	}
-			//};
-			//if (Possible)
-			//	GetWorld()->SetPickingObj(Possible);
-
-			for (auto iter : GetWorld()->GetObjectArr())
-			{
-				UPrimitiveComponent* pObj = dynamic_cast<UPrimitiveComponent*>(iter);
-
-				if (pObj && pObj->GetType() != "Arrow")
-				{
-					float minDistance = 10000000.0f;
-					float Distance = 0.0f;
-					if (RayIntersectsObject(rayOrigin, rayDir, pObj, Distance))
-					{
-			
-						if (minDistance > Distance) {
-							Possible = pObj;
-							minDistance = Distance;
-						}
-					}
-				}
-			}
-			if (Possible)
-				GetWorld()->SetPickingObj(Possible);
-			if (GetWorld()->GetPickingObj()) {
-				for (int i = 0;i < 3;++i)
-				{
-					UArrowComp* Arrow = static_cast<UArrowComp*>(GetWorld()->LocalGizmo[i]);
-					float Scale = 0.0f;
-					FVector DetectLoc;
-					if (i == 0) {
-						Scale = GetWorld()->LocalGizmo[0]->GetScale().x;
-						DetectLoc = Arrow->GetLocation() + GetWorld()->GetPickingObj()->GetRightVector();
-					}
-					else if (i == 1) {
-						Scale = GetWorld()->LocalGizmo[1]->GetScale().y;
-						DetectLoc = Arrow->GetLocation() + GetWorld()->GetPickingObj()->GetUpVector();
-					}
-					else if (i == 2) {
-						Scale = GetWorld()->LocalGizmo[2]->GetScale().z;
-						DetectLoc = Arrow->GetLocation() + GetWorld()->GetPickingObj()->GetForwardVector();
-					}
-					float minDistance = 1000000.0f;
-					float Distance = 0.0f;
-					if (RayIntersectsObject(rayOrigin, rayDir, GetWorld()->LocalGizmo[i], Distance))
-					{
-						if (minDistance > Distance)
-						{
-							GetWorld()->SetPickingGizmo(GetWorld()->LocalGizmo[i]);
-							UE_LOG(LogLevel::Display, "%d", Arrow->GetDir());
-							minDistance = Distance;
-						}
-					}
-				}
-			}	
+			PickObj(rayOrigin, rayDir);
+			PickGzimo(rayOrigin, rayDir);
 		}
 		else
 		{
-			// 마우스 이동량 계산
-			if (GetWorld()->GetPickingObj() && GetWorld()->GetPickingGizmo()) {
-				POINT currentMousePos;
-				GetCursorPos(&currentMousePos);
-				UObject* pObj = GetWorld()->GetPickingObj();
-				// 마우스 이동 차이 계산
-				int32 deltaX = currentMousePos.x - m_LastMousePos.x;
-				int32 deltaY = currentMousePos.y - m_LastMousePos.y;
-				UArrowComp* Arrow = static_cast<UArrowComp*>(GetWorld()->GetPickingGizmo());
-				float xdir = pObj->GetRightVector().x >= 0 ? 1.0 : -1.0;
-				float zdir = pObj->GetForwardVector().z >= 0 ? 1.0 : -1.0;
-
-				switch (Arrow->GetDir())
-				{
-				case AD_X:
-					if (GetWorld()->GetCamera()->GetForwardVector().z >= 0)
-						pObj->AddLocation(pObj->GetRightVector() * deltaX * 0.01f * xdir);
-					else
-						pObj->AddLocation(pObj->GetRightVector()* deltaX * -0.01f * xdir);
-					break;
-				case AD_Y:
-					if(pObj->GetUpVector().y >= 0 )
-						pObj->AddLocation((pObj->GetUpVector() * deltaY * 0.01f) * -1 );
-					else 
-						pObj->AddLocation((pObj->GetUpVector()* deltaY * 0.01f));
-					break;
-				case AD_Z:
-
-					if(GetWorld()->GetCamera()->GetForwardVector().x <= 0)
-						pObj->AddLocation(pObj->GetForwardVector() * deltaX*0.01f* zdir);
-					else
-						pObj->AddLocation(pObj->GetForwardVector()* deltaX * -0.01f * zdir);
-					break;
-				default:
-					break;
-				}
-
-				// 새로운 마우스 위치 저장
-				m_LastMousePos = currentMousePos;
-			}
+			PickedObjControl();
 		}
 	}
 	else
@@ -174,14 +65,89 @@ void UPlayer::Input()
 				UE_LOG(LogLevel::Warning, "Up");
 				bLeftMouseDown = false; // 마우스 오른쪽 버튼을 떼면 상태 초기화
 				GetWorld()->SetPickingGizmo(nullptr);
-			
+		}
+	}
+	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+	{
+		if (!bSpaceDown) {
+			AddMode();
+			bSpaceDown = true;
+		}
+	}
+	else
+	{
+		if (bSpaceDown)
+		{
+			bSpaceDown = false;
 		}
 	}
 }
 
+void UPlayer::PickGzimo(FVector& rayOrigin, FVector& rayDir)
+{
+	if (GetWorld()->GetPickingObj()) {
+		for (int i = 0;i < 3;++i)
+		{
+			UArrowComp* Arrow = static_cast<UArrowComp*>(GetWorld()->LocalGizmo[i]);
+			float Scale = 0.0f;
+			FVector DetectLoc;
+			if (i == 0) {
+				Scale = GetWorld()->LocalGizmo[0]->GetScale().x;
+				DetectLoc = Arrow->GetLocation() + GetWorld()->GetPickingObj()->GetRightVector();
+			}
+			else if (i == 1) {
+				Scale = GetWorld()->LocalGizmo[1]->GetScale().y;
+				DetectLoc = Arrow->GetLocation() + GetWorld()->GetPickingObj()->GetUpVector();
+			}
+			else if (i == 2) {
+				Scale = GetWorld()->LocalGizmo[2]->GetScale().z;
+				DetectLoc = Arrow->GetLocation() + GetWorld()->GetPickingObj()->GetForwardVector();
+			}
+			float minDistance = 1000000.0f;
+			float Distance = 0.0f;
+			if (RayIntersectsObject(rayOrigin, rayDir, GetWorld()->LocalGizmo[i], Distance))
+			{
+				if (minDistance > Distance)
+				{
+					GetWorld()->SetPickingGizmo(GetWorld()->LocalGizmo[i]);
+					UE_LOG(LogLevel::Display, "%d", Arrow->GetDir());
+					minDistance = Distance;
+				}
+			}
+		}
+	}
+}
 
+void UPlayer::PickObj(FVector& rayOrigin, FVector& rayDir)
+{
+	UObject* Possible = nullptr;
 
+	for (auto iter : GetWorld()->GetObjectArr())
+	{
+		UPrimitiveComponent* pObj = dynamic_cast<UPrimitiveComponent*>(iter);
 
+		if (pObj && pObj->GetType() != "Arrow")
+		{
+			float minDistance = 10000000.0f;
+			float Distance = 0.0f;
+			if (RayIntersectsObject(rayOrigin, rayDir, pObj, Distance))
+			{
+
+				if (minDistance > Distance) {
+					Possible = pObj;
+					minDistance = Distance;
+				}
+			}
+		}
+	}
+	if (Possible)
+		GetWorld()->SetPickingObj(Possible);
+}
+
+void UPlayer::AddMode()
+{
+	cMode = static_cast<ControlMode>(((cMode + 1) % ControlMode::CM_END));
+}
 
 void UPlayer::ScreenToRay(float screenX, float screenY, const FMatrix& viewMatrix, const FMatrix& projectionMatrix, FVector& rayOrigin, FVector& rayDir)
 {
@@ -300,4 +266,136 @@ bool UPlayer::RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDi
 
 	hitDistance = tMin;
 	return true;
+}
+
+void UPlayer::PickedObjControl()
+{
+	// 마우스 이동량 계산
+	if (GetWorld()->GetPickingObj() && GetWorld()->GetPickingGizmo()) {
+		POINT currentMousePos;
+		GetCursorPos(&currentMousePos);
+		// 마우스 이동 차이 계산
+		int32 deltaX = currentMousePos.x - m_LastMousePos.x;
+		int32 deltaY = currentMousePos.y - m_LastMousePos.y;
+
+		UObject* pObj = GetWorld()->GetPickingObj();
+		UArrowComp* Arrow = static_cast<UArrowComp*>(GetWorld()->GetPickingGizmo());
+		switch (cMode)
+		{
+		case CM_TRANSLATION:
+			ControlTranslation(pObj, Arrow, deltaX, deltaY);
+			break;
+		case CM_SCALE:
+			ControlScale(pObj, Arrow, deltaX, deltaY);
+
+			break;
+		case CM_ROTATION:
+			ControlRoation(Arrow, pObj, deltaX, deltaY);
+			break;
+		}
+		// 새로운 마우스 위치 저장
+		m_LastMousePos = currentMousePos;
+	}
+}
+
+void UPlayer::ControlRoation(UArrowComp* Arrow, UObject* pObj, int32 deltaX, int32 deltaY)
+{
+	switch (Arrow->GetDir())
+	{
+	case AD_X:
+		if (GetWorld()->GetCamera()->GetForwardVector().z >= 0) {
+			pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * deltaX * 0.1f);
+			pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * deltaY * 0.1f);
+		}
+		else {
+			pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * deltaX * -0.1f);
+			pObj->AddRotation(FVector(1.0f, 0.0f, 0.0f) * deltaY * -0.1f);
+		}
+
+		break;
+	case AD_Y:
+		if (pObj->GetUpVector().y >= 0)
+		{
+			pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * deltaX * -0.1f);
+			pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * deltaX * -0.1f);
+		}
+		else {
+			pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * deltaY * 0.1f);
+			pObj->AddRotation(FVector(0.0f, 1.0f, 0.0f) * deltaX * 0.1f);
+		}
+		break;
+	case AD_Z:
+
+		if (GetWorld()->GetCamera()->GetForwardVector().x <= 0) {
+			pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaX * 0.1f);
+			pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaY * 0.1f);
+		}
+		else {
+			pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaX * -0.1f);
+			pObj->AddRotation(FVector(0.0f, 0.0f, 1.0f) * deltaX * -0.1f);
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+void UPlayer::ControlTranslation(UObject* pObj, UArrowComp* Arrow, int32 deltaX, int32 deltaY)
+{
+	float xdir = pObj->GetRightVector().x >= 0 ? 1.0 : -1.0;
+	float zdir = pObj->GetForwardVector().z >= 0 ? 1.0 : -1.0;
+	switch (Arrow->GetDir())
+	{
+	case AD_X:
+		if (GetWorld()->GetCamera()->GetForwardVector().z >= 0)
+			pObj->AddLocation(pObj->GetRightVector() * deltaX * 0.01f * xdir);
+		else
+			pObj->AddLocation(pObj->GetRightVector() * deltaX * -0.01f * xdir);
+		break;
+	case AD_Y:
+		if (pObj->GetUpVector().y >= 0)
+			pObj->AddLocation((pObj->GetUpVector() * deltaY * 0.01f) * -1);
+		else
+			pObj->AddLocation((pObj->GetUpVector() * deltaY * 0.01f));
+		break;
+	case AD_Z:
+
+		if (GetWorld()->GetCamera()->GetForwardVector().x <= 0)
+			pObj->AddLocation(pObj->GetForwardVector() * deltaX * 0.01f * zdir);
+		else
+			pObj->AddLocation(pObj->GetForwardVector() * deltaX * -0.01f * zdir);
+		break;
+	default:
+		break;
+	}
+}
+
+void UPlayer::ControlScale(UObject* pObj, UArrowComp* Arrow, int32 deltaX, int32 deltaY)
+{
+	float xdir = pObj->GetRightVector().x >= 0 ? 1.0 : -1.0;
+	float zdir = pObj->GetForwardVector().z >= 0 ? 1.0 : -1.0;
+	switch (Arrow->GetDir())
+	{
+	case AD_X:
+		if (GetWorld()->GetCamera()->GetForwardVector().z >= 0)
+			pObj->AddScale(FVector(1.0f, 0.0f, 0.0f) * deltaX * 0.01f * xdir);
+		else
+			pObj->AddScale(FVector(1.0f, 0.0f, 0.0f) * deltaX * -0.01f * xdir);
+		break;
+	case AD_Y:
+		if (pObj->GetUpVector().y >= 0)
+			pObj->AddScale(FVector(0.0f, 1.0f, 0.0f) * deltaY * -0.01f);
+		else
+			pObj->AddScale(FVector(0.0f, 1.0f, 0.0f) * deltaY * 0.01f);
+		break;
+	case AD_Z:
+
+		if (GetWorld()->GetCamera()->GetForwardVector().x <= 0)
+			pObj->AddScale(FVector(0.0f, 0.0f, 1.0f) * deltaX * 0.01f * zdir);
+		else
+			pObj->AddScale(FVector(0.0f, 0.0f, 1.0f) * deltaX * -0.01f * zdir);
+		break;
+	default:
+		break;
+	}
 }

@@ -34,7 +34,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 FGraphicsDevice FEngineLoop::graphicDevice;
 FRenderer FEngineLoop::renderer;
 FResourceMgr FEngineLoop::resourceMgr;
-
+uint32 FEngineLoop::TotalAllocationBytes= 0;
+uint32 FEngineLoop::TotalAllocationCount = 0;
 FEngineLoop::FEngineLoop()
 {
 }
