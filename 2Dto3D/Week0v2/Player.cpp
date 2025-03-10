@@ -78,14 +78,28 @@ void UPlayer::Input()
 
 				if (pObj && pObj->GetType() != "Arrow")
 				{
-					FVector BoxMin, BoxMax;
-					float MaxScale = max(max(pObj->GetScale().x, pObj->GetScale().y), pObj->GetScale().z);
-					if (RayIntersectsSphere(rayOrigin, rayDir, pObj->GetLocation(), MaxScale))
+					//FVector BoxMin, BoxMax;
+					//float MaxScale = max(max(pObj->GetScale().x, pObj->GetScale().y), pObj->GetScale().z);
+					//if (RayIntersectsSphere(rayOrigin, rayDir, pObj->GetLocation(), MaxScale))
+					//{
+					//	if (!Possible)
+					//		Possible = pObj;
+					//	else if (Possible->GetLocation().Distance(rayOrigin) > (pObj->GetLocation().Distance(rayOrigin)))
+					//		Possible = pObj;
+					//}
+					float minDistance = 10000000.0f;
+					float Distance = 0.0f;
+					if (RayIntersectsObject(rayOrigin, rayDir, pObj, Distance))
 					{
-						if (!Possible)
+			
+						if (minDistance > Distance) {
+							Possible = pObj;
+							minDistance = Distance;
+						}
+			/*			if (!Possible)
 							Possible = pObj;
 						else if (Possible->GetLocation().Distance(rayOrigin) > (pObj->GetLocation().Distance(rayOrigin)))
-							Possible = pObj;
+							Possible = pObj;*/
 					}
 				}
 			}
@@ -109,10 +123,16 @@ void UPlayer::Input()
 						Scale = GetWorld()->LocalGizmo[2]->GetScale().z;
 						DetectLoc = Arrow->GetLocation() + GetWorld()->GetPickingObj()->GetForwardVector();
 					}
-					if (RayIntersectsSphere(rayOrigin, rayDir, DetectLoc, 0.5f))
+					float minDistance = 1000000.0f;
+					float Distance = 0.0f;
+					if (RayIntersectsObject(rayOrigin, rayDir, GetWorld()->LocalGizmo[i], Distance))
 					{
-						GetWorld()->SetPickingGizmo(GetWorld()->LocalGizmo[i]);
-						UE_LOG(LogLevel::Display, "%d", Arrow->GetDir());
+						if (minDistance > Distance)
+						{
+							GetWorld()->SetPickingGizmo(GetWorld()->LocalGizmo[i]);
+							UE_LOG(LogLevel::Display, "%d", Arrow->GetDir());
+							minDistance = Distance;
+						}
 					}
 				}
 			}	
@@ -131,13 +151,19 @@ void UPlayer::Input()
 				switch (Arrow->GetDir())
 				{
 				case AD_X:
-					pObj->AddLocation(pObj->GetRightVector() * deltaX * 0.01f);
+					if (GetWorld()->GetCamera()->GetForwardVector().z >= 0)
+						pObj->AddLocation(pObj->GetRightVector() * deltaX * 0.01f);
+					else
+						pObj->AddLocation(pObj->GetRightVector()* deltaX * -0.01f);
 					break;
 				case AD_Y:
 					pObj->AddLocation((pObj->GetUpVector() * deltaY * 0.01f) * -1 );
 					break;
 				case AD_Z:
-					pObj->AddLocation(pObj->GetForwardVector() * deltaX*0.01f);
+					if(GetWorld()->GetCamera()->GetForwardVector().x <= 0)
+						pObj->AddLocation(pObj->GetForwardVector() * deltaX*0.01f);
+					else
+						pObj->AddLocation(pObj->GetForwardVector()* deltaX * -0.01f);
 					break;
 				default:
 					break;
@@ -209,6 +235,7 @@ bool UPlayer::RayIntersectsBox(const FVector& rayOrigin, const FVector& rayDir, 
 	// 5. 레이가 직육면체와 교차하면 true 반환
 	return true;
 }
+
 
 void UPlayer::GetBoxMinMax(const FVector& boxLocation, const FVector& boxScale, const FVector& boxRotation, FVector& boxMin, FVector& boxMax)
 {
@@ -317,3 +344,69 @@ bool UPlayer::RayIntersectsAABB(const FVector& rayOrigin, const FVector& rayDir,
 	return true;
 }
 
+//OBB로 수정
+bool UPlayer::RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDir, UObject* obj, float& hitDistance)
+{
+	// 오브젝트의 월드 변환 행렬 생성 (위치, 회전 적용)
+	FMatrix rotationMatrix = FMatrix::CreateRotation(
+		obj->GetRotation().x,
+		obj->GetRotation().y,
+		obj->GetRotation().z
+	);
+
+	FMatrix translationMatrix = FMatrix::CreateTranslationMatrix(obj->GetLocation());
+
+	// 최종 변환 행렬
+	FMatrix worldMatrix = rotationMatrix * translationMatrix;
+
+	// OBB의 로컬 X, Y, Z 축 가져오기
+	FVector axisX(worldMatrix.M[0][0], worldMatrix.M[0][1], worldMatrix.M[0][2]);
+	FVector axisY(worldMatrix.M[1][0], worldMatrix.M[1][1], worldMatrix.M[1][2]);
+	FVector axisZ(worldMatrix.M[2][0], worldMatrix.M[2][1], worldMatrix.M[2][2]);
+
+	// 기즈모인지 확인
+	//bool isGizmo = (dynamic_cast<UGizmoComp*>(obj) != nullptr);
+
+	// OBB의 반 크기 적용 (기즈모의 경우 Y,Z 스케일을 0.2로 조정)
+	FVector halfSize = obj->GetScale();
+	//if (isGizmo)
+	//{
+	//	halfSize.y = 0.2f;
+	//	halfSize.z = 0.2f;
+	//}
+
+	FVector p = obj->GetLocation() - rayOrigin; // 레이 원점에서 OBB 중심까지의 벡터
+	FVector d = rayDir.Normalize(); // 레이 방향 정규화
+
+	float tMin = -FLT_MAX, tMax = FLT_MAX;
+
+	// 각 축(X, Y, Z)에 대해 레이와의 충돌 검사 수행
+	FVector axes[3] = { axisX, axisY, axisZ };
+	float halfSizes[3] = { halfSize.x, halfSize.y, halfSize.z };
+
+	for (int i = 0; i < 3; i++)
+	{
+		float e = axes[i].Dot(p);  // 원점에서 타겟까지의 거리를 해당 축으로 투영
+		float f = axes[i].Dot(d);  // 레이를 투영
+
+		if (fabs(f) > 1e-6)  // 방향 벡터가 0이면 큰일남
+		{
+			float t1 = (e - halfSizes[i]) / f;
+			float t2 = (e + halfSizes[i]) / f;
+
+			if (t1 > t2) std::swap(t1, t2); // t1이 항상 작은 값이 되도록 설정
+
+			tMin = max(tMin, t1);  // 범위를 계속 줄여나감
+			tMax = min(tMax, t2);
+
+			if (tMin > tMax) return false; // 충돌 없음
+		}
+		else if (-e - halfSizes[i] > 0 || -e + halfSizes[i] < 0)
+		{
+			return false; // 레이가 OBB 내부에 없고, 지나가지도 않음
+		}
+	}
+
+	hitDistance = tMin;
+	return true;
+}

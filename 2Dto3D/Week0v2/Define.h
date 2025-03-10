@@ -111,6 +111,12 @@ struct FMatrix
 	static FMatrix Transpose(const FMatrix& Mat);
 	static float Determinant(const FMatrix& Mat);
 	static FMatrix Inverse(const FMatrix& Mat);
+	static FMatrix CreateRotation(float roll, float pitch, float yaw);
+	static FMatrix CreateScale(float scaleX, float scaleY, float scaleZ);
+	static FVector TransformVector(const FVector& v, const FMatrix& m);
+	static FVector4 TransformVector(const FVector4& v, const FMatrix& m);
+	static FMatrix CreateTranslationMatrix(const FVector& position);
+
 
 	DirectX::XMMATRIX ToXMMATRIX() const
 	{

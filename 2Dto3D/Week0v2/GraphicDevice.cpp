@@ -7,7 +7,7 @@ void FGraphicsDevice::Initialize(HWND hWindow) {
     CreateDepthStencilState();
     D3D11_RASTERIZER_DESC rasterizerdesc = {};
     rasterizerdesc.FillMode = D3D11_FILL_SOLID;
-    rasterizerdesc.CullMode = D3D11_CULL_BACK;
+    rasterizerdesc.CullMode = D3D11_CULL_FRONT;
     Device->CreateRasterizerState(&rasterizerdesc, &RasterizerState);
 }
 void FGraphicsDevice::CreateDeviceAndSwapChain(HWND hWindow) {

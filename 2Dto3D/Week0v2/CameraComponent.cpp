@@ -119,6 +119,7 @@ void UCameraComponent::MoveForward(float _Value)
 void UCameraComponent::MoveRight(float _Value)
 {
 	m_Location = m_Location + GetRightVector() * m_mouseSpeed * _Value;
+	UE_LOG(LogLevel::Display, "x : %f, y : %f, z : %f", GetForwardVector().x, GetForwardVector().y, GetForwardVector().z);
 }
 
 void UCameraComponent::MoveUp(float _Value)
