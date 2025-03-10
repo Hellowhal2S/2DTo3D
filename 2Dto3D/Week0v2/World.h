@@ -63,8 +63,12 @@ private:
     USaveManager SaveManager; 
     EObjectType Type;
     bool bIsExit = false;
-
     EGizmoMode GizmoMode = EGizmoMode::Translate; // 기본값: 이동 모드
+
+    LARGE_INTEGER frequency;
+    LARGE_INTEGER prevTime;
+    double deltaTime = 0.0;
+    double fps = 0.0;
 
 
     FVector lastRayOrigin;

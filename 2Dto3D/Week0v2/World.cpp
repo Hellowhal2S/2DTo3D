@@ -36,6 +36,8 @@ void UWorld::Initialize(HINSTANCE hInstance)
     graphicDevice.Initialize(hWnd);
     renderer.Initialize(&graphicDevice);
     imguiManager.Initialize(hWnd, graphicDevice.Device, graphicDevice.DeviceContext);
+    QueryPerformanceFrequency(&frequency);
+    QueryPerformanceCounter(&prevTime);  // 초기 시간 저장
 
     UINT numVerticesSphere = sizeof(sphere_vertices) / sizeof(FVertexSimple);
     vertexBufferSphere = renderer.CreateVertexBuffer(sphere_vertices, sizeof(sphere_vertices));
@@ -62,20 +64,23 @@ void UWorld::CreateMainWindow(HINSTANCE hInstance)
         CW_USEDEFAULT, CW_USEDEFAULT, 1024, 1024, nullptr, nullptr, hInstance, nullptr);
 }
 
+
+
+
+
 void UWorld::Run()
 {
-    const int targetFPS = 60;
-    const double targetFrameTime = 1000.0 / targetFPS;
-    LARGE_INTEGER frequency;
-    QueryPerformanceFrequency(&frequency);
-
-	
-    LARGE_INTEGER startTime, endTime;
-    double elapsedTime = 1.0;
-
     while (!bIsExit)
     {
-        QueryPerformanceCounter(&startTime);
+        LARGE_INTEGER currentTime;
+        QueryPerformanceCounter(&currentTime);
+
+        // 경과 시간(초 단위) 계산
+        deltaTime = static_cast<double>(currentTime.QuadPart - prevTime.QuadPart) / frequency.QuadPart;
+        prevTime = currentTime;
+
+        // FPS 계산 (1초당 프레임 수)
+        fps = 1.0 / deltaTime;
 
         MSG msg;
         while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
@@ -94,15 +99,11 @@ void UWorld::Run()
         Render();
 
         graphicDevice.SwapBuffer();
-
-        do
-        {
-            Sleep(0);
-            QueryPerformanceCounter(&endTime);
-            elapsedTime = (endTime.QuadPart - startTime.QuadPart) * 1000.0 / frequency.QuadPart;
-        } while (elapsedTime < targetFrameTime);
     }
 }
+
+
+
 
 bool isSelected = false;
 bool istoggled = false;
@@ -294,7 +295,8 @@ void UWorld::Render()
     imguiManager.BeginFrame();
     ImGui::Begin("Jungle Control Panel");
     ImGui::Text("Hello Jungle World");
-    ImGui::Text("FPS 60");
+    ImGui::Text("FPS: %.2f %.2f", fps, deltaTime);
+    ImGui::Text("Object Count: %d", static_cast<int>(ObjectList.size()));
     ImGui::Separator();
     // 현재 선택된 오브젝트 타입
     static EObjectType selectedObjectType = EObjectType::Cube;
@@ -432,12 +434,6 @@ void UWorld::CreateGizmo()
     };
 
     vertexBufferGizmo = renderer.CreateVertexBuffer(gizmoVertices, sizeof(gizmoVertices));
-
-    //  Arrow용 버퍼 생성
-    
-    //vertexBufferArrow[0] = renderer.CreateVertexBuffer(arrow_x_vertices, sizeof(arrow_x_vertices));
-    //vertexBufferArrow[1] = renderer.CreateVertexBuffer(arrow_y_vertices, sizeof(arrow_y_vertices));
-    //vertexBufferArrow[2] = renderer.CreateVertexBuffer(arrow_z_vertices, sizeof(arrow_z_vertices));
     for (int i = 0; i < 3; i++)
     {
         UGizmoComp* NewGizmo = new UGizmoComp();
