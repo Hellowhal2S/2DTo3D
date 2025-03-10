@@ -1,5 +1,8 @@
 #pragma once
 #include "Renderer.h"
+#include "USceneComponent.h"
+
+class UWorld;
 class ImGuiManager {
 public:
 	static void InitImGui(URenderer& renderer, HWND hwnd);

@@ -52,6 +52,9 @@
     <Filter Include="소스 파일\Input">
       <UniqueIdentifier>{a9da2349-4066-4ac5-91da-517dde346601}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Primitive">
+      <UniqueIdentifier>{20747d6d-acae-4784-a7eb-5eb111ba8b6b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -90,9 +93,6 @@
     <ClCompile Include="DeviceManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Sphere.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="UObject.cpp">
       <Filter>소스 파일\Object</Filter>
     </ClCompile>
@@ -116,6 +116,18 @@
     </ClCompile>
     <ClCompile Include="Define.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>소스 파일\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube.cpp">
+      <Filter>소스 파일\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="PrimitiveDatas.cpp">
+      <Filter>소스 파일\Primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="PickingSystem.cpp">
+      <Filter>소스 파일\Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -195,6 +207,15 @@
     </ClInclude>
     <ClInclude Include="Define.h">
       <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="PrimitiveDatas.h">
+      <Filter>헤더 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>헤더 파일\Primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="PickingSystem.h">
+      <Filter>헤더 파일\Input</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

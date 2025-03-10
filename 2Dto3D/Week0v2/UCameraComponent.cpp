@@ -1,14 +1,14 @@
+//#include "USceneComponent.h"
 #include "UCameraComponent.h"
 #include <d3d11.h>
 #include "EngineLoop.h"
-
 float UCameraComponent::FOV = 60.0f;
 float UCameraComponent::width = 1280.0f;
 float UCameraComponent::height = 800.0f;
 float UCameraComponent::zNear = 0.1f;
 float UCameraComponent::zFar = 1000.0f;
 float UCameraComponent::velocity = 0.5f;
-float asepct = 1.0f;
+float UCameraComponent::aspect = 1.0f;
 UCameraComponent::UCameraComponent() {
 	// FIXME : 추후 카메라의 회전에 따라 변경.
 	// this->RelativeLocation + this->GetForwardVector()

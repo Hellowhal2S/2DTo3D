@@ -6,6 +6,9 @@
 #include <set>
 #include <queue>
 #include <stack>
+
+typedef int int32;
+typedef unsigned int uint32;
 using namespace std;
 template<typename T>
 using TArray = vector<T>;

@@ -23,8 +23,10 @@ public:
 	virtual void Update(double deltaTime) {};
 	virtual void Release() {};
 
-	FVector GetForwardVector();
+	//FVector GetForwardVector();
 	static TArray<UObject*> GUObjectArray;
+
+
 #pragma region  추후 구현 함수들
 	/*
 	// 객체 이름 반환

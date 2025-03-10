@@ -3,9 +3,9 @@
 
 TArray<UObject*> UObject::GUObjectArray;
 UObject::UObject() {
-    static uint32_t NextUUID = 1;
+    /*static uint32_t NextUUID = 1;
     UUID = NextUUID++;
-    Internalndex = UUID - 1;
+    Internalndex = UUID - 1;*/
 }
 
 UObject::~UObject() {}

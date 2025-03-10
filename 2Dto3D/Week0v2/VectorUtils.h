@@ -38,6 +38,10 @@ struct FVector
 	FVector operator*(float scalar) const {
 		return FVector(x * scalar, y * scalar, z * scalar);
 	}
+
+	float Distance(FVector other) {
+		return (*this - other).Magnitude();
+	}
 };
 
 struct FVector4

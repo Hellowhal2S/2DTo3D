@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Define.cpp" />
     <ClCompile Include="DeviceManager.cpp" />
     <ClCompile Include="EngineLoop.cpp" />
@@ -141,6 +142,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MatrixUtils.cpp" />
     <ClCompile Include="MemoryManager.cpp" />
+    <ClCompile Include="PickingSystem.cpp" />
+    <ClCompile Include="PrimitiveDatas.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="UCameraComponent.cpp" />
@@ -161,6 +164,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ContainerDefs.h" />
+    <ClInclude Include="Cube.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="DeviceManager.h" />
     <ClInclude Include="ImGuiManager.h" />
@@ -175,6 +179,8 @@
     <ClInclude Include="EngineLoop.h" />
     <ClInclude Include="MatrixUtils.h" />
     <ClInclude Include="MemoryManager.h" />
+    <ClInclude Include="PickingSystem.h" />
+    <ClInclude Include="PrimitiveDatas.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="UCameraComponent.h" />

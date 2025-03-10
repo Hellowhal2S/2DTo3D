@@ -2,7 +2,9 @@
 #include "UCameraComponent.h"
 #include "UObject.h"           
 #include <d3d11.h>
-
+//#include "PickingSystem.h"
+USceneComponent* UWorld::pickingObject = nullptr;
+UWorld* UWorld::myWorld = nullptr;
 UWorld::UWorld() {
 }
 
@@ -11,30 +13,36 @@ UWorld::~UWorld() {
 }
 
 void UWorld::InitWorld() {
+	myWorld = this;
 	for (int i = 0;i < OBJ_END;++i)
 	{
-		ObjectLists.push_back(TDoubleLinkedList<UObject*>());
+		ObjectLists.push_back(TArray<UObject*>());
 	}
 	//UCameraComponent* mainCamera = UObject::NewObject();
 	mainCamera = new UCameraComponent;
 	
 	//TEST_CODE
-	UObject* sphere_obj = new USphereComp;
+	/*UObject* sphere_obj = new USphereComp;
 	USphereComp* sphere_comp = static_cast<USphereComp*>(sphere_obj);
 	sphere_comp->RelativeLocation = FVector(0, 0, 0);
 	sphere_comp->RelativeRotation = FVector(0, 0, 0);
-	sphere_comp->RelativeScale3D = FVector(1, 1, 1);
-	PrimitiveList.push_back(sphere_obj);
+	sphere_comp->RelativeScale3D = FVector(1, 1, 1);*/
+	//PrimitiveList.push_back(sphere_obj);
 
 	mainCamera->Init(this);
 
 	//테스트용 초기화Set
 	mainCamera->SetEyePosition(FVector(0, 0, -10.0));
 
-	ObjectLists[OBJ_CAMERA].push_back(mainCamera);
+	//ObjectLists[OBJ_CAMERA].push_back(mainCamera);
+
+	//pickingSystem.InitPickingSystem();
 }
 
 void UWorld::UpdateWorld(double deltaTime) {
+	
+	//pickingSystem.Input();
+
 	for (int i = 0; i < ObjectLists.size();i++) {
 		for (auto iter = ObjectLists[i].begin(); iter != ObjectLists[i].end();++iter) {
 			(*iter)->Update(deltaTime);
@@ -44,18 +52,32 @@ void UWorld::UpdateWorld(double deltaTime) {
 
 void UWorld::RenderWorld() {
 	/*for (int i = 0; i < ObjectLists.size();i++) {
-		for(auto iter = ObjectLists.begin(); iter!)
+		for (auto iter = ObjectLists.begin(); iter != ObjectLists.end(); ++iter) {
+			(*iter)->Render(renderer);
+		}
 	}*/
+
 }
 
 void UWorld::ReleaseWorld() {
 
 }
 
-TArray<TDoubleLinkedList<UObject*>> UWorld::GetObjectLists() {
+TArray<TArray<UObject*>> UWorld::GetObjectLists() {
 	return ObjectLists;
 }
 
 TArray<UObject*> UWorld::GetPrimitiveList() {
 	return PrimitiveList;
 }
+
+USceneComponent* UWorld::GetPickingObject()
+{
+	return pickingObject;
+}
+
+void UWorld::SetPickingObject(USceneComponent* obj)
+{	
+	pickingObject = obj;
+}
+

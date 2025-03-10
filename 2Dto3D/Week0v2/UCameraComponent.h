@@ -5,6 +5,17 @@
 #include "Define.h"
 #include "UWorld.h"
 #include "windows.h"
+
+//#include "UObject.h"
+//#include "VectorUtils.h"
+//#include "Define.h"
+//#include "UWorld.h"
+//#include "windows.h"
+//#include <d3d11.h>
+//#include "EngineLoop.h"
+//#include "USceneComponent.h"
+//class UObject;
+//class UWorld;
 class UCameraComponent:public USceneComponent{
 	// View ฐüทร
 private:
@@ -22,8 +33,10 @@ private:
 	static float height;
 	static float zNear;
 	static float zFar;
+	static float aspect;
 
 	static float velocity;
+
 
 	FMatrix viewMatrix;
 	FMatrix projMatrix;
@@ -44,8 +57,6 @@ public:
 	void AdjustRotation(float x, float y, float z);
 	FVector GetEyePosition();
 	void SetEyePosition(FVector pos);
-	
-	
 
 	FVector GetLook();
 	void SetLook(FVector pos);

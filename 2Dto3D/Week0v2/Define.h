@@ -4,6 +4,8 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
+
+// RULE : primitive추가 시 마지막 primitive 뒤에 추가하기
 enum OBJECTS
 {
 	OBJ_SPHERE,

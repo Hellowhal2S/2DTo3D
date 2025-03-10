@@ -5,7 +5,10 @@
 #include "Sphere.h"
 #include "UObject.h"
 #include "UWorld.h"
+#include <windows.h>
 #include "UCameraComponent.h"
+#include "EngineLoop.h"
+#include "PrimitiveDatas.h"
 //#include "UWorld.h"
 //MOD
 class UWorld;
@@ -14,7 +17,6 @@ public:
 	static bool bIsExit;
 	static MSG msg;
 	static int numVerticesSphere;
-	// µð¹ö±ë¿ë
 	static HWND hWnd;
 public:
 	static void ReleaseVertexBuffer();
