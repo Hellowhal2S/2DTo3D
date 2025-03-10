@@ -2,6 +2,7 @@
 #include "Cube.h"
 #include "Sphere.h"
 #include "Arrow.h"
+#include "Console.h"
 
 float ndcX;
 float ndcY;
@@ -328,6 +329,7 @@ void UWorld::Render()
 
         if (newObject)
         {
+            UE_LOG(LogLevel::Display, "spawn %s", objectTypeNames[selectedIndex]);
             newObject->RelativeLocation = FVector(0.0f, 0.0f, 0.0f); 
             newObject->RelativeRotation = FVector(0.0f, 0.0f, 0.0f);
             newObject->RelativeScale3D = FVector(1.0f, 1.0f, 1.0f); 
@@ -348,8 +350,6 @@ void UWorld::Render()
     ImGui::InputFloat3("LookAt", lookAt, "%.2f", ImGuiInputTextFlags_ReadOnly);
     ImGui::End();
 
-    
-
     ImGui::Begin("Ray Info");
     ImGui::Text("Ray Origin: (%.2f, %.2f, %.2f)", lastRayOrigin.x, lastRayOrigin.y, lastRayOrigin.z);
     ImGui::Text("Ray Direction: (%.2f, %.2f, %.2f)", lastRayDirection.x, lastRayDirection.y, lastRayDirection.z);
@@ -357,16 +357,27 @@ void UWorld::Render()
     ImGui::End();
 
   
+    const char* GizmoTypeNames[] = { "Translate", "Rotate", "Scale" };
+    int selectedGizmoIndex = static_cast<int>(GizmoMode);
 
     if (currentObject)
     {
-        ImGui::Begin("123");
+        ImGui::Begin("Transform Controls");
         ImGui::Text("Transform Controls");
         ImGui::InputFloat3("Location", (float*)&(currentObject->RelativeLocation));
         ImGui::InputFloat3("Rotation", (float*)&(currentObject->RelativeRotation));
         ImGui::InputFloat3("Scale", (float*)&(currentObject->RelativeScale3D));
+
+        // ImGui 드롭다운을 통해 기즈모 모드 변경
+        if (ImGui::Combo("##GizmoMode", &selectedGizmoIndex, GizmoTypeNames, IM_ARRAYSIZE(GizmoTypeNames)))
+        {
+            GizmoMode = static_cast<EGizmoMode>(selectedGizmoIndex);
+        }
         ImGui::End();
     }
+
+
+    Console::GetInstance().Draw();
 	imguiManager.Render();
 }   
 
@@ -604,18 +615,7 @@ void UWorld::UpdateGizmos()
 
 void UWorld::ToggleGizmoMode()
 {
-    switch (GizmoMode)
-    {
-    case EGizmoMode::Translate:
-        GizmoMode = EGizmoMode::Rotate;
-        break;
-    case EGizmoMode::Rotate:
-        GizmoMode = EGizmoMode::Scale;
-        break;
-    case EGizmoMode::Scale:
-        GizmoMode = EGizmoMode::Translate;
-        break;
-    }
+    GizmoMode = static_cast<EGizmoMode>((static_cast<int>(GizmoMode) + 1) % 3);
 }
 
 

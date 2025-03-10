@@ -34,16 +34,20 @@ void UCamera::SetProjection(float aspectRatio, float nearZ, float farZ)
     float xScale = yScale / aspectRatio;
     float zScale = farZ / (farZ - nearZ);
 
-	if (bOrthographic)
-	{
-		ProjectionMatrix = { {
-			{ 2.0f / 10.0f, 0, 0, 0 },
-			{ 0, 2.0f / 10.0f, 0, 0 },
-			{ 0, 0, 1.0f / (farZ - nearZ), 0 },
-			{ 0, 0, -nearZ / (farZ - nearZ), 1 }
-		} };
-		return;
-	}
+    if (bOrthographic)
+    {
+        float left = -5.0f, right = 5.0f;
+        float bottom = -5.0f, top = 5.0f;
+
+        ProjectionMatrix = { {
+            { 2.0f / (right - left), 0, 0, 0 },
+            { 0, 2.0f / (top - bottom), 0, 0 },
+            { 0, 0, -2.0f / (farZ - nearZ), 0 },  // z축 반전
+            { -(right + left) / (right - left), -(top + bottom) / (top - bottom), -(farZ + nearZ) / (farZ - nearZ), 1 }
+        } };
+        return;
+    }
+
     ProjectionMatrix = { {
         { xScale, 0,     0,          0 },
         { 0,     yScale, 0,          0 },
@@ -103,7 +107,7 @@ void UCamera::UpdateVectors()
 
 FMatrix UCamera::GetViewMatrix() const
 {
-    FVector zAxis = Forward.Normalize();
+    FVector zAxis =  Forward.Normalize(); // 반전 필요
     FVector xAxis = Up.Cross(zAxis).Normalize();
     FVector yAxis = zAxis.Cross(xAxis);
 
@@ -114,6 +118,7 @@ FMatrix UCamera::GetViewMatrix() const
         { -xAxis.Dot(RelativeLocation), -yAxis.Dot(RelativeLocation), -zAxis.Dot(RelativeLocation), 1 }
     } };
 }
+
 
 
 FMatrix UCamera::GetProjectionMatrix() const
