@@ -3,13 +3,7 @@
 
 void UPickingSystem::InitPickingSystem()
 {
-	D3D11_VIEWPORT viewport;
-	UINT numViewports = 1;
-	DeviceManager::DeviceContext->RSGetViewports(&numViewports, &viewport);
-	leftBorder = 0;
-	topBorder = 0;
-	screenWidth = viewport.Width;
-	screenHeight = viewport.Height;
+	
 	//IDXGISwapChain* pSwapChain; // 스왑 체인 객체
 
 	//DXGI_SWAP_CHAIN_DESC swapChainDesc;
@@ -28,7 +22,8 @@ void UPickingSystem::UpdateMousePos()
 FVector UPickingSystem::GetNDCPos() {
 	FVector vProj;
 	vProj.x = (((2.0f * MousePos.x - 2.0f * leftBorder) / screenWidth) - 1);
-	vProj.y = -(((2.0f * MousePos.y - 2.0f * topBorder) / bottomBorder) - 1);
+	// 위아래 반전 처리 필요
+	vProj.y = 1.0f-(((2.0f * MousePos.y - 2.0f * topBorder) / screenHeight));
 	vProj.z = 1.0f;
 	return vProj;
 }
@@ -100,8 +95,18 @@ bool UPickingSystem::RayIntersectAABB(FVector& loc, FVector& boxMin, FVector& bo
 	return true;
 }
 void UPickingSystem::Input() {
+	
 	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
 		UpdateMousePos();
+
+		D3D11_VIEWPORT viewport;
+		UINT numViewports = 1;
+		DeviceManager::DeviceContext->RSGetViewports(&numViewports, &viewport);
+		leftBorder = 0;
+		topBorder = 0;
+		screenWidth = viewport.Width;
+		screenHeight = viewport.Height;
+
 		ScreenToRay();
 		USceneComponent* Possible = nullptr;
 		for (auto iter : UObject::GUObjectArray) {
@@ -110,7 +115,7 @@ void UPickingSystem::Input() {
 			FVector boxMax = comp->RelativeLocation + comp->RelativeScale3D * 0.5f;
 			if (RayIntersectAABB(comp->RelativeLocation, boxMin, boxMax)) {
 				// 픽킹 처리
-				if (!Possible) {
+				if (Possible == nullptr) {
 					Possible = comp;
 				}
 				else if (Possible->RelativeLocation.Distance(rayOrigin) > comp->RelativeLocation.Distance(rayOrigin)) {
@@ -118,11 +123,11 @@ void UPickingSystem::Input() {
 				}
 			}
 		}
-		if (Possible) {
-			//UWorld::pickingObject = Possible;
+		//if (Possible) {
+			UWorld::pickingObject = Possible;
 			//UWorld::myWorld->SetPickingObject()
 			//UWorld::myWorld -> SetPickingObject(Possible);
-		}
+		//}
 
 
 	}

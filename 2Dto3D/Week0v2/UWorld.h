@@ -3,12 +3,12 @@
 //#include "UObject.h"
 //#include "UCameraComponent.h"
 #include "Define.h"
-#include "PickingSystem.h"
 
 class UObject;
 class UCameraComponent;
 class USphereComp;
 class USceneComponent;
+class UPickingSystem;
 class UWorld {
 public :
 	UWorld();
@@ -16,6 +16,7 @@ public :
 	UCameraComponent* mainCamera;
 	static UWorld* myWorld;
 	static USceneComponent* pickingObject;
+	UPickingSystem* pickingSystem;
 
 private:
 	// 모든 오브젝트들
@@ -24,7 +25,7 @@ private:
 	// 현재 활성 레벨
 	//ULevel* PersistentLevel;
 	
-	//UPickingSystem pickingSystem;
+	
 
 public:
 	void InitWorld();

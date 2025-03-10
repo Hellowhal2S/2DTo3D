@@ -3,6 +3,7 @@
 #include "USceneComponent.h"
 
 class UWorld;
+class UPickingSystem;
 class ImGuiManager {
 public:
 	static void InitImGui(URenderer& renderer, HWND hwnd);

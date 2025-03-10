@@ -6,7 +6,7 @@
 #include "DeviceManager.h"
 #include "Define.h"
 #include "UWorld.h"
-
+#include "PickingSystem.h"
 
 void ImGuiManager::InitImGui(URenderer& renderer, HWND hwnd) {
 	IMGUI_CHECKVERSION();
@@ -93,6 +93,77 @@ void ImGuiManager::SetupUI() {
     ImGui::Text("Camera Rotation");
     ImGui::InputFloat3("##CamRot", camera_rot, "%.3f");*/
 	ImGui::End();
+
+    ImGui::Begin("Raycast Panel");
+
+    FVector hitPosition = UWorld::myWorld->pickingSystem->rayOrigin;
+    float hitPos[3] = { hitPosition.x, hitPosition.y, hitPosition.z };
+
+    FVector rayVec = UWorld::myWorld->pickingSystem->rayDir;
+    float rayDir[3] = { rayVec.x, rayVec.y, rayVec.z };
+    
+    FVector Trans;
+    FVector Rot;
+    FVector Scale;
+    float transArray[3];
+    float RotArray[3];
+    float ScaleArray[3];
+
+    if (UWorld::pickingObject != nullptr) {
+        Trans = UWorld::pickingObject->RelativeLocation;
+        transArray[0] = Trans.x;
+        transArray[1] = Trans.y;
+        transArray[2] = Trans.z;
+
+        Rot = UWorld::pickingObject->RelativeRotation;
+        RotArray[0] = Rot.x;
+        RotArray[1] = Rot.y;
+        RotArray[2] = Rot.z;
+
+        Scale = UWorld::pickingObject->RelativeScale3D;
+        ScaleArray[0] = Scale.x;
+        ScaleArray[1] = Scale.y;
+        ScaleArray[2] = Scale.z;
+    }
+
+    ImGui::Text("Hit Pos");
+    ImGui::SameLine();
+    ImGui::InputFloat3("##hitPos", hitPos, "%.3f");
+    ImGui::Text("Ray Dir;");
+    ImGui::SameLine();
+    ImGui::InputFloat3("##RayDir", rayDir, "%.3f");
+    ImGui::End();
+
+    ImGui::Begin("Jungle Property Window");
+    
+    if (ImGui::InputFloat3("##Translation", transArray, "%.3f")) {
+        if (UWorld::pickingObject != nullptr)
+        {
+            UWorld::pickingObject->RelativeLocation = FVector(transArray[0], transArray[1], transArray[2]);
+        }
+    }
+    ImGui::SameLine();
+    ImGui::Text("Translation;");
+    
+    if (ImGui::InputFloat3("##Rotation", RotArray, "%.3f")) {
+        if (UWorld::pickingObject != nullptr)
+        {
+            UWorld::pickingObject->RelativeRotation = FVector(RotArray[0], RotArray[1], RotArray[2]);
+        }
+    }
+    ImGui::SameLine();
+    ImGui::Text("Rotation;");
+
+    if (ImGui::InputFloat3("##Scale", ScaleArray, "%.3f")) {
+        if (UWorld::pickingObject != nullptr)
+        {
+            UWorld::pickingObject->RelativeScale3D = FVector(ScaleArray[0], ScaleArray[1], ScaleArray[2]);
+        }
+    }
+    ImGui::SameLine();
+    ImGui::Text("Scale;");
+
+    ImGui::End();
 }
 
 void ImGuiManager::RenderImGui() {

@@ -2,6 +2,8 @@
 #include "UCameraComponent.h"
 #include "UObject.h"           
 #include <d3d11.h>
+#include "PickingSystem.h"
+
 //#include "PickingSystem.h"
 USceneComponent* UWorld::pickingObject = nullptr;
 UWorld* UWorld::myWorld = nullptr;
@@ -13,6 +15,7 @@ UWorld::~UWorld() {
 }
 
 void UWorld::InitWorld() {
+	pickingSystem = new UPickingSystem();
 	myWorld = this;
 	for (int i = 0;i < OBJ_END;++i)
 	{
@@ -36,7 +39,7 @@ void UWorld::InitWorld() {
 
 	//ObjectLists[OBJ_CAMERA].push_back(mainCamera);
 
-	//pickingSystem.InitPickingSystem();
+	pickingSystem->InitPickingSystem();
 }
 
 void UWorld::UpdateWorld(double deltaTime) {
@@ -48,6 +51,7 @@ void UWorld::UpdateWorld(double deltaTime) {
 			(*iter)->Update(deltaTime);
 		}
 	}
+	pickingSystem->Input();
 }
 
 void UWorld::RenderWorld() {
