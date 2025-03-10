@@ -449,40 +449,69 @@ void UWorld::SelectObjectWithMouse()
 
 
 
-
-// 오브젝트와의 충돌 검사
+//OBB로 수정
 bool UWorld::RayIntersectsObject(const FVector& rayOrigin, const FVector& rayDir, USceneComponent* obj, float& hitDistance)
 {
-    FVector halfSize = obj->RelativeScale3D ; // 오브젝트 스케일 적용
-    FVector boxMin = obj->RelativeLocation - halfSize;
-    FVector boxMax = obj->RelativeLocation + halfSize;
+    // 오브젝트의 월드 변환 행렬 생성 (위치, 회전 적용)
+    FMatrix rotationMatrix = FMatrix::CreateRotation(
+        obj->RelativeRotation.x,
+        obj->RelativeRotation.y,
+        obj->RelativeRotation.z
+    );
 
+    FMatrix translationMatrix = FMatrix::CreateTranslationMatrix(obj->RelativeLocation);
 
-    //AABB
+    // 최종 변환 행렬 (Scale은 나중에 생각)
+    FMatrix worldMatrix = rotationMatrix * translationMatrix;
 
-    float tMin = (boxMin.x - rayOrigin.x) / (fabs(rayDir.x) < 1e-6 ? 1e-6 : rayDir.x);  // rayDir.x 가 0이면 0으로 나누는 문제 해결
-    float tMax = (boxMax.x - rayOrigin.x) / (fabs(rayDir.x) < 1e-6 ? 1e-6 : rayDir.x); // 박스의 x축을 통과 하는 시간
-    if (tMin > tMax) std::swap(tMin, tMax);
+    //OBB의 로컬 X, Y, Z 방향
+    FVector axisX(worldMatrix.M[0][0], worldMatrix.M[0][1], worldMatrix.M[0][2]);
+    FVector axisY(worldMatrix.M[1][0], worldMatrix.M[1][1], worldMatrix.M[1][2]);
+    FVector axisZ(worldMatrix.M[2][0], worldMatrix.M[2][1], worldMatrix.M[2][2]);
 
-    float tyMin = (boxMin.y - rayOrigin.y) / (fabs(rayDir.y) < 1e-6 ? 1e-6 : rayDir.y);
-    float tyMax = (boxMax.y - rayOrigin.y) / (fabs(rayDir.y) < 1e-6 ? 1e-6 : rayDir.y);
-    if (tyMin > tyMax) std::swap(tyMin, tyMax);
+    // OBB의 반 크기 적용 (각 축별 크기 반영)
+    FVector halfSize = obj->RelativeScale3D;
 
-    if ((tMin > tyMax) || (tyMin > tMax)) return false;
-    if (tyMin > tMin) tMin = tyMin;  // y축 통과 시간
-    if (tyMax < tMax) tMax = tyMax;
+    FVector p = obj->RelativeLocation - rayOrigin; // 레이 원점에서 OBB 중심까지의 벡터
+    FVector d = rayDir.Normalize(); // 레이 방향 정규화
 
-    float tzMin = (boxMin.z - rayOrigin.z) / (fabs(rayDir.z) < 1e-6 ? 1e-6 : rayDir.z);
-    float tzMax = (boxMax.z - rayOrigin.z) / (fabs(rayDir.z) < 1e-6 ? 1e-6 : rayDir.z);  //z축 통과 시간
-    if (tzMin > tzMax) std::swap(tzMin, tzMax);
+    float tMin = -FLT_MAX, tMax = FLT_MAX;
 
-    if ((tMin > tzMax) || (tzMin > tMax)) return false;
-    if (tzMin > tMin) tMin = tzMin;
-    if (tzMax < tMax) tMax = tzMax;
+    // 각 축(X, Y, Z)에 대해 레이와의 충돌 검사 수행
+    FVector axes[3] = { axisX, axisY, axisZ };
+    float halfSizes[3] = { halfSize.x, halfSize.y,halfSize.z}; // scale 고려
+
+    for (int i = 0; i < 3; i++)
+    {
+        float e = axes[i].Dot(p);  // 원점에서 타겟까지의 거리를 해당 축으로 투영
+        float f = axes[i].Dot(d);  // ray를 투영
+
+        if (fabs(f) > 1e-6)  // 방향 벡터가 0이면 나눗셈 방지
+        {
+            float t1 = (e - halfSizes[i]) / f;
+            float t2 = (e + halfSizes[i]) / f;
+
+            if (t1 > t2) std::swap(t1, t2); // t1이 항상 작은 값이 되도록 설정
+
+            tMin = max(tMin, t1);
+            tMax = min(tMax, t2);
+
+            if (tMin > tMax) return false; // 충돌 없음
+        }
+        else if (-e - halfSizes[i] > 0 || -e + halfSizes[i] < 0)
+        {
+            return false; // 레이가 OBB 내부에 없고, 지나가지도 않음
+        }
+    }
 
     hitDistance = tMin;
     return true;
 }
+
+
+
+
+
 
 
 

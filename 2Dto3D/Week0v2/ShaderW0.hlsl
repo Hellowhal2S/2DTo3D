@@ -1,7 +1,7 @@
 // 상수 버퍼 정의 (b0 레지스터에 바인딩)
 cbuffer constants : register(b0)
 {
-    float4x4 Mat;
+    row_major float4x4 Mat;
     int mode; // 모드 추가
     int padding1;
     int padding2;
@@ -30,7 +30,7 @@ PS_INPUT mainVS(VS_INPUT input)
 
     // 월드 -> 뷰 -> 프로젝션 변환 수행
  
-    float4 projPos = mul(Mat, input.position); // hlsl의 메모리 레이아운 문제 input.position * Mat 와 같은 결과
+    float4 projPos = mul(input.position, Mat); // hlsl의 메모리 레이아운 문제 input.position * Mat 와 같은 결과
 
     // 변환된 좌표 전달
     output.position = projPos;
