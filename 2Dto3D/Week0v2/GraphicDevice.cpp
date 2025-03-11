@@ -261,9 +261,7 @@ void FGraphicsDevice::OnResize(HWND hWindow) {
     UINT width = clientRect.right - clientRect.left;
     UINT height = clientRect.bottom - clientRect.top;
 
-    // 크기가 0일 경우 오류를 방지하기 위해 기본값을 설정
     if (width == 0 || height == 0) {
-        // 오류 처리: 메시지 박스
         MessageBox(hWindow, L"Invalid width or height for ResizeBuffers!", L"Error", MB_ICONERROR | MB_OK);
         return;
     }

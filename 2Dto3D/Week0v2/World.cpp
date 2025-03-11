@@ -70,6 +70,23 @@ void UWorld::Tick(double deltaTime)
 	UpdateLocalGizmo();
 }
 
+void UWorld::Release()
+{
+	//for (int32 i = 0;i < m_pObjectList.size();i++)
+	//{
+	//	for (auto iter = m_pObjectList[i].begin();iter != m_pObjectList[i].end();++iter)
+	//	{
+	//		delete (*iter);
+	//	}
+	//	m_pObjectList[i].clear();
+	//}
+	//delete worldGizmo;
+	for (auto iter : GUObjectArray)
+	{
+		delete iter;
+	}
+	GUObjectArray.clear();
+}
 void UWorld::UpdateLocalGizmo()
 {
 	if (pickingObj)
@@ -89,24 +106,6 @@ void UWorld::UpdateLocalGizmo()
 		LocalGizmo[2]->SetScale(FVector(1.0f, 1.0f, pickingObj->GetScale().z + 2.0f));
 
 	}
-}
-
-void UWorld::Release()
-{
-	//for (int32 i = 0;i < m_pObjectList.size();i++)
-	//{
-	//	for (auto iter = m_pObjectList[i].begin();iter != m_pObjectList[i].end();++iter)
-	//	{
-	//		delete (*iter);
-	//	}
-	//	m_pObjectList[i].clear();
-	//}
-	//delete worldGizmo;
-	for (auto iter : GUObjectArray)
-	{
-		delete iter;
-	}
-	GUObjectArray.clear();
 }
 
 void UWorld::Render()

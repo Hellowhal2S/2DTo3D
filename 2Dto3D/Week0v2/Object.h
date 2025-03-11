@@ -31,7 +31,6 @@ protected:
 	FVector				m_Location;
 	FVector				m_Rotation;
 	FVector				m_Scale;
-
 	UWorld*				m_World;
 public:
 	inline FVector				GetRotation() { return m_Rotation; }

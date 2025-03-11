@@ -1,6 +1,101 @@
-﻿  Object.cpp
-C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Object.h(51,38): warning C4267: '+=': 'size_t'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+﻿  ArrowComp.cpp
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Object.h(50,38): warning C4267: '+=': 'size_t'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ArrowComp.cpp'을(를) 컴파일하는 중)
+  
+  CameraComponent.cpp
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Object.h(50,38): warning C4267: '+=': 'size_t'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CameraComponent.cpp'을(를) 컴파일하는 중)
+  
+  ControlPaner.cpp
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Object.h(50,38): warning C4267: '+=': 'size_t'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ControlPaner.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\ControlPaner.cpp(28,19): warning C4267: '초기화 중': 'size_t'에서 'int32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CubeComp.cpp
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Object.h(50,38): warning C4267: '+=': 'size_t'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'CubeComp.cpp'을(를) 컴파일하는 중)
+  
+  EngineLoop.cpp
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Object.h(50,38): warning C4267: '+=': 'size_t'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'EngineLoop.cpp'을(를) 컴파일하는 중)
+  
+  GizmoComponent.cpp
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Object.h(50,38): warning C4267: '+=': 'size_t'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'GizmoComponent.cpp'을(를) 컴파일하는 중)
+  
+  GraphicDevice.cpp
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\GraphicDevice.cpp(274,17): warning C4101: 'errorMsg' :참조되지 않은 지역 변수입니다.
+  LocalGizmoComponent.cpp
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Object.h(50,38): warning C4267: '+=': 'size_t'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'LocalGizmoComponent.cpp'을(를) 컴파일하는 중)
+  
+  Object.cpp
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Object.h(50,38): warning C4267: '+=': 'size_t'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   (소스 파일 'Object.cpp'을(를) 컴파일하는 중)
   
 C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Object.cpp(16,52): warning C4267: '=': 'size_t'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  ObjectFactory.cpp
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Object.h(50,38): warning C4267: '+=': 'size_t'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ObjectFactory.cpp'을(를) 컴파일하는 중)
+  
+  Player.cpp
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Object.h(50,38): warning C4267: '+=': 'size_t'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'Player.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(53,36): warning C4244: '인수': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(53,24): warning C4244: '인수': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(307,50): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(308,50): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(311,50): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(312,50): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(319,50): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(320,50): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(323,50): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(324,50): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(330,50): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(331,50): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(334,50): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(335,50): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(345,13): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(346,13): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(351,47): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(353,47): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(357,45): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(359,45): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(364,49): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(366,49): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(375,13): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(376,13): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(381,47): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(383,47): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(387,47): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(389,47): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(394,47): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Player.cpp(396,47): warning C4244: '인수': 'int32'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  PrimitiveComponent.cpp
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Object.h(50,38): warning C4267: '+=': 'size_t'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'PrimitiveComponent.cpp'을(를) 컴파일하는 중)
+  
+  PropertyPanel.cpp
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Object.h(50,38): warning C4267: '+=': 'size_t'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'PropertyPanel.cpp'을(를) 컴파일하는 중)
+  
+  SceneComponent.cpp
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Object.h(50,38): warning C4267: '+=': 'size_t'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'SceneComponent.cpp'을(를) 컴파일하는 중)
+  
+  SceneMgr.cpp
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Object.h(50,38): warning C4267: '+=': 'size_t'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'SceneMgr.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\SceneMgr.cpp(80,34): warning C4101: 'e' :참조되지 않은 지역 변수입니다.
+  SphereComp.cpp
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Object.h(50,38): warning C4267: '+=': 'size_t'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'SphereComp.cpp'을(를) 컴파일하는 중)
+  
+  World.cpp
+C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\Week0v2\Object.h(50,38): warning C4267: '+=': 'size_t'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'World.cpp'을(를) 컴파일하는 중)
+  
+  코드를 생성하고 있습니다...
   Week0v2.vcxproj -> C:\Users\Jungle\Documents\GitHub\2DTo3D\2Dto3D\x64\Debug\Week0v2.exe

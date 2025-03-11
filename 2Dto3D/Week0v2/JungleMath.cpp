@@ -77,7 +77,7 @@ FMatrix JungleMath::CreateProjectionMatrix(float fov, float aspect, float nearPl
     Projection.M[2][2] = farPlane / depth;
     Projection.M[2][3] = 1.0f;
     Projection.M[3][2] = -(nearPlane * farPlane) / depth;
-    Projection.M[3][3] = 0.0f;  // ✅ 수정: 원래는 1.0f가 아니라 0.0f 여야 함.
+    Projection.M[3][3] = 0.0f;  
 
     return Projection;
 }
